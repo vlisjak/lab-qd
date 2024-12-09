@@ -1,0 +1,1599 @@
+clab_name: maxi
+clab_startup:
+  ios:
+    image: vrnetlab/cisco_csr1000v:17.03.08
+    kind: cisco_csr1000v
+    startup-config: ios_initial_cfg.j2
+  iosxr:
+    image: ios-xr/xrd-control-plane:24.2.11
+    kind: cisco_xrd
+    startup-config: xrd_initial_cfg.j2
+  xrv9k:
+    env:
+      RAM: 20480
+      VCPU: 4
+    image: vrnetlab/cisco_xrv9k:7.10.2
+    kind: cisco_xrv9k
+    startup-config: xrd_initial_cfg.j2
+device_groups:
+  ios:
+    clab:
+      image: vrnetlab/cisco_csr1000v:17.03.08
+      kind: cisco_csr1000v
+      startup-config: ios_initial_cfg.j2
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: BE
+      default:
+        first_id: 2
+        name: Gi
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: ios
+      platform: ios
+    password: clab@123
+    username: clab
+  iosxr:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+    password: clab@123
+    username: clab
+  iosxr_phys:
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr_phys
+      platform: iosxr
+    password: cisco
+    username: cisco
+  xrv9k:
+    clab:
+      env:
+        RAM: 20480
+        VCPU: 4
+      image: vrnetlab/cisco_xrv9k:7.10.2
+      kind: cisco_xrv9k
+      startup-config: xrd_initial_cfg.j2
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+    password: clab@123
+    username: clab
+device_roles:
+  cpe:
+    device_roles:
+    - cpe
+  p:
+    device_roles:
+    - p
+    isis:
+      CORE:
+        redistribute_from_isis:
+          instance: RR
+          tag: 100
+      RR:
+        redistribute_from_isis:
+          instance: CORE
+          tag: 101
+  pce:
+    device_roles:
+    - pce
+    ibgp:
+      asn: 100
+  pe:
+    device_roles:
+    - pe
+    ibgp:
+      asn: 100
+      client_of: rr_mid
+  rr_mid:
+    device_roles:
+    - rr_mid
+    ibgp:
+      asn: 100
+      client_of: rr_top
+  rr_top:
+    device_roles:
+    - rr_top
+    ibgp:
+      asn: 100
+      full_mesh:
+      - rr_top
+devices:
+  cpe1:
+    another_attribute:
+      another_key: another_value
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - cpe
+    interfaces:
+      Gi0/0/0/0:
+        description: cpe1:Gi0/0/0/0 -> pe1:Gi0/0/0/2
+        ipv4_address: 1.1.0.1/30
+        link: cpe1---pe1
+        link_group: l3vpn
+        lldp:
+          neighbor: pe1
+          neighbor_intf: Gi0/0/0/2
+          neighbor_ipv4: 1.1.0.2/30
+        mtu: 1505
+        prefix: 1.1.0.0/16
+      Loopback0:
+        description: cpe1 Loopback0
+        ipv4_address: 1.255.0.13/32
+      mgmt:
+        ipv4_address: 10.255.1.13/24
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+    password: clab@123
+    username: clab
+  cpe2:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - cpe
+    interfaces:
+      Gi0/0/0/0:
+        description: cpe2:Gi0/0/0/0 -> pe2:Gi0/0/0/2
+        ipv4_address: 1.1.0.5/30
+        link: cpe2---pe2
+        link_group: l3vpn
+        lldp:
+          neighbor: pe2
+          neighbor_intf: Gi0/0/0/2
+          neighbor_ipv4: 1.1.0.6/30
+        mtu: 1505
+        prefix: 1.1.0.0/16
+      Gi0/0/0/1:
+        description: cpe2:Gi0/0/0/1 -> pe3:Gi0/0/0/2
+        ipv4_address: 1.1.0.9/30
+        link: cpe2---pe3
+        link_group: l3vpn
+        lldp:
+          neighbor: pe3
+          neighbor_intf: Gi0/0/0/2
+          neighbor_ipv4: 1.1.0.10/30
+        mtu: 1505
+        prefix: 1.1.0.0/16
+      Loopback0:
+        description: cpe2 Loopback0
+        ipv4_address: 1.255.0.14/32
+      mgmt:
+        ipv4_address: 10.255.1.14/24
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+    password: clab@123
+    username: clab
+  cpe3:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - cpe
+    interfaces:
+      Gi0/0/0/0:
+        description: cpe3:Gi0/0/0/0 -> pe2:Gi0/0/0/3
+        ipv4_address: 1.1.0.13/30
+        link: cpe3---pe2
+        link_group: l3vpn
+        lldp:
+          neighbor: pe2
+          neighbor_intf: Gi0/0/0/3
+          neighbor_ipv4: 1.1.0.14/30
+        mtu: 1505
+        prefix: 1.1.0.0/16
+      Gi0/0/0/1:
+        description: cpe3:Gi0/0/0/1 -> pe3:Gi0/0/0/3
+        link: cpe3---pe3
+        link_group: l2vpn
+        lldp:
+          neighbor: pe3
+          neighbor_intf: Gi0/0/0/3
+        mtu: 1555
+      Loopback0:
+        description: cpe3 Loopback0
+        ipv4_address: 1.255.0.15/32
+      mgmt:
+        ipv4_address: 10.255.1.15/24
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+    password: clab@123
+    username: clab
+  cpe4:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - cpe
+    interfaces:
+      Gi0/0/0/0:
+        description: cpe4:Gi0/0/0/0 -> pe3:Gi0/0/0/4
+        ipv4_address: 1.1.0.17/30
+        link: cpe4---pe3
+        link_group: l3vpn
+        lldp:
+          neighbor: pe3
+          neighbor_intf: Gi0/0/0/4
+          neighbor_ipv4: 1.1.0.18/30
+        mtu: 1505
+        prefix: 1.1.0.0/16
+      Loopback0:
+        description: cpe4 Loopback0
+        ipv4_address: 1.255.0.16/32
+      mgmt:
+        ipv4_address: 10.255.1.16/24
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+    password: clab@123
+    username: clab
+  cpe5:
+    clab:
+      image: vrnetlab/cisco_csr1000v:17.03.08
+      kind: cisco_csr1000v
+      startup-config: ios_initial_cfg.j2
+    device_roles:
+    - cpe
+    interfaces:
+      Gi2:
+        description: cpe5:Gi2 -> pe1:Gi0/0/0/3
+        ipv4_address: 1.1.0.21/30
+        link: cpe5---pe1
+        link_group: l3vpn
+        lldp:
+          neighbor: pe1
+          neighbor_intf: Gi0/0/0/3
+          neighbor_ipv4: 1.1.0.22/30
+        mtu: 1505
+        prefix: 1.1.0.0/16
+      Loopback0:
+        description: cpe5 Loopback0
+        ipv4_address: 1.255.0.17/32
+      mgmt:
+        ipv4_address: 10.255.1.17/24
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: BE
+      default:
+        first_id: 2
+        name: Gi
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: ios
+      platform: ios
+    password: clab@123
+    username: clab
+  p1:
+    clab:
+      env:
+        RAM: 20480
+        VCPU: 4
+      image: vrnetlab/cisco_xrv9k:7.10.2
+      kind: cisco_xrv9k
+      startup-config: xrd_initial_cfg.j2
+    device_roles:
+    - p
+    interfaces:
+      Bundle-Ether1:
+        bundle:
+          id: 1
+          type: bundle
+        clab_exclude: true
+        description: p1:Bundle-Ether1 -> p2:Bundle-Ether1
+        ipv4_address: 1.0.0.1/30
+        isis:
+          instance: CORE
+        link: p1---p2
+        link_group: core_bundle
+        lldp:
+          neighbor: p2
+          neighbor_intf: Bundle-Ether1
+          neighbor_ipv4: 1.0.0.2/30
+        prefix: 1.0.0.0/16
+      Gi0/0/0/0:
+        description: p1:Gi0/0/0/0 -> rr_top1:Gi0/0/0/9
+        ipv4_address: 1.0.0.54/30
+        isis:
+          instance: RR
+          metric: 99999
+        link: rr_top1:Gi0/0/0/9---p1:Gi0/0/0/0
+        link_group: rr
+        lldp:
+          disable: true
+          neighbor: rr_top1
+          neighbor_intf: Gi0/0/0/9
+          neighbor_ipv4: 1.0.0.53/30
+        prefix: 1.0.0.0/16
+      Gi0/0/0/1:
+        bundle:
+          id: 1
+          type: member
+        description: p1:Gi0/0/0/1 -> p2:Gi0/0/0/1
+        link: p1---p2
+        link_group: core_bundle_member
+        lldp:
+          neighbor: p2
+          neighbor_intf: Gi0/0/0/1
+      Gi0/0/0/2:
+        bundle:
+          id: 1
+          type: member
+        description: p1:Gi0/0/0/2 -> p2:Gi0/0/0/2
+        link: p1---p2
+        link_group: core_bundle_member
+        lldp:
+          neighbor: p2
+          neighbor_intf: Gi0/0/0/2
+      Gi0/0/0/3:
+        description: p1:Gi0/0/0/3 -> p4:Gi0/0/0/3
+        ipv4_address: 1.0.0.18/30
+        isis:
+          instance: CORE
+        link: p4---p1
+        link_group: core
+        lldp:
+          neighbor: p4
+          neighbor_intf: Gi0/0/0/3
+          neighbor_ipv4: 1.0.0.17/30
+        prefix: 1.0.0.0/16
+      Gi0/0/0/4:
+        description: p1:Gi0/0/0/4 -> pe1:Gi0/0/0/0
+        ipv4_address: 1.0.0.22/30
+        isis:
+          instance: CORE
+        link: pe1---p1
+        link_group: core
+        lldp:
+          neighbor: pe1
+          neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.0.0.21/30
+        prefix: 1.0.0.0/16
+      Loopback0:
+        description: p1 Loopback0
+        ipv4_address: 1.255.0.2/32
+      mgmt:
+        ipv4_address: 10.255.1.2/24
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    isis:
+      CORE:
+        redistribute_from_isis:
+          instance: RR
+          tag: 100
+      RR:
+        redistribute_from_isis:
+          instance: CORE
+          tag: 101
+    nornir:
+      group: iosxr
+      platform: iosxr
+    password: clab@123
+    username: clab
+  p2:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - p
+    interfaces:
+      Bundle-Ether1:
+        bundle:
+          id: 1
+          type: bundle
+        clab_exclude: true
+        description: p2:Bundle-Ether1 -> p1:Bundle-Ether1
+        ipv4_address: 1.0.0.2/30
+        isis:
+          instance: CORE
+        link: p1---p2
+        link_group: core_bundle
+        lldp:
+          neighbor: p1
+          neighbor_intf: Bundle-Ether1
+          neighbor_ipv4: 1.0.0.1/30
+        prefix: 1.0.0.0/16
+      Bundle-Ether2:
+        bundle:
+          id: 2
+          type: bundle
+        clab_exclude: true
+        description: p2:Bundle-Ether2 -> p3:Bundle-Ether32
+        ipv4_address: 1.0.0.5/30
+        isis:
+          instance: CORE
+        link: p2---p3:Bundle-Ether32
+        link_group: core_bundle
+        lldp:
+          neighbor: p3
+          neighbor_intf: Bundle-Ether32
+          neighbor_ipv4: 1.0.0.6/30
+        prefix: 1.0.0.0/16
+      Gi0/0/0/0:
+        description: p2:Gi0/0/0/0 -> rr_top2:Gi0/0/0/9
+        ipv4_address: 1.0.0.58/30
+        isis:
+          instance: RR
+          metric: 99999
+        link: rr_top2:Gi0/0/0/9---p2:Gi0/0/0/0
+        link_group: rr
+        lldp:
+          disable: true
+          neighbor: rr_top2
+          neighbor_intf: Gi0/0/0/9
+          neighbor_ipv4: 1.0.0.57/30
+        prefix: 1.0.0.0/16
+      Gi0/0/0/1:
+        bundle:
+          id: 1
+          type: member
+        description: p2:Gi0/0/0/1 -> p1:Gi0/0/0/1
+        link: p1---p2
+        link_group: core_bundle_member
+        lldp:
+          neighbor: p1
+          neighbor_intf: Gi0/0/0/1
+      Gi0/0/0/2:
+        bundle:
+          id: 1
+          type: member
+        description: p2:Gi0/0/0/2 -> p1:Gi0/0/0/2
+        link: p1---p2
+        link_group: core_bundle_member
+        lldp:
+          neighbor: p1
+          neighbor_intf: Gi0/0/0/2
+      Gi0/0/0/3:
+        bundle:
+          id: 2
+          type: member
+        description: p2:Gi0/0/0/3 -> p3:Gi0/0/0/1
+        link: p2---p3
+        link_group: core_bundle_member
+        lldp:
+          neighbor: p3
+          neighbor_intf: Gi0/0/0/1
+      Gi0/0/0/4:
+        description: p2:Gi0/0/0/4 -> pe1:Gi0/0/0/1
+        ipv4_address: 1.0.0.26/30
+        isis:
+          instance: CORE
+        link: pe1---p2
+        link_group: core
+        lldp:
+          neighbor: pe1
+          neighbor_intf: Gi0/0/0/1
+          neighbor_ipv4: 1.0.0.25/30
+        prefix: 1.0.0.0/16
+      Loopback0:
+        description: p2 Loopback0
+        ipv4_address: 1.255.0.3/32
+      mgmt:
+        ipv4_address: 10.255.1.3/24
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    isis:
+      CORE:
+        redistribute_from_isis:
+          instance: RR
+          tag: 100
+      RR:
+        redistribute_from_isis:
+          instance: CORE
+          tag: 101
+    nornir:
+      group: iosxr
+      platform: iosxr
+    password: clab@123
+    username: clab
+  p3:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - p
+    interfaces:
+      Bundle-Ether32:
+        bundle:
+          id: 32
+          type: bundle
+        clab_exclude: true
+        description: p3:Bundle-Ether32 -> p2:Bundle-Ether2
+        ipv4_address: 1.0.0.6/30
+        isis:
+          instance: CORE
+        link: p2---p3:Bundle-Ether32
+        link_group: core_bundle
+        lldp:
+          neighbor: p2
+          neighbor_intf: Bundle-Ether2
+          neighbor_ipv4: 1.0.0.5/30
+        prefix: 1.0.0.0/16
+      Bundle-Ether34:
+        bundle:
+          id: 34
+          type: bundle
+        clab_exclude: true
+        description: p3:Bundle-Ether34 -> p4:Bundle-Ether43
+        ipv4_address: 1.0.0.13/30
+        isis:
+          instance: CORE
+        link: p3:Bundle-Ether34---p4:Bundle-Ether43
+        link_group: core_bundle
+        lldp:
+          neighbor: p4
+          neighbor_intf: Bundle-Ether43
+          neighbor_ipv4: 1.0.0.14/30
+        prefix: 1.0.0.0/16
+      Gi0/0/0/0:
+        description: p3:Gi0/0/0/0 -> rr2:Gi0/0/0/9
+        ipv4_address: 1.0.0.50/30
+        isis:
+          instance: RR
+          metric: 99999
+        link: rr2:Gi0/0/0/9---p3:Gi0/0/0/0
+        link_group: rr
+        lldp:
+          disable: true
+          neighbor: rr2
+          neighbor_intf: Gi0/0/0/9
+          neighbor_ipv4: 1.0.0.49/30
+        prefix: 1.0.0.0/16
+      Gi0/0/0/1:
+        bundle:
+          id: 32
+          type: member
+        description: p3:Gi0/0/0/1 -> p2:Gi0/0/0/3
+        link: p2---p3
+        link_group: core_bundle_member
+        lldp:
+          neighbor: p2
+          neighbor_intf: Gi0/0/0/3
+      Gi0/0/0/2:
+        description: p3:Gi0/0/0/2 -> p4:Gi0/0/0/1
+        ipv4_address: 1.0.0.9/30
+        isis:
+          instance: CORE
+        link: p3---p4
+        link_group: core
+        lldp:
+          neighbor: p4
+          neighbor_intf: Gi0/0/0/1
+          neighbor_ipv4: 1.0.0.10/30
+        prefix: 1.0.0.0/16
+      Gi0/0/0/3:
+        bundle:
+          id: 34
+          type: member
+        description: p3:Gi0/0/0/3 -> p4:Gi0/0/0/2
+        link: p3---p4
+        link_group: core_bundle_member
+        lldp:
+          neighbor: p4
+          neighbor_intf: Gi0/0/0/2
+      Gi0/0/0/4:
+        description: p3:Gi0/0/0/4 -> pe2:Gi0/0/0/0
+        ipv4_address: 1.0.0.30/30
+        isis:
+          instance: CORE
+        link: pe2---p3
+        link_group: core
+        lldp:
+          neighbor: pe2
+          neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.0.0.29/30
+        prefix: 1.0.0.0/16
+      Gi0/0/0/5:
+        description: p3:Gi0/0/0/5 -> pe3:Gi0/0/0/0
+        ipv4_address: 1.0.0.38/30
+        isis:
+          instance: CORE
+        link: pe3---p3
+        link_group: core
+        lldp:
+          neighbor: pe3
+          neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.0.0.37/30
+        prefix: 1.0.0.0/16
+      Loopback0:
+        description: p3 Loopback0
+        ipv4_address: 1.255.0.4/32
+      mgmt:
+        ipv4_address: 10.255.1.4/24
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    isis:
+      CORE:
+        redistribute_from_isis:
+          instance: RR
+          tag: 100
+      RR:
+        redistribute_from_isis:
+          instance: CORE
+          tag: 101
+    nornir:
+      group: iosxr
+      platform: iosxr
+    password: clab@123
+    username: clab
+  p4:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - p
+    interfaces:
+      Bundle-Ether43:
+        bundle:
+          id: 43
+          type: bundle
+        clab_exclude: true
+        description: p4:Bundle-Ether43 -> p3:Bundle-Ether34
+        ipv4_address: 1.0.0.14/30
+        isis:
+          instance: CORE
+        link: p3:Bundle-Ether34---p4:Bundle-Ether43
+        link_group: core_bundle
+        lldp:
+          neighbor: p3
+          neighbor_intf: Bundle-Ether34
+          neighbor_ipv4: 1.0.0.13/30
+        prefix: 1.0.0.0/16
+      Gi0/0/0/0:
+        description: p4:Gi0/0/0/0 -> rr1:Gi0/0/0/9
+        ipv4_address: 1.0.0.46/30
+        isis:
+          instance: RR
+          metric: 99999
+        link: rr1:Gi0/0/0/9---p4:Gi0/0/0/0
+        link_group: rr
+        lldp:
+          disable: true
+          neighbor: rr1
+          neighbor_intf: Gi0/0/0/9
+          neighbor_ipv4: 1.0.0.45/30
+        prefix: 1.0.0.0/16
+      Gi0/0/0/1:
+        description: p4:Gi0/0/0/1 -> p3:Gi0/0/0/2
+        ipv4_address: 1.0.0.10/30
+        isis:
+          instance: CORE
+        link: p3---p4
+        link_group: core
+        lldp:
+          neighbor: p3
+          neighbor_intf: Gi0/0/0/2
+          neighbor_ipv4: 1.0.0.9/30
+        prefix: 1.0.0.0/16
+      Gi0/0/0/2:
+        bundle:
+          id: 43
+          type: member
+        description: p4:Gi0/0/0/2 -> p3:Gi0/0/0/3
+        link: p3---p4
+        link_group: core_bundle_member
+        lldp:
+          neighbor: p3
+          neighbor_intf: Gi0/0/0/3
+      Gi0/0/0/3:
+        description: p4:Gi0/0/0/3 -> p1:Gi0/0/0/3
+        ipv4_address: 1.0.0.17/30
+        isis:
+          instance: CORE
+        link: p4---p1
+        link_group: core
+        lldp:
+          neighbor: p1
+          neighbor_intf: Gi0/0/0/3
+          neighbor_ipv4: 1.0.0.18/30
+        prefix: 1.0.0.0/16
+      Gi0/0/0/4:
+        description: p4:Gi0/0/0/4 -> pe2:Gi0/0/0/1
+        ipv4_address: 1.0.0.34/30
+        isis:
+          instance: CORE
+        link: pe2---p4
+        link_group: core
+        lldp:
+          neighbor: pe2
+          neighbor_intf: Gi0/0/0/1
+          neighbor_ipv4: 1.0.0.33/30
+        prefix: 1.0.0.0/16
+      Gi0/0/0/5:
+        description: p4:Gi0/0/0/5 -> pe3:Gi0/0/0/1
+        ipv4_address: 1.0.0.42/30
+        isis:
+          instance: CORE
+        link: pe3---p4
+        link_group: core
+        lldp:
+          neighbor: pe3
+          neighbor_intf: Gi0/0/0/1
+          neighbor_ipv4: 1.0.0.41/30
+        prefix: 1.0.0.0/16
+      Loopback0:
+        description: p4 Loopback0
+        ipv4_address: 1.255.0.5/32
+      mgmt:
+        ipv4_address: 10.255.1.5/24
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    isis:
+      CORE:
+        redistribute_from_isis:
+          instance: RR
+          tag: 100
+      RR:
+        redistribute_from_isis:
+          instance: CORE
+          tag: 101
+    nornir:
+      group: iosxr
+      platform: iosxr
+    password: clab@123
+    username: clab
+  pe1:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - pe
+    ibgp:
+      asn: 100
+      client_of: rr_mid
+    interfaces:
+      Gi0/0/0/0:
+        description: pe1:Gi0/0/0/0 -> p1:Gi0/0/0/4
+        ipv4_address: 1.0.0.21/30
+        isis:
+          instance: CORE
+        link: pe1---p1
+        link_group: core
+        lldp:
+          neighbor: p1
+          neighbor_intf: Gi0/0/0/4
+          neighbor_ipv4: 1.0.0.22/30
+        prefix: 1.0.0.0/16
+      Gi0/0/0/1:
+        description: pe1:Gi0/0/0/1 -> p2:Gi0/0/0/4
+        ipv4_address: 1.0.0.25/30
+        isis:
+          instance: CORE
+        link: pe1---p2
+        link_group: core
+        lldp:
+          neighbor: p2
+          neighbor_intf: Gi0/0/0/4
+          neighbor_ipv4: 1.0.0.26/30
+        prefix: 1.0.0.0/16
+      Gi0/0/0/2:
+        description: pe1:Gi0/0/0/2 -> cpe1:Gi0/0/0/0
+        ipv4_address: 1.1.0.2/30
+        link: cpe1---pe1
+        link_group: l3vpn
+        lldp:
+          neighbor: cpe1
+          neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.1.0.1/30
+        mtu: 1505
+        prefix: 1.1.0.0/16
+      Gi0/0/0/3:
+        description: pe1:Gi0/0/0/3 -> cpe5:Gi2
+        ipv4_address: 1.1.0.22/30
+        link: cpe5---pe1
+        link_group: l3vpn
+        lldp:
+          neighbor: cpe5
+          neighbor_intf: Gi2
+          neighbor_ipv4: 1.1.0.21/30
+        mtu: 1505
+        prefix: 1.1.0.0/16
+      Loopback0:
+        description: pe1 Loopback0
+        ipv4_address: 1.255.0.6/32
+      mgmt:
+        ipv4_address: 10.255.1.6/24
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+    password: clab@123
+    username: clab
+  pe2:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - pe
+    ibgp:
+      asn: 100
+      client_of: rr_mid
+    interfaces:
+      Gi0/0/0/0:
+        description: pe2:Gi0/0/0/0 -> p3:Gi0/0/0/4
+        ipv4_address: 1.0.0.29/30
+        isis:
+          instance: CORE
+        link: pe2---p3
+        link_group: core
+        lldp:
+          neighbor: p3
+          neighbor_intf: Gi0/0/0/4
+          neighbor_ipv4: 1.0.0.30/30
+        prefix: 1.0.0.0/16
+      Gi0/0/0/1:
+        description: pe2:Gi0/0/0/1 -> p4:Gi0/0/0/4
+        ipv4_address: 1.0.0.33/30
+        isis:
+          instance: CORE
+        link: pe2---p4
+        link_group: core
+        lldp:
+          neighbor: p4
+          neighbor_intf: Gi0/0/0/4
+          neighbor_ipv4: 1.0.0.34/30
+        prefix: 1.0.0.0/16
+      Gi0/0/0/2:
+        description: pe2:Gi0/0/0/2 -> cpe2:Gi0/0/0/0
+        ipv4_address: 1.1.0.6/30
+        link: cpe2---pe2
+        link_group: l3vpn
+        lldp:
+          neighbor: cpe2
+          neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.1.0.5/30
+        mtu: 1505
+        prefix: 1.1.0.0/16
+      Gi0/0/0/3:
+        description: pe2:Gi0/0/0/3 -> cpe3:Gi0/0/0/0
+        ipv4_address: 1.1.0.14/30
+        link: cpe3---pe2
+        link_group: l3vpn
+        lldp:
+          neighbor: cpe3
+          neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.1.0.13/30
+        mtu: 1505
+        prefix: 1.1.0.0/16
+      Loopback0:
+        description: pe2 Loopback0
+        ipv4_address: 1.255.0.7/32
+      mgmt:
+        ipv4_address: 10.255.1.7/24
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+    password: clab@123
+    username: clab
+  pe3:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - pe
+    ibgp:
+      asn: 100
+      client_of: rr_mid
+    interfaces:
+      Gi0/0/0/0:
+        description: pe3:Gi0/0/0/0 -> p3:Gi0/0/0/5
+        ipv4_address: 1.0.0.37/30
+        isis:
+          instance: CORE
+        link: pe3---p3
+        link_group: core
+        lldp:
+          neighbor: p3
+          neighbor_intf: Gi0/0/0/5
+          neighbor_ipv4: 1.0.0.38/30
+        prefix: 1.0.0.0/16
+      Gi0/0/0/1:
+        description: pe3:Gi0/0/0/1 -> p4:Gi0/0/0/5
+        ipv4_address: 1.0.0.41/30
+        isis:
+          instance: CORE
+        link: pe3---p4
+        link_group: core
+        lldp:
+          neighbor: p4
+          neighbor_intf: Gi0/0/0/5
+          neighbor_ipv4: 1.0.0.42/30
+        prefix: 1.0.0.0/16
+      Gi0/0/0/2:
+        description: pe3:Gi0/0/0/2 -> cpe2:Gi0/0/0/1
+        ipv4_address: 1.1.0.10/30
+        link: cpe2---pe3
+        link_group: l3vpn
+        lldp:
+          neighbor: cpe2
+          neighbor_intf: Gi0/0/0/1
+          neighbor_ipv4: 1.1.0.9/30
+        mtu: 1505
+        prefix: 1.1.0.0/16
+      Gi0/0/0/3:
+        description: pe3:Gi0/0/0/3 -> cpe3:Gi0/0/0/1
+        link: cpe3---pe3
+        link_group: l2vpn
+        lldp:
+          neighbor: cpe3
+          neighbor_intf: Gi0/0/0/1
+        mtu: 1555
+      Gi0/0/0/4:
+        description: pe3:Gi0/0/0/4 -> cpe4:Gi0/0/0/0
+        ipv4_address: 1.1.0.18/30
+        link: cpe4---pe3
+        link_group: l3vpn
+        lldp:
+          neighbor: cpe4
+          neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.1.0.17/30
+        mtu: 1505
+        prefix: 1.1.0.0/16
+      Loopback0:
+        description: pe3 Loopback0
+        ipv4_address: 1.255.0.8/32
+      mgmt:
+        ipv4_address: 10.255.1.8/24
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+    password: clab@123
+    username: clab
+  router1:
+    interfaces:
+      Gi1/1:
+        clab_exclude: true
+        description: router1:Gi1/1 -> router2:Gi2/2
+        link: router1:Gi1/1---router2:Gi2/2
+        link_group: physical
+        lldp:
+          neighbor: router2
+          neighbor_intf: Gi2/2
+      Loopback0:
+        description: router1 Loopback0
+        ipv4_address: 1.255.0.18/32
+      mgmt:
+        ipv4_address: 10.255.1.18/24
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr_phys
+      platform: iosxr
+    password: cisco
+    username: cisco
+  router2:
+    interfaces:
+      Gi2/2:
+        clab_exclude: true
+        description: router2:Gi2/2 -> router1:Gi1/1
+        link: router1:Gi1/1---router2:Gi2/2
+        link_group: physical
+        lldp:
+          neighbor: router1
+          neighbor_intf: Gi1/1
+      Loopback0:
+        description: router2 Loopback0
+        ipv4_address: 1.255.0.19/32
+      mgmt:
+        ipv4_address: 10.255.1.19/24
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr_phys
+      platform: iosxr
+    password: cisco
+    username: cisco
+  rr1:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - pce
+    - rr_mid
+    ibgp:
+      asn: 100
+      client_of: rr_top
+    interfaces:
+      Gi0/0/0/9:
+        description: rr1:Gi0/0/0/9 -> p4:Gi0/0/0/0
+        ipv4_address: 1.0.0.45/30
+        isis:
+          instance: RR
+          metric: 99999
+        link: rr1:Gi0/0/0/9---p4:Gi0/0/0/0
+        link_group: rr
+        lldp:
+          disable: true
+          neighbor: p4
+          neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.0.0.46/30
+        prefix: 1.0.0.0/16
+      Loopback0:
+        description: rr1 Loopback0
+        ipv4_address: 1.255.0.9/32
+      mgmt:
+        ipv4_address: 10.255.1.9/24
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+    password: clab@123
+    username: clab
+  rr2:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - pce
+    - rr_mid
+    ibgp:
+      asn: 100
+      client_of: rr_top
+    interfaces:
+      Gi0/0/0/9:
+        description: rr2:Gi0/0/0/9 -> p3:Gi0/0/0/0
+        ipv4_address: 1.0.0.49/30
+        isis:
+          instance: RR
+          metric: 99999
+        link: rr2:Gi0/0/0/9---p3:Gi0/0/0/0
+        link_group: rr
+        lldp:
+          disable: true
+          neighbor: p3
+          neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.0.0.50/30
+        prefix: 1.0.0.0/16
+      Loopback0:
+        description: rr2 Loopback0
+        ipv4_address: 1.255.0.10/32
+      mgmt:
+        ipv4_address: 10.255.1.10/24
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+    password: clab@123
+    username: clab
+  rr_top1:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - rr_top
+    ibgp:
+      asn: 100
+      full_mesh:
+      - rr_top
+    interfaces:
+      Gi0/0/0/9:
+        description: rr_top1:Gi0/0/0/9 -> p1:Gi0/0/0/0
+        ipv4_address: 1.0.0.53/30
+        isis:
+          instance: RR
+          metric: 99999
+        link: rr_top1:Gi0/0/0/9---p1:Gi0/0/0/0
+        link_group: rr
+        lldp:
+          disable: true
+          neighbor: p1
+          neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.0.0.54/30
+        prefix: 1.0.0.0/16
+      Loopback0:
+        description: rr_top1 Loopback0
+        ipv4_address: 1.255.0.11/32
+      mgmt:
+        ipv4_address: 10.255.1.11/24
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+    password: clab@123
+    username: clab
+  rr_top2:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - rr_top
+    ibgp:
+      asn: 100
+      full_mesh:
+      - rr_top
+    interfaces:
+      Gi0/0/0/9:
+        description: rr_top2:Gi0/0/0/9 -> p2:Gi0/0/0/0
+        ipv4_address: 1.0.0.57/30
+        isis:
+          instance: RR
+          metric: 99999
+        link: rr_top2:Gi0/0/0/9---p2:Gi0/0/0/0
+        link_group: rr
+        lldp:
+          disable: true
+          neighbor: p2
+          neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.0.0.58/30
+        prefix: 1.0.0.0/16
+      Loopback0:
+        description: rr_top2 Loopback0
+        ipv4_address: 1.255.0.12/32
+      mgmt:
+        ipv4_address: 10.255.1.12/24
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+    password: clab@123
+    username: clab
+drawio_diagram: topology.drawio
+link_groups:
+  access_l2vpn:
+    link_group: l2vpn
+    mtu: 1555
+  access_l3vpn:
+    link_group: l3vpn
+    mtu: 1505
+    prefix: 1.1.0.0/16
+  core:
+    isis:
+      instance: CORE
+    link_group: core
+    prefix: 1.0.0.0/16
+  core_bundle:
+    bundle:
+      type: bundle
+    clab_exclude: true
+    isis:
+      instance: CORE
+    link_group: core_bundle
+    prefix: 1.0.0.0/16
+  core_bundle_member:
+    bundle:
+      type: member
+    link_group: core_bundle_member
+  loopback0:
+    link_group: loopback0
+    prefix: 1.255.0.0/24
+  mgmt:
+    link_group: mgmt
+    prefix: 10.255.1.0/24
+  physical:
+    clab_exclude: true
+    link_group: physical
+  rr:
+    isis:
+      instance: RR
+      metric: 99999
+    link_group: rr
+    lldp:
+      disable: true
+    prefix: 1.0.0.0/16
+links:
+- bundle:
+    type: bundle
+  clab_exclude: true
+  isis:
+    instance: CORE
+  link: p1---p2
+  link_group: core_bundle
+  prefix: 1.0.0.0/16
+- bundle:
+    type: member
+  link: p1---p2
+  link_group: core_bundle_member
+- bundle:
+    type: member
+  link: p1---p2
+  link_group: core_bundle_member
+- bundle:
+    type: bundle
+  clab_exclude: true
+  isis:
+    instance: CORE
+  link: p2---p3:Bundle-Ether32
+  link_group: core_bundle
+  prefix: 1.0.0.0/16
+- bundle:
+    type: member
+  link: p2---p3
+  link_group: core_bundle_member
+- isis:
+    instance: CORE
+  link: p3---p4
+  link_group: core
+  prefix: 1.0.0.0/16
+- bundle:
+    type: bundle
+  clab_exclude: true
+  isis:
+    instance: CORE
+  link: p3:Bundle-Ether34---p4:Bundle-Ether43
+  link_group: core_bundle
+  prefix: 1.0.0.0/16
+- bundle:
+    type: member
+  link: p3---p4
+  link_group: core_bundle_member
+- isis:
+    instance: CORE
+  link: p4---p1
+  link_group: core
+  prefix: 1.0.0.0/16
+- isis:
+    instance: CORE
+  link: pe1---p1
+  link_group: core
+  prefix: 1.0.0.0/16
+- isis:
+    instance: CORE
+  link: pe1---p2
+  link_group: core
+  prefix: 1.0.0.0/16
+- isis:
+    instance: CORE
+  link: pe2---p3
+  link_group: core
+  prefix: 1.0.0.0/16
+- isis:
+    instance: CORE
+  link: pe2---p4
+  link_group: core
+  prefix: 1.0.0.0/16
+- isis:
+    instance: CORE
+  link: pe3---p3
+  link_group: core
+  prefix: 1.0.0.0/16
+- isis:
+    instance: CORE
+  link: pe3---p4
+  link_group: core
+  prefix: 1.0.0.0/16
+- isis:
+    instance: RR
+    metric: 99999
+  link: rr1:Gi0/0/0/9---p4:Gi0/0/0/0
+  link_group: rr
+  lldp:
+    disable: true
+  prefix: 1.0.0.0/16
+- isis:
+    instance: RR
+    metric: 99999
+  link: rr2:Gi0/0/0/9---p3:Gi0/0/0/0
+  link_group: rr
+  lldp:
+    disable: true
+  prefix: 1.0.0.0/16
+- isis:
+    instance: RR
+    metric: 99999
+  link: rr_top1:Gi0/0/0/9---p1:Gi0/0/0/0
+  link_group: rr
+  lldp:
+    disable: true
+  prefix: 1.0.0.0/16
+- isis:
+    instance: RR
+    metric: 99999
+  link: rr_top2:Gi0/0/0/9---p2:Gi0/0/0/0
+  link_group: rr
+  lldp:
+    disable: true
+  prefix: 1.0.0.0/16
+- link: cpe1---pe1
+  link_group: l3vpn
+  mtu: 1505
+  prefix: 1.1.0.0/16
+- link: cpe2---pe2
+  link_group: l3vpn
+  mtu: 1505
+  prefix: 1.1.0.0/16
+- link: cpe2---pe3
+  link_group: l3vpn
+  mtu: 1505
+  prefix: 1.1.0.0/16
+- link: cpe3---pe2
+  link_group: l3vpn
+  mtu: 1505
+  prefix: 1.1.0.0/16
+- link: cpe3---pe3
+  link_group: l2vpn
+  mtu: 1555
+- link: cpe4---pe3
+  link_group: l3vpn
+  mtu: 1505
+  prefix: 1.1.0.0/16
+- link: cpe5---pe1
+  link_group: l3vpn
+  mtu: 1505
+  prefix: 1.1.0.0/16
+- clab_exclude: true
+  link: router1:Gi1/1---router2:Gi2/2
+  link_group: physical
+nornir_startup:
+  inventory:
+    options:
+      group_file: nornir/nornir_groups.yaml
+      host_file: nornir/nornir_hosts.yaml
+    plugin: SimpleInventory
+  ios:
+    group: ios
+    platform: ios
+  iosxr:
+    group: iosxr
+    platform: iosxr
+  iosxr_phys:
+    group: iosxr_phys
+    platform: iosxr
+  logging:
+    log_file: nornir/nornir.log
+  runner:
+    options:
+      num_workers: 10
+    plugin: threaded
+services:
+  l3vpn:
+    vrf_1001:
+      cust_id: 1001
+      endpoints:
+        cpe1:
+          pe_routing:
+            protocol: static
+        cpe2:
+          pe_routing:
+            protocol: ebgp
+        cpe3:
+          pe_routing:
+            protocol: static
+    vrf_1002_A:
+      cust_id: 1002
+      endpoints:
+        cpe2:
+          pe_routing:
+            asn: 112233
+            protocol: ebgp
+          qos:
+            profile: gold_1
+          uplinks:
+            Gi0/0/0/0: null
+        cpe4:
+          pe_routing:
+            protocol: ebgp
+    vrf_1002_B:
+      cust_id: 1002
+      endpoints:
+        cpe1:
+          pe_routing:
+            protocol: static
+        cpe2:
+          pe_routing:
+            asn: 112233
+            protocol: ebgp
+          qos:
+            profile: gold_1
+          uplinks:
+            Gi0/0/0/1: null
+        cpe5:
+          managed: false
+          pe_routing:
+            protocol: ebgp

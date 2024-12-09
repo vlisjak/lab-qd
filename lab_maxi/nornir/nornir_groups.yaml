@@ -1,0 +1,12 @@
+ios:
+  password: clab@123
+  platform: ios
+  username: clab
+iosxr:
+  password: clab@123
+  platform: iosxr
+  username: clab
+iosxr_phys:
+  password: cisco
+  platform: iosxr
+  username: cisco

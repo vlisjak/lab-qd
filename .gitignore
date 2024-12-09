@@ -1,0 +1,5 @@
+nornir.log
+clab-*/
+*.bak
+__pycache__/
+device_configs/

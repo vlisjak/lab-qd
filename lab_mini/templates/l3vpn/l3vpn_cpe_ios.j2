@@ -1,0 +1,54 @@
+{% set nodes = master.devices %}
+{% set this_inst = master.services[service][instance] %}
+{# 
+At this point I know that I'm one of the CPEs for specific service instance -> so we can surely configure the VRF
+  - then we'll still need to figure out which are my PEs for this instance (because there could be PEs of other CPEs in trans_scope)
+  - and whether each CPE is routed statically or ebgp 
+
+Sample master_complete.yaml l3vpn instance:
+- note that cpe2 is dual-homed to pe2 and pe3, which is visible from topology but not required in instance definition
+
+services:
+  l3vpn:
+    vrf_1001:
+      cust_id: 1001
+      endpoints:
+        cpe1:
+          pe_routing:
+            protocol: static
+        cpe2:
+          pe_routing:
+            protocol: ebgp
+        cpe3:
+          pe_routing:
+            protocol: static
+
+Process only PEs connected to this CPE .. trans_scope:
+
+[Box({'cpe': 'cpe3', 'cpe_intf': 'Gi0/0/0/0', 'pe': 'pe2', 'pe_intf': 'Gi0/0/0/3'}),
+ Box({'cpe': 'cpe2', 'cpe_intf': 'Gi0/0/0/0', 'pe': 'pe2', 'pe_intf': 'Gi0/0/0/2'}),
+ Box({'cpe': 'cpe2', 'cpe_intf': 'Gi0/0/0/1', 'pe': 'pe3', 'pe_intf': 'Gi0/0/0/2'}),
+ Box({'cpe': 'cpe1', 'cpe_intf': 'Gi0/0/0/0', 'pe': 'pe1', 'pe_intf': 'Gi0/0/0/2'})]
+
+#}
+{# TODO: dual-homed CPEs - allow different routing method for each uplink
+        - currently we assume the same routing method on all uplinks #}
+{% for lldp in trans_scope | selectattr('cpe', "equalto", node) | list %}
+  {% set pe_ip = nodes[lldp.pe].interfaces[lldp.pe_intf].ipv4_address.split('/') | first %}
+  {# check if this cpe is bgp-routed #}
+  {% if this_inst.endpoints[lldp.cpe].pe_routing.protocol == 'ebgp' %}
+    {% set my_asn = this_inst.endpoints[lldp.cpe].pe_routing.asn | default(64000 + this_inst.cust_id) %}
+!
+router bgp {{ my_asn }}
+  redistribute connected
+  neighbor {{ pe_ip }} remote-as {{ nodes[lldp.pe].ibgp.asn }}
+  neighbor {{ pe_ip }} description {{ lldp.cpe_intf }} -> {{ lldp.pe }}:{{ lldp.pe_intf }}..{{ instance }}
+ !
+  {# otherwise, check if it is statically routed #}
+  {% elif this_inst.endpoints[lldp.cpe].pe_routing.protocol == 'static' %}
+!
+ip route 0.0.0.0 0.0.0.0 {{ pe_ip }}
+  {% endif %}
+!
+{% endfor %}
+end

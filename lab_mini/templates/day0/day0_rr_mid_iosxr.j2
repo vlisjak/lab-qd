@@ -1,0 +1,8 @@
+{% extends "day0_BASE_iosxr.j2" %}
+
+{% block base_intf_config scoped %}
+{% if intf | regex_search('^Gi0.*') %}
+  bandwidth 881
+{% endif %}
+{{ super() }}
+{% endblock base_intf_config %}

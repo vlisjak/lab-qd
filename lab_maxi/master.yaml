@@ -1,0 +1,448 @@
+clab_name: maxi
+drawio_diagram: topology.drawio
+
+# Continerlab parameters
+clab_startup:
+  iosxr:
+    image: ios-xr/xrd-control-plane:24.2.11
+    kind: cisco_xrd
+    startup-config: xrd_initial_cfg.j2
+  xrv9k:
+    image: vrnetlab/cisco_xrv9k:7.10.2
+    kind: cisco_xrv9k
+    startup-config: xrd_initial_cfg.j2
+    env:
+      VCPU: 4
+      RAM: 20480
+  ios:
+    image: vrnetlab/cisco_csr1000v:17.03.08
+    kind: cisco_csr1000v
+    startup-config: ios_initial_cfg.j2
+        
+# Nornir parameters
+nornir_startup:
+  # note: xrd and xrv9k are equivalent configuration wise -> the same iosxr nornir platform 
+  iosxr:
+    platform: iosxr
+    group: iosxr
+  iosxr_phys:
+    platform: iosxr
+    group: iosxr_phys
+  ios:
+    platform: ios
+    group: ios
+  inventory:
+    plugin: SimpleInventory
+    options:
+      host_file: 'nornir/nornir_hosts.yaml'
+      group_file: 'nornir/nornir_groups.yaml'
+  runner:
+    plugin: threaded
+    options:
+      num_workers: 10
+  logging:
+    log_file: nornir/nornir.log
+    
+# Parameters specific to each vendor/device type
+device_groups:
+  iosxr:
+    # use default clab credentials (clab/clab@123), because these are baked into xrv9k docker image!
+    # - do not define/modify CLAB_MGMT_VRF for the same reason
+    username: clab
+    password: clab@123
+    clab:
+      inherit_from: clab_startup.iosxr
+    # clab_startup.yaml expects different naming (Gi0-0-0-0) than iosxr (Gi0/0/0/0)
+    # - add mapping logic for each clab kind (that requires mapping) in: scripts/utils.py -> clab_intf_map()
+    clab_intf_map: True
+    nornir:
+      inherit_from: nornir_startup.iosxr
+    # intf_naming is used for auto-allocation of interface IDs for specific interface type
+    intf_naming:
+      default:
+        name: Gi0/0/0/
+        first_id: 0
+      core_bundle: 
+        name: Bundle-Ether
+        first_id: 1
+      loopback0:
+        name: Loopback
+        first_id: 0
+  # Physical routers 
+  # - note that 'clab' is missing, so these nodes will not appear in clab_startup.yaml
+  # - but we can still provision with nornir
+  iosxr_phys:
+    username: cisco
+    password: cisco
+    nornir:
+      inherit_from: nornir_startup.iosxr_phys
+    # intf_naming is used for auto-allocation of interface IDs for specific interface type
+    intf_naming:
+      # default:
+      #   name: Gi0/0/0/
+      #   first_id: 0
+      core_bundle: 
+        name: Bundle-Ether
+        first_id: 1
+      loopback0:
+        name: Loopback
+        first_id: 0
+
+  xrv9k:
+    # use default clab credentials, because these are baked into xrv9k docker image!
+    username: clab
+    password: clab@123
+    clab:
+      inherit_from: clab_startup.xrv9k
+    nornir:
+      inherit_from: nornir_startup.iosxr
+    # intf_naming is used for auto-allocation of interface IDs for specific interface type
+    intf_naming:
+      default:
+        name: Gi0/0/0/
+        first_id: 0
+      core_bundle: 
+        name: Bundle-Ether
+        first_id: 1
+      loopback0:
+        name: Loopback
+        first_id: 0
+
+  ios:
+    username: clab
+    password: clab@123
+    clab:
+      inherit_from: clab_startup.ios
+    nornir:
+      inherit_from: nornir_startup.ios
+    # this is used for auto-allocation of interface IDs
+    intf_naming:
+      default:
+        name: Gi
+        first_id: 2
+      core_bundle: 
+        name: BE
+        first_id: 1
+      loopback0:
+        name: Loopback
+        first_id: 0
+
+# Role-specific parameters
+# - there could be multiple device types (device_group=iosxr, ios) for the same device role (device_role=pe) 
+# - each device could belong to multiple roles (such as rr can also be pce, or p can also be a pe)
+# - filename of j2 config templates is composed of device role: 
+#   <section><device_role><nornir_platform>.j2   (eg: ibgp_pe_iosxr.j2)
+device_roles:
+  p:
+    device_roles: [p]
+    isis:
+      CORE:
+        redistribute_from_isis:
+          instance: RR
+          tag: 100
+      RR:
+        redistribute_from_isis:
+          instance: CORE
+          tag: 101
+  pe:
+    device_roles: [pe]
+    ibgp:
+      asn: 100
+      client_of: rr_mid
+  cpe:
+    device_roles: [cpe]
+  rr_mid:
+    # RR hierarchy: rr_top -> rr_mid -> pe
+    device_roles: [rr_mid]
+    ibgp:
+      asn: 100
+      client_of: rr_top
+  rr_top:
+    device_roles: [rr_top]
+    ibgp:
+      asn: 100
+      # TBD: currently this is not handled in iBGP .j2
+      full_mesh: [rr_top]
+  pce:
+    device_roles: [pce]
+    ibgp:
+      asn: 100
+
+# List of all devices with inherited vendor-specific (device_groups) and role-specific (device_roles) inventory
+devices:
+  rr1:
+    inherit_from: 
+      - device_roles.rr_mid
+      - device_roles.pce
+      - device_groups.iosxr
+  rr2:
+    inherit_from: 
+      - device_roles.rr_mid
+      - device_roles.pce
+      - device_groups.iosxr
+  rr_top1:
+    inherit_from: 
+      - device_roles.rr_top
+      - device_groups.iosxr
+  rr_top2:
+    inherit_from: 
+      - device_roles.rr_top
+      - device_groups.iosxr
+  p1:
+    inherit_from: 
+      - device_roles.p
+      - device_groups.xrv9k
+  p2:
+    inherit_from: 
+      - device_roles.p
+      - device_groups.iosxr
+  p3:
+    inherit_from: 
+      - device_roles.p
+      - device_groups.iosxr
+  p4:
+    inherit_from: 
+      - device_roles.p
+      - device_groups.iosxr
+  pe1:
+    inherit_from: 
+      - device_roles.pe
+      - device_groups.iosxr
+  pe2:
+    inherit_from: 
+      - device_roles.pe
+      - device_groups.iosxr
+  pe3:
+    inherit_from: 
+      - device_roles.pe
+      - device_groups.iosxr
+  cpe1:
+    inherit_from: 
+      - device_roles.cpe
+      - device_groups.iosxr
+    another_attribute:
+      another_key: another_value
+  cpe2:
+    inherit_from: 
+      - device_roles.cpe
+      - device_groups.iosxr
+  cpe3:
+    inherit_from: 
+      - device_roles.cpe
+      - device_groups.iosxr
+  cpe4:
+    inherit_from: 
+      - device_roles.cpe
+      - device_groups.iosxr
+  cpe5:
+    inherit_from: 
+      - device_roles.cpe
+      - device_groups.ios
+  router1:
+    inherit_from:
+      - device_groups.iosxr_phys
+  router2:
+    inherit_from:
+      - device_groups.iosxr_phys
+      
+# Link-group parameters
+link_groups:
+  core:
+    link_group: core
+    prefix: 1.0.0.0/16
+    isis: 
+      instance: CORE
+  core_bundle:
+    # - assume one bundle between two nodes n1-n2
+    # - assign all n1-n2 links with 'link.link_group == core_bundle_member' to this Bundle
+    # - Bundle IP from the same range as other core links
+    # - Bundles must not be added to clab startup (these are only logical links in XR)
+    #   - bundle members however must be in clab startup!
+    link_group: core_bundle
+    # we do not want Bundles in containerlab topology - Bundles are only logical links in XR config
+    clab_exclude: True
+    inherit_from: link_groups.core
+    bundle:
+      type: bundle
+      # id will be inserted by lab_create script
+      # id:
+  core_bundle_member:
+    link_group: core_bundle_member
+    bundle:
+      type: member
+      # id will be inserted by lab_create script -> later used by jinja to assign member interfaces to BundleX
+      # id:
+    # prefix is missing -> do not allocate IP address
+    # link_type: l2 -> not sure if we need extra flag?
+  rr:
+    link_group: rr
+    prefix: 1.0.0.0/16
+    isis: 
+      instance: RR
+      metric: 99999
+    lldp:
+      disable: True
+  loopback0:
+    link_group: loopback0
+    prefix: 1.255.0.0/24
+  mgmt:
+    # If you're starting multiple clabs, you must use different mgmt prefix for each clab instance
+    link_group: mgmt
+    prefix: 10.255.1.0/24
+  access_l3vpn:
+    link_group: l3vpn
+    prefix: 1.1.0.0/16
+    mtu: 1505
+  access_l2vpn:
+    link_group: l2vpn
+    mtu: 1555
+  physical:
+    # remember that intf. name is not auto-allocated for physical interfaces
+    link_group: physical
+    clab_exclude: True
+    
+
+# Topology definition
+# - Parallel links are allowed
+# - Loopback0 and MgmtEth interfaces will be generated by lab_create.py
+# - Ensure that all nodes are first defined in "devices:" object
+links:
+  # p-p links (square)
+    # TODO: parallel links - need to fix overlap in generated drawio diagram
+  - link: p1---p2
+    inherit_from: link_groups.core_bundle
+  - link: p1---p2
+    inherit_from: link_groups.core_bundle_member
+  - link: p1---p2
+    inherit_from: link_groups.core_bundle_member
+  - link: p2---p3:Bundle-Ether32
+    inherit_from: link_groups.core_bundle
+  - link: p2---p3
+    inherit_from: link_groups.core_bundle_member
+  - link: p3---p4
+    inherit_from: link_groups.core
+  - link: p3:Bundle-Ether34---p4:Bundle-Ether43
+    inherit_from: link_groups.core_bundle
+  - link: p3---p4
+    inherit_from: link_groups.core_bundle_member
+  - link: p4---p1
+    inherit_from: link_groups.core
+
+  # pe-p links
+  - link: pe1---p1
+    inherit_from: link_groups.core
+  - link: pe1---p2
+    inherit_from: link_groups.core
+  - link: pe2---p3
+    inherit_from: link_groups.core
+  - link: pe2---p4
+    inherit_from: link_groups.core
+  - link: pe3---p3
+    inherit_from: link_groups.core
+  - link: pe3---p4
+    inherit_from: link_groups.core
+
+  # rr-p links
+  # - we manually assign interface names, just to test code functionality ...
+  - link: rr1:Gi0/0/0/9---p4:Gi0/0/0/0
+    inherit_from: link_groups.rr
+  - link: rr2:Gi0/0/0/9---p3:Gi0/0/0/0
+    inherit_from: link_groups.rr
+  - link: rr_top1:Gi0/0/0/9---p1:Gi0/0/0/0
+    inherit_from: link_groups.rr
+  - link: rr_top2:Gi0/0/0/9---p2:Gi0/0/0/0
+    inherit_from: link_groups.rr
+
+  # cpe-pe links
+  - link: cpe1---pe1
+    inherit_from: link_groups.access_l3vpn
+  - link: cpe2---pe2
+    inherit_from: link_groups.access_l3vpn
+  - link: cpe2---pe3
+    inherit_from: link_groups.access_l3vpn
+  - link: cpe3---pe2
+    inherit_from: link_groups.access_l3vpn
+  - link: cpe3---pe3
+    inherit_from: link_groups.access_l2vpn
+  - link: cpe4---pe3
+    inherit_from: link_groups.access_l3vpn
+  - link: cpe5---pe1
+    inherit_from: link_groups.access_l3vpn
+
+  # physical nodes
+  - link: router1:Gi1/1---router2:Gi2/2
+    inherit_from: link_groups.physical
+
+# network services
+services:
+
+  l3vpn:
+
+    # Notes:
+    # - VRF routes: for demo purposes we'll advertise Loop0 IPs of CPEs
+    # - CE-PE uplink (neighbor pe, ifname, ip): derived from "interfaces->lldp->neighbor" in master_complete.yaml:
+          # devices:
+          #   cpe1:
+          #     interfaces:
+          #       Gi0/0/0/0:
+          #         link_group: l3vpn
+          #         lldp:
+          #           neighbor: pe1
+          #           neighbor_intf: Gi0/0/0/2
+          #           neighbor_ipv4: 1.1.0.2/30
+    #   -> on CPE we have to configure all (single or multihomed cpe) uplinks to device_role=pe
+    #      -> TODO: one could override this by defining intf/neighbor manually in yaml
+    # - ASN: 64000 + {{ cust_id }}
+    # - RT/RD: {{ ibgp_asn }}:{{ cust_id }}
+
+    vrf_1001:
+      cust_id: 1001
+      endpoints:
+        cpe1:
+          pe_routing: 
+            protocol: static
+        cpe2:
+          # Note: cpe2 is dual-homed and PE uplinks are determined from infrastructure topology
+          pe_routing: 
+            protocol: ebgp
+        cpe3:
+          pe_routing: 
+            protocol: static
+
+    vrf_1002_A:
+      cust_id: 1002
+      endpoints:
+        cpe2:
+          # if "uplinks" is present, only "uplinks" are used to find the neighbor PEs
+          uplinks:
+            Gi0/0/0/0:
+          pe_routing: 
+            protocol: ebgp
+            asn: 112233
+          qos: 
+            profile: gold_1
+        cpe4:
+          pe_routing: 
+            protocol: ebgp
+
+    # TODO: more complex example: manually defined uplinks, qos and primary-backup eBGP
+    vrf_1002_B:
+      cust_id: 1002
+      endpoints:
+        cpe1:
+          pe_routing: 
+            protocol: static
+        cpe2:
+          # if "uplinks" is present, only "uplinks" are used to find neighbor PEs
+          uplinks:
+            Gi0/0/0/1:
+          pe_routing: 
+            protocol: ebgp
+            asn: 112233
+          qos: 
+            profile: gold_1
+        cpe5:
+          # TODO: this is unmanaged CPE -> jinja rendering skipped
+          managed: False
+          pe_routing: 
+            protocol: ebgp

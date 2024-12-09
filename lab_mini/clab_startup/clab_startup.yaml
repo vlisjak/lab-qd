@@ -1,0 +1,34 @@
+mgmt:
+  ipv4-subnet: 10.255.0.0/24
+  network: mini
+name: mini
+topology:
+  kinds:
+    cisco_xrd:
+      env:
+        CLAB_MGMT_VRF: clab-mgmt
+        PASSWORD: clab@123
+        USERNAME: clab
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+  links:
+  - endpoints:
+    - p1:Gi0-0-0-0
+    - p2:Gi0-0-0-0
+  - endpoints:
+    - p2:Gi0-0-0-1
+    - p3:Gi0-0-0-0
+  - endpoints:
+    - p3:Gi0-0-0-1
+    - p1:Gi0-0-0-1
+  nodes:
+    p1:
+      kind: cisco_xrd
+      mgmt-ipv4: 10.255.0.2
+    p2:
+      kind: cisco_xrd
+      mgmt-ipv4: 10.255.0.3
+    p3:
+      kind: cisco_xrd
+      mgmt-ipv4: 10.255.0.4

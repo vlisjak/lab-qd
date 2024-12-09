@@ -1,0 +1,4 @@
+iosxr:
+  password: clab@123
+  platform: iosxr
+  username: clab

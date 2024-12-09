@@ -1,0 +1,11 @@
+deepmerge==2.0
+Jinja2==3.1.3
+N2G==0.3.3
+nested_dict==1.61
+nornir==3.4.1
+nornir_jinja2==0.2.0
+nornir_napalm==0.5.0
+nornir_netmiko==1.0.1
+nornir_utils==0.2.0
+python_box==7.2.0
+PyYAML==6.0.2

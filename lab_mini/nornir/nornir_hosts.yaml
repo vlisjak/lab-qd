@@ -1,0 +1,21 @@
+p1:
+  data:
+    device_role:
+    - p
+  groups:
+  - iosxr
+  hostname: 10.255.0.2
+p2:
+  data:
+    device_role:
+    - p
+  groups:
+  - iosxr
+  hostname: 10.255.0.3
+p3:
+  data:
+    device_role:
+    - p
+  groups:
+  - iosxr
+  hostname: 10.255.0.4
