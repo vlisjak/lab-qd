@@ -5,14 +5,14 @@ https://github.com/vlisjak/lab-qd
 ## Overview
 
 ### Important functionality
-- **Auto allocate router interface names** -> very simple topology definition: biggest time saver - no GUI clicking, no human errors!
-- **Auto allocate IP addresses**: p2p, Loopback0, MgmtEth (2nd biggest time saver)
-- **Multi-level inheritance** in YAML inventory (user-defined keywords) to avoid **inventory multiplication** 
+- $\color{blue}\large{\text{Auto allocate router interface names}}$ -> very simple topology definition: biggest time saver - no GUI clicking, no human errors!
+- $\color{blue}\large{\text{Auto allocate IP addresses}}$: p2p, Loopback0, MgmtEth (2nd biggest time saver)
+- $\color{blue}\large{\text{Multi-level inheritance}}$ in YAML inventory (user-defined keywords) to avoid **content multiplication** 
 - **Zero python coding** for additional network design concepts, such as multi-domain ISIS, two-level RRs, etc. (only tune YAML inventory and respective Jinja templates)
-- **Dotted notation** allows more elegant consumption of nested YAML structures within Jinja2 templates
+- $\color{blue}\large{\text{Dotted notation}}$ allows more elegant consumption of nested YAML structures within Jinja2 templates
 - Generate **drawio topology** (manual layout of nodes required only on first run - positions are then preserved)
 - When appropriate, use of **python functions in Jinja** templates (native Jinja code can get really ugly compared to python, even for simple tasks)
-- Provision **physical labs** by manually spcified interface names in YAML topology (IP addresses are still auto-allocated)
+- Provision **physical labs** by manually specified interface names in YAML topology (IP addresses are still auto-allocated)
 
 ### System overview
 - Yellow-shaded text: user-define content (YAML inventory and Jinja2 device templates)
@@ -38,7 +38,7 @@ https://jinja.palletsprojects.com/en/stable/
 
 ### Prerequisites
 
-Few installation notes can found in [README-install-prerequisites.md](README-install-prerequisites.md); please check official manuals.
+Short installation notes can be found in [README-install-prerequisites.md](README-install-prerequisites.md); please check official manuals.
 
 ### Clone GIT repo
  
