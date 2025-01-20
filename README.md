@@ -459,6 +459,44 @@ def clab_intf_map(clab_kind, device_if):
         return(clab_if)
 ```
 
+### Connect data interface from IOS-XR to host (veth)
+
+https://containerlab.dev/manual/topo-def-file/#host
+
+clab_startup.yaml:
+```
+  links:
+  - type: host
+    endpoint:
+      node: p1
+      interface: Gi0-0-0-0
+    host-interface: veth999
+  - endpoints:
+    - p2:Gi0-0-0-1
+    - p3:Gi0-0-0-0
+  - endpoints:
+    - p3:Gi0-0-0-1
+    - p1:Gi0-0-0-1
+```
+
+p1 config:
+```
+interface GigabitEthernet0/0/0/0
+ ipv4 address 9.9.9.9 255.255.255.0
+```
+
+host config:
+```
+sudo ip address add 9.9.9.1/24 dev veth999
+```
+
+```
+(myvenv310) vlisjak@vlisjak:~/containerlab/lab-qd/lab_mini$ ping 9.9.9.9
+PING 9.9.9.9 (9.9.9.9) 56(84) bytes of data.
+64 bytes from 9.9.9.9: icmp_seq=1 ttl=255 time=1.22 ms
+64 bytes from 9.9.9.9: icmp_seq=2 ttl=255 time=1.50 ms
+```
+
 ### IPv4 address auto-allocation
 
 IPv4 addresses for p2p links are allocated sequentially from `prefix` defined under respective link group.
