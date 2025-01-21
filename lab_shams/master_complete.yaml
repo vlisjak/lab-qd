@@ -349,19 +349,6 @@ devices:
           neighbor_intf: Gi0/0/0/0
           neighbor_ipv4: 1.0.0.33/30
         prefix: 1.0.0.0/16
-      Gi0/0/0/5:
-        description: p1:Gi0/0/0/5 -> rr2:Gi0/0/0/0
-        ipv4_address: 1.0.0.42/30
-        isis:
-          instance: CORE
-          metric: 99999
-        link: rr2---p1
-        link_group: rr
-        lldp:
-          neighbor: rr2
-          neighbor_intf: Gi0/0/0/0
-          neighbor_ipv4: 1.0.0.41/30
-        prefix: 1.0.0.0/16
       Loopback0:
         description: p1 Loopback0
         ipv4_address: 1.255.0.4/32
@@ -472,21 +459,8 @@ devices:
         srte:
           affinity: AVOID_DWDM
       Gi0/0/0/4:
-        description: p2:Gi0/0/0/4 -> rr1:Gi0/0/0/1
+        description: p2:Gi0/0/0/4 -> rr2:Gi0/0/0/0
         ipv4_address: 1.0.0.38/30
-        isis:
-          instance: CORE
-          metric: 99999
-        link: rr1---p2
-        link_group: rr
-        lldp:
-          neighbor: rr1
-          neighbor_intf: Gi0/0/0/1
-          neighbor_ipv4: 1.0.0.37/30
-        prefix: 1.0.0.0/16
-      Gi0/0/0/5:
-        description: p2:Gi0/0/0/5 -> rr2:Gi0/0/0/1
-        ipv4_address: 1.0.0.46/30
         isis:
           instance: CORE
           metric: 99999
@@ -494,8 +468,8 @@ devices:
         link_group: rr
         lldp:
           neighbor: rr2
-          neighbor_intf: Gi0/0/0/1
-          neighbor_ipv4: 1.0.0.45/30
+          neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.0.0.37/30
         prefix: 1.0.0.0/16
       Loopback0:
         description: p2 Loopback0
@@ -919,19 +893,6 @@ devices:
           neighbor_intf: Gi0/0/0/4
           neighbor_ipv4: 1.0.0.34/30
         prefix: 1.0.0.0/16
-      Gi0/0/0/1:
-        description: rr1:Gi0/0/0/1 -> p2:Gi0/0/0/4
-        ipv4_address: 1.0.0.37/30
-        isis:
-          instance: CORE
-          metric: 99999
-        link: rr1---p2
-        link_group: rr
-        lldp:
-          neighbor: p2
-          neighbor_intf: Gi0/0/0/4
-          neighbor_ipv4: 1.0.0.38/30
-        prefix: 1.0.0.0/16
       Loopback0:
         description: rr1 Loopback0
         ipv4_address: 1.255.0.10/32
@@ -968,21 +929,8 @@ devices:
       - rr
     interfaces:
       Gi0/0/0/0:
-        description: rr2:Gi0/0/0/0 -> p1:Gi0/0/0/5
-        ipv4_address: 1.0.0.41/30
-        isis:
-          instance: CORE
-          metric: 99999
-        link: rr2---p1
-        link_group: rr
-        lldp:
-          neighbor: p1
-          neighbor_intf: Gi0/0/0/5
-          neighbor_ipv4: 1.0.0.42/30
-        prefix: 1.0.0.0/16
-      Gi0/0/0/1:
-        description: rr2:Gi0/0/0/1 -> p2:Gi0/0/0/5
-        ipv4_address: 1.0.0.45/30
+        description: rr2:Gi0/0/0/0 -> p2:Gi0/0/0/4
+        ipv4_address: 1.0.0.37/30
         isis:
           instance: CORE
           metric: 99999
@@ -990,8 +938,8 @@ devices:
         link_group: rr
         lldp:
           neighbor: p2
-          neighbor_intf: Gi0/0/0/5
-          neighbor_ipv4: 1.0.0.46/30
+          neighbor_intf: Gi0/0/0/4
+          neighbor_ipv4: 1.0.0.38/30
         prefix: 1.0.0.0/16
       Loopback0:
         description: rr2 Loopback0
@@ -1175,18 +1123,6 @@ links:
 - isis:
     instance: CORE
     metric: 99999
-  link: rr1---p2
-  link_group: rr
-  prefix: 1.0.0.0/16
-- isis:
-    instance: CORE
-    metric: 99999
-  link: rr2---p1
-  link_group: rr
-  prefix: 1.0.0.0/16
-- isis:
-    instance: CORE
-    metric: 99999
   link: rr2---p2
   link_group: rr
   prefix: 1.0.0.0/16
@@ -1216,6 +1152,7 @@ services:
         cpe1:
           pe_routing:
             asn: 65001
+            primary_pe: pe1
             protocol: ebgp
           uplinks:
             Gi2: null
@@ -1223,6 +1160,7 @@ services:
         cpe2:
           pe_routing:
             asn: 65002
+            primary_pe: pe3
             protocol: ebgp
           uplinks:
             Gi2: null
@@ -1233,6 +1171,7 @@ services:
         cpe1:
           pe_routing:
             asn: 65001
+            primary_pe: pe1
             protocol: ebgp
           uplinks:
             Gi3: null
@@ -1240,6 +1179,7 @@ services:
         cpe2:
           pe_routing:
             asn: 65002
+            primary_pe: pe3
             protocol: ebgp
           uplinks:
             Gi3: null

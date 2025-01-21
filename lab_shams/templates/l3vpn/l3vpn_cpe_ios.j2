@@ -43,6 +43,9 @@ router bgp {{ my_asn }}
   redistribute connected
   neighbor {{ pe_ip }} remote-as {{ nodes[lldp.pe].ibgp.asn }}
   neighbor {{ pe_ip }} description {{ lldp.cpe_intf }} -> {{ lldp.pe }}:{{ lldp.pe_intf }}..{{ instance }}
+  {% if 'primary_pe' in this_inst.endpoints[lldp.cpe].pe_routing and this_inst.endpoints[lldp.cpe].pe_routing.primary_pe == lldp.pe %}
+  neighbor {{ pe_ip }} weight 100
+  {% endif %}
  !
   {# otherwise, check if it is statically routed #}
   {% elif this_inst.endpoints[lldp.cpe].pe_routing.protocol == 'static' %}

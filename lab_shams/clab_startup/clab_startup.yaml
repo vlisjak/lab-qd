@@ -83,14 +83,8 @@ topology:
     - rr1:Gi0-0-0-0
     - p1:Gi0-0-0-4
   - endpoints:
-    - rr1:Gi0-0-0-1
-    - p2:Gi0-0-0-4
-  - endpoints:
     - rr2:Gi0-0-0-0
-    - p1:Gi0-0-0-5
-  - endpoints:
-    - rr2:Gi0-0-0-1
-    - p2:Gi0-0-0-5
+    - p2:Gi0-0-0-4
   nodes:
     cpe1:
       kind: cisco_csr1000v

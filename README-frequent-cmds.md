@@ -59,6 +59,10 @@ docker exec -it <xrv9k_container> telnet 0 5000
 ../scripts/lab_configure.py network --sections isis --node p2
 ../scripts/lab_configure.py network --sections isis --dry_run=False
 
+../scripts/lab_configure.py network --sections srte
+../scripts/lab_configure.py network --sections srte --node p2
+../scripts/lab_configure.py network --sections srte --dry_run=False
+
 ../scripts/lab_configure.py network --sections ibgp
 ../scripts/lab_configure.py network --sections ibgp --node rr1_top
 ../scripts/lab_configure.py network --sections ibgp --node pe1
