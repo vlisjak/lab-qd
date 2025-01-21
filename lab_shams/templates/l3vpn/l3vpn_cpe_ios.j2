@@ -2,7 +2,7 @@
 {% set this_inst = master.services[service][instance] %}
 {# 
 At this point I know that I'm one of the CPEs for specific service instance -> so we can surely configure the VRF
-  - then we'll still need to figure out which are my PEs for this instance (because there could be PEs of other CPEs in trans_scope)
+  - then we'll still need to figure out which are my CPEs for this instance (because there could be CPEs of other PEs in trans_scope)
   - and whether each CPE is routed statically or ebgp 
 
 Sample master_complete.yaml l3vpn instance:
@@ -11,7 +11,7 @@ Sample master_complete.yaml l3vpn instance:
 services:
   l3vpn:
     vrf_1001:
-     rd: 1001
+      rd: 1001
       endpoints:
         cpe1:
           pe_routing:
@@ -37,7 +37,7 @@ Process only PEs connected to this CPE .. trans_scope:
   {% set pe_ip = nodes[lldp.pe].interfaces[lldp.pe_intf].ipv4_address.split('/') | first %}
   {# check if this cpe is bgp-routed #}
   {% if this_inst.endpoints[lldp.cpe].pe_routing.protocol == 'ebgp' %}
-    {% set my_asn = this_inst.endpoints[lldp.cpe].pe_routing.asn | default(64000 + this_inst.cust_id) %}
+    {% set my_asn = this_inst.endpoints[lldp.cpe].pe_routing.asn | default(64000 + this_inst.rd) %}
 !
 router bgp {{ my_asn }}
   redistribute connected

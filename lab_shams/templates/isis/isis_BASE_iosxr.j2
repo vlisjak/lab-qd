@@ -17,7 +17,8 @@ router isis {{ instance }}
   {% endif %}
   is-type level-2-only
   net {{ nodes[node].interfaces.Loopback0.ipv4_address | ipv4_to_isis_net }}
-  nsf cisco
+  nsf ietf
+  distribute link-state
   log adjacency changes
   lsp-gen-interval maximum-wait 5000 initial-wait 1 secondary-wait 50
   lsp-refresh-interval 65000
@@ -35,16 +36,13 @@ router isis {{ instance }}
     spf periodic disable
     maximum-redistributed-prefixes 1000
     spf prefix-priority critical tag 100
+    spf-interval initial-wait 1 secondary-wait 50 maximum-wait 5000
+    router-id Loopback0
     {# different ISIS instance towards RR nodes -> redistribute between CORE/RR instances #}
     {# TODO: create RPL to prevent routing loops #}
     {% if 'isis' in nodes[node] and 'redistribute_from_isis' in nodes[node].isis[instance] %}
     redistribute isis {{ nodes[node].isis[instance].redistribute_from_isis.instance }}
     {% endif %}
-  !
-  address-family ipv4 unicast
-    metric-style wide
-    spf-interval maximum-wait 5000 initial-wait 1 secondary-wait 50
-    spf prefix-priority critical tag 100
   !
   interface Loopback0
     passive
@@ -54,8 +52,6 @@ router isis {{ instance }}
       prefix-sid absolute {{ 16000 + nodes[node].interfaces.Loopback0.ipv4_address.split('/')[0].split('.') | last | int }}
      !
     !
-    address-family ipv4 unicast
-      tag 100
   {% for intf, intf_details in nodes[node].interfaces.items() if intf_details.isis is defined %}
   {% if intf_details.isis.instance == instance %}
   !

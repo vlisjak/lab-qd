@@ -11,7 +11,7 @@ Sample master_complete.yaml l3vpn instance:
 services:
   l3vpn:
     vrf_1001:
-     rd: 1001
+      rd: 1001
       endpoints:
         cpe1:
           pe_routing:
@@ -23,13 +23,25 @@ services:
           pe_routing:
             protocol: static
 #}
+
+{# TBD: for now 999 is just hardcoded .. #}
+!
+extcommunity-set opaque AVOID_DWDM
+  999
+end-set
+!
+route-policy AVOID_DWDM
+  set extcommunity color AVOID_DWDM
+end-policy
+!
 vrf {{ instance }}
+ rd {{ nodes[node].ibgp.asn }}:{{ this_inst.rd }}
  address-family ipv4 unicast
   import route-target
-   {{ nodes[node].ibgp.asn }}:{{ this_inst.cust_id }}
+   {{ nodes[node].ibgp.asn }}:{{ this_inst.rd }}
   !
   export route-target
-   {{ nodes[node].ibgp.asn }}:{{ this_inst.cust_id }}
+   {{ nodes[node].ibgp.asn }}:{{ this_inst.rd }}
   !
  !
 !
@@ -58,17 +70,21 @@ interface {{ lldp.pe_intf }}
 !
 router bgp {{ nodes[node].ibgp.asn }}
  vrf {{ instance }}
-  rd {{ nodes[node].ibgp.asn }}:{{ this_inst.cust_id }}
+  rd {{ nodes[node].ibgp.asn }}:{{ this_inst.rd }}
   address-family ipv4 unicast
    redistribute connected
    redistribute static
   !
-    {% set neighbor_asn = this_inst.endpoints[lldp.cpe].pe_routing.asn | default(64000 + this_inst.cust_id) %}
+    {% set neighbor_asn = this_inst.endpoints[lldp.cpe].pe_routing.asn | default(64000 + this_inst.rd) %}
   neighbor {{ cpe_ip }}
    remote-as {{ neighbor_asn }}
    description {{ lldp.pe_intf }} -> {{ lldp.cpe }}:{{ lldp.cpe_intf }}
    address-family ipv4 unicast
+    {% if this_inst.affinity_exclude %}
+    route-policy {{ this_inst.affinity_exclude }} in
+    {% else %}
     route-policy PASS-ALL in
+    {% endif %}
     route-policy PASS-ALL out
     as-override
    !
@@ -84,7 +100,7 @@ interface {{ lldp.pe_intf }}
 !
 router bgp {{ nodes[node].ibgp.asn }}
  vrf {{ instance }}
-  rd {{ nodes[node].ibgp.asn }}:{{ this_inst.cust_id }}
+  rd {{ nodes[node].ibgp.asn }}:{{ this_inst.rd }}
   address-family ipv4 unicast
    redistribute connected
    redistribute static
@@ -97,4 +113,4 @@ router static
   {% endif %}
 !
 {% endfor %}
-end
+!

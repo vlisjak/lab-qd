@@ -4,6 +4,7 @@
 # by default use master.yaml:
 ../scripts/lab_create.py
 
+# alternatively:
 ../scripts/lab_create.py -m master-MINI.yaml
 ```
 

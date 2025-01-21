@@ -1554,7 +1554,7 @@ nornir_startup:
 services:
   l3vpn:
     vrf_1001:
-      cust_id: 1001
+     rd: 1001
       endpoints:
         cpe1:
           pe_routing:
@@ -1566,7 +1566,7 @@ services:
           pe_routing:
             protocol: static
     vrf_1002_A:
-      cust_id: 1002
+     rd: 1002
       endpoints:
         cpe2:
           pe_routing:
@@ -1580,7 +1580,7 @@ services:
           pe_routing:
             protocol: ebgp
     vrf_1002_B:
-      cust_id: 1002
+     rd: 1002
       endpoints:
         cpe1:
           pe_routing:
