@@ -15,13 +15,13 @@ topology:
   links:
   - endpoints:
     - p1:Gi0-0-0-0
-    - p2:Gi0-0-0-0
+    - macvlan:ens256.111
   - endpoints:
-    - p2:Gi0-0-0-1
-    - p3:Gi0-0-0-0
-  - endpoints:
-    - p3:Gi0-0-0-1
     - p1:Gi0-0-0-1
+    - macvlan:ens256.112
+  - endpoints:
+    - p1:Gi0-0-0-2
+    - p2:Gi0-0-0-0
   nodes:
     p1:
       kind: cisco_xrd

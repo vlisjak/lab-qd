@@ -459,42 +459,93 @@ def clab_intf_map(clab_kind, device_if):
         return(clab_if)
 ```
 
-### Connect data interface from IOS-XR to host (veth)
+### Connect data interface from clab node to physical router (macvlan)
 
-https://containerlab.dev/manual/topo-def-file/#host
+In vcenter attach network "VM Network" into vlisjak.cisco.com VM
 
-clab_startup.yaml:
+TOR switch config:
+```
+EMEA-DIGDEV-SWITCH1# show cdp ne
+emea-digdev-server1.cisco.com    Eth1/1         151    S         VMware ESXi   vmnic2        
+emea-digdev-server2.cisco.com    Eth1/2         170    S         VMware ESXi   vmnic2        
+emea-digdev-server3.cisco.com    Eth1/3         167    S         VMware ESXi   vmnic2        
+emea-digdev-server4.cisco.com    Eth1/4         160    S         VMware ESXi   vmnic2     
+
+EMEA-DIGDEV-SWITCH1# show lldp ne
+EMEA-RON-NCS-57C3-1  Eth1/10         120        R           TenGigE0/0/0/0
+EMEA-RON-NCS-57C3-2  Eth1/11         120        R           TenGigE0/0/0/0
+
+interface Ethernet1/1
+  switchport
+  switchport mode trunk
+  no shutdown
+!
+interface Ethernet1/10
+  description MEA-RON-NCS-57C3-1 (vlan 111 -> p1)
+  switchport
+  switchport access vlan 111
+  no shutdown
+!
+interface Ethernet1/11
+  description EMEA-RON-NCS-57C3-2 (vlan112 -> p1)
+  switchport
+  switchport access vlan 112
+  no shutdown
+```
+
+Then in VM configure following links:
+- Link for vlan 111
+```
+ip link set ens256 up
+ip link add link ens256 name ens256.111 address de:ad:be:ef:01:11 type vlan id 111
+ip link set ens256.111 up
+```
+
+- Link for vlan 112
+```
+ip link set ens256 up
+ip link add link ens256 name ens256.112 address de:ad:be:ef:01:12 type vlan id 112
+ip link set ens256.112 up
+```
+- You can later delete links with:
+```
+ip link delete dev ens256.111
+ip link delete dev ens256.112
+```
+
+CLAB startup yaml:
 ```
   links:
-  - type: host
-    endpoint:
-      node: p1
-      interface: Gi0-0-0-0
-    host-interface: veth999
   - endpoints:
-    - p2:Gi0-0-0-1
-    - p3:Gi0-0-0-0
+    - p1:Gi0-0-0-0
+    - macvlan:ens256.111
   - endpoints:
-    - p3:Gi0-0-0-1
     - p1:Gi0-0-0-1
+    - macvlan:ens256.112
+  - endpoints:
+    - p1:Gi0-0-0-2
+    - p2:Gi0-0-0-0
 ```
 
 p1 config:
 ```
 interface GigabitEthernet0/0/0/0
- ipv4 address 9.9.9.9 255.255.255.0
+ ipv4 address 10.1.0.2 255.255.255.252
+!
+interface GigabitEthernet0/0/0/1
+ ipv4 address 10.3.0.2 255.255.255.252
+!
 ```
 
-host config:
+Remote physical router config:
 ```
-sudo ip address add 9.9.9.1/24 dev veth999
-```
-
-```
-(myvenv310) vlisjak@vlisjak:~/containerlab/lab-qd/lab_mini$ ping 9.9.9.9
-PING 9.9.9.9 (9.9.9.9) 56(84) bytes of data.
-64 bytes from 9.9.9.9: icmp_seq=1 ttl=255 time=1.22 ms
-64 bytes from 9.9.9.9: icmp_seq=2 ttl=255 time=1.50 ms
+RP/0/RP0/CPU0:EMEA-RON-NCS-57C3-1#show run interface TenGigE 0/0/0/0
+Fri Jan 24 13:07:09.371 CET
+interface TenGigE0/0/0/0
+ description Link to p1 .. GigabitEthernet0/0/0/0
+ ipv4 address 10.1.0.1 255.255.255.252
+ !
+!
 ```
 
 ### IPv4 address auto-allocation
