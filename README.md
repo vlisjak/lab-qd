@@ -465,6 +465,7 @@ def clab_intf_map(clab_kind, device_if):
 
 In vcenter attach network "VM Network" into vlisjak.cisco.com VM
 
+
 TOR switch config:
 ```
 EMEA-DIGDEV-SWITCH1# show cdp ne
