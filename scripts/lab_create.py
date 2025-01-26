@@ -284,11 +284,13 @@ def intf_ip_allocation(master_inherit_dotted):
                 print("Link excluded from clab:", f"{node1}:{clab_ifname1}", f"{node2}:{clab_ifname2}")
                 pass
             else:
+                clab_n1 = 'macvlan' if node1 == 'host' else node1
+                clab_n2 = 'macvlan' if node2 == 'host' else node2
                 clab_links.append(
                     {
                         "endpoints": [
-                            f"{node1}:{clab_ifname1}",
-                            f"{node2}:{clab_ifname2}",
+                            f"{clab_n1}:{clab_ifname1}",
+                            f"{clab_n2}:{clab_ifname2}",
                         ]
                     }
                 )
@@ -349,6 +351,9 @@ def intf_ip_allocation(master_inherit_dotted):
     iter_mgmt = (host for host in prefix_mgmt.hosts() if host not in reserved_mgmt)
 
     for node in nodes_intf:
+        if master_inherit_dotted.devices[node].clab.kind == 'host':
+            nodes_intf[node].interfaces.mgmt.ipv4_address = master_inherit_dotted.devices[node].interfaces.mgmt.ipv4_address
+            continue
         loop0_name = f"{master_inherit_dotted.devices[node].intf_naming.loopback0.name}0"
         nodes_intf[node].interfaces[loop0_name].ipv4_address = f"{str(next(iter_loop))}/32"
         nodes_intf[node].interfaces[loop0_name].description = f"{node} {loop0_name}"
@@ -384,7 +389,8 @@ def generate_clab_startup(master_complete_dotted, clab_links):
 
             clab_startup.topology.kinds[clab_kind] = deepcopy(group_details.clab)
 
-            clab_startup.topology.kinds[clab_kind].image = group_details.clab.image
+            if 'image' in group_details.clab:
+                clab_startup.topology.kinds[clab_kind].image = group_details.clab.image
 
             # Continerlab parameters
             # - use default clab credentials (clab/clab@123), because these are baked into xrv9k docker image!
@@ -430,6 +436,7 @@ def generate_nornir_vars(master_complete_dotted):
 
     # nornir_hosts.yaml
     for node, node_details in master_complete_dotted.devices.items():
+    
         mgmt_ipv4 = node_details.interfaces.mgmt.ipv4_address
         nornir_hosts[node].hostname = str(ipaddress.ip_interface(mgmt_ipv4).ip)
 

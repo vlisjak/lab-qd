@@ -2,3 +2,7 @@ iosxr:
   password: clab@123
   platform: iosxr
   username: clab
+linux:
+  password: vlisjak
+  platform: linux
+  username: vlisjak

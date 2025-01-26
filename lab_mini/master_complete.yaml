@@ -5,6 +5,18 @@ clab_startup:
     kind: cisco_xrd
     startup-config: xrd_initial_cfg.j2
 device_groups:
+  host:
+    clab:
+      kind: host
+    intf_naming:
+      default:
+        first_id: 100
+        name: ens256.
+    nornir:
+      group: linux
+      platform: linux
+    password: vlisjak
+    username: vlisjak
   iosxr:
     clab:
       image: ios-xr/xrd-control-plane:24.2.11
@@ -27,6 +39,41 @@ device_groups:
     password: clab@123
     username: clab
 devices:
+  host:
+    clab:
+      kind: host
+    device_roles:
+    - host
+    interfaces:
+      ens256.111:
+        description: host:ens256.111 -> p1:Gi0/0/0/0
+        isis:
+          instance: CORE
+        link: p1:Gi0/0/0/0---host:ens256.111
+        link_group: core_host
+        lldp:
+          neighbor: p1
+          neighbor_intf: Gi0/0/0/0
+      ens256.112:
+        description: host:ens256.112 -> p2:Gi0/0/0/0
+        isis:
+          instance: CORE
+        link: p2:Gi0/0/0/0---host:ens256.112
+        link_group: core_host
+        lldp:
+          neighbor: p2
+          neighbor_intf: Gi0/0/0/0
+      mgmt:
+        ipv4_address: 10.48.188.45/26
+    intf_naming:
+      default:
+        first_id: 100
+        name: ens256.
+    nornir:
+      group: linux
+      platform: linux
+    password: vlisjak
+    username: vlisjak
   p1:
     clab:
       image: ios-xr/xrd-control-plane:24.2.11
@@ -37,28 +84,25 @@ devices:
     - p
     interfaces:
       Gi0/0/0/0:
-        description: p1:Gi0/0/0/0 -> p2:Gi0/0/0/0
+        description: p1:Gi0/0/0/0 -> host:ens256.111
+        isis:
+          instance: CORE
+        link: p1:Gi0/0/0/0---host:ens256.111
+        link_group: core_host
+        lldp:
+          neighbor: host
+          neighbor_intf: ens256.111
+      Gi0/0/0/1:
+        description: p1:Gi0/0/0/1 -> p3:Gi0/0/0/0
         ipv4_address: 1.0.0.1/30
         isis:
           instance: CORE
-        link: p1---p2
-        link_group: core
-        lldp:
-          neighbor: p2
-          neighbor_intf: Gi0/0/0/0
-          neighbor_ipv4: 1.0.0.2/30
-        prefix: 1.0.0.0/16
-      Gi0/0/0/1:
-        description: p1:Gi0/0/0/1 -> p3:Gi0/0/0/1
-        ipv4_address: 1.0.0.10/30
-        isis:
-          instance: CORE
-        link: p3---p1
+        link: p1---p3
         link_group: core
         lldp:
           neighbor: p3
-          neighbor_intf: Gi0/0/0/1
-          neighbor_ipv4: 1.0.0.9/30
+          neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.0.0.2/30
         prefix: 1.0.0.0/16
       Loopback0:
         description: p1 Loopback0
@@ -90,19 +134,16 @@ devices:
     - p
     interfaces:
       Gi0/0/0/0:
-        description: p2:Gi0/0/0/0 -> p1:Gi0/0/0/0
-        ipv4_address: 1.0.0.2/30
+        description: p2:Gi0/0/0/0 -> host:ens256.112
         isis:
           instance: CORE
-        link: p1---p2
-        link_group: core
+        link: p2:Gi0/0/0/0---host:ens256.112
+        link_group: core_host
         lldp:
-          neighbor: p1
-          neighbor_intf: Gi0/0/0/0
-          neighbor_ipv4: 1.0.0.1/30
-        prefix: 1.0.0.0/16
+          neighbor: host
+          neighbor_intf: ens256.112
       Gi0/0/0/1:
-        description: p2:Gi0/0/0/1 -> p3:Gi0/0/0/0
+        description: p2:Gi0/0/0/1 -> p3:Gi0/0/0/1
         ipv4_address: 1.0.0.5/30
         isis:
           instance: CORE
@@ -110,7 +151,7 @@ devices:
         link_group: core
         lldp:
           neighbor: p3
-          neighbor_intf: Gi0/0/0/0
+          neighbor_intf: Gi0/0/0/1
           neighbor_ipv4: 1.0.0.6/30
         prefix: 1.0.0.0/16
       Loopback0:
@@ -143,7 +184,19 @@ devices:
     - p
     interfaces:
       Gi0/0/0/0:
-        description: p3:Gi0/0/0/0 -> p2:Gi0/0/0/1
+        description: p3:Gi0/0/0/0 -> p1:Gi0/0/0/1
+        ipv4_address: 1.0.0.2/30
+        isis:
+          instance: CORE
+        link: p1---p3
+        link_group: core
+        lldp:
+          neighbor: p1
+          neighbor_intf: Gi0/0/0/1
+          neighbor_ipv4: 1.0.0.1/30
+        prefix: 1.0.0.0/16
+      Gi0/0/0/1:
+        description: p3:Gi0/0/0/1 -> p2:Gi0/0/0/1
         ipv4_address: 1.0.0.6/30
         isis:
           instance: CORE
@@ -153,18 +206,6 @@ devices:
           neighbor: p2
           neighbor_intf: Gi0/0/0/1
           neighbor_ipv4: 1.0.0.5/30
-        prefix: 1.0.0.0/16
-      Gi0/0/0/1:
-        description: p3:Gi0/0/0/1 -> p1:Gi0/0/0/1
-        ipv4_address: 1.0.0.9/30
-        isis:
-          instance: CORE
-        link: p3---p1
-        link_group: core
-        lldp:
-          neighbor: p1
-          neighbor_intf: Gi0/0/0/1
-          neighbor_ipv4: 1.0.0.10/30
         prefix: 1.0.0.0/16
       Loopback0:
         description: p3 Loopback0
@@ -193,6 +234,10 @@ link_groups:
       instance: CORE
     link_group: core
     prefix: 1.0.0.0/16
+  host:
+    isis:
+      instance: CORE
+    link_group: core_host
   loopback0:
     link_group: loopback0
     prefix: 1.255.0.0/24
@@ -202,17 +247,20 @@ link_groups:
 links:
 - isis:
     instance: CORE
-  link: p1---p2
+  link: p1:Gi0/0/0/0---host:ens256.111
+  link_group: core_host
+- isis:
+    instance: CORE
+  link: p2:Gi0/0/0/0---host:ens256.112
+  link_group: core_host
+- isis:
+    instance: CORE
+  link: p1---p3
   link_group: core
   prefix: 1.0.0.0/16
 - isis:
     instance: CORE
   link: p2---p3
-  link_group: core
-  prefix: 1.0.0.0/16
-- isis:
-    instance: CORE
-  link: p3---p1
   link_group: core
   prefix: 1.0.0.0/16
 nornir_startup:
@@ -224,6 +272,9 @@ nornir_startup:
   iosxr:
     group: iosxr
     platform: iosxr
+  linux:
+    group: linux
+    platform: linux
   logging:
     log_file: nornir/nornir.log
   runner:

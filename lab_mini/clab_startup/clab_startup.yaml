@@ -12,17 +12,29 @@ topology:
       image: ios-xr/xrd-control-plane:24.2.11
       kind: cisco_xrd
       startup-config: xrd_initial_cfg.j2
+    host:
+      env:
+        CLAB_MGMT_VRF: clab-mgmt
+        PASSWORD: vlisjak
+        USERNAME: vlisjak
+      kind: host
   links:
   - endpoints:
     - p1:Gi0-0-0-0
     - macvlan:ens256.111
   - endpoints:
-    - p1:Gi0-0-0-1
+    - p2:Gi0-0-0-0
     - macvlan:ens256.112
   - endpoints:
-    - p1:Gi0-0-0-2
-    - p2:Gi0-0-0-0
+    - p1:Gi0-0-0-1
+    - p3:Gi0-0-0-0
+  - endpoints:
+    - p2:Gi0-0-0-1
+    - p3:Gi0-0-0-1
   nodes:
+    host:
+      kind: host
+      mgmt-ipv4: 10.48.188.45
     p1:
       kind: cisco_xrd
       mgmt-ipv4: 10.255.0.2

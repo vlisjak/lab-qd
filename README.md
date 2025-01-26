@@ -461,6 +461,8 @@ def clab_intf_map(clab_kind, device_if):
 
 ### Connect data interface from clab node to physical router (macvlan)
 
+![Containerlab MACVLAN links to external routers](diagrams/macvlan_external_links.drawio.svg)
+
 In vcenter attach network "VM Network" into vlisjak.cisco.com VM
 
 TOR switch config:
@@ -487,7 +489,7 @@ interface Ethernet1/10
   no shutdown
 !
 interface Ethernet1/11
-  description EMEA-RON-NCS-57C3-2 (vlan112 -> p1)
+  description EMEA-RON-NCS-57C3-2 (vlan112 -> p2)
   switchport
   switchport access vlan 112
   no shutdown
@@ -520,11 +522,8 @@ CLAB startup yaml:
     - p1:Gi0-0-0-0
     - macvlan:ens256.111
   - endpoints:
-    - p1:Gi0-0-0-1
-    - macvlan:ens256.112
-  - endpoints:
-    - p1:Gi0-0-0-2
     - p2:Gi0-0-0-0
+    - macvlan:ens256.112
 ```
 
 p1 config:
@@ -532,7 +531,10 @@ p1 config:
 interface GigabitEthernet0/0/0/0
  ipv4 address 10.1.0.2 255.255.255.252
 !
-interface GigabitEthernet0/0/0/1
+```
+p2 config:
+```
+interface GigabitEthernet0/0/0/0
  ipv4 address 10.3.0.2 255.255.255.252
 !
 ```
@@ -540,10 +542,15 @@ interface GigabitEthernet0/0/0/1
 Remote physical router config:
 ```
 RP/0/RP0/CPU0:EMEA-RON-NCS-57C3-1#show run interface TenGigE 0/0/0/0
-Fri Jan 24 13:07:09.371 CET
 interface TenGigE0/0/0/0
  description Link to p1 .. GigabitEthernet0/0/0/0
  ipv4 address 10.1.0.1 255.255.255.252
+ !
+!
+RP/0/RP0/CPU0:EMEA-RON-NCS-57C3-2#show run interface TenGigE 0/0/0/0
+interface TenGigE0/0/0/0
+ description Link to p2 .. GigabitEthernet0/0/0/0
+ ipv4 address 10.3.0.1 255.255.255.252
  !
 !
 ```
