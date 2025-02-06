@@ -461,6 +461,8 @@ def clab_intf_map(clab_kind, device_if):
 
 ### Connect data interface from clab node to physical router (macvlan)
 
+> Note: I need to figure how to connect xrv9k (VM in container), because macvlan concept of xrd does not seem to work :(
+
 ![ Containerlab MACVLAN links to external routers ](diagrams/macvlan_external_links.drawio.svg)
 
 In vcenter attach network "VM Network" into vlisjak.cisco.com VM

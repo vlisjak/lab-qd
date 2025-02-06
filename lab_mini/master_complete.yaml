@@ -4,6 +4,13 @@ clab_startup:
     image: ios-xr/xrd-control-plane:24.2.11
     kind: cisco_xrd
     startup-config: xrd_initial_cfg.j2
+  xrv9k:
+    env:
+      RAM: 20480
+      VCPU: 4
+    image: vrnetlab/cisco_xrv9k:7.10.2
+    kind: cisco_xrv9k
+    startup-config: xrd_initial_cfg.j2
 device_groups:
   host:
     clab:
@@ -23,6 +30,29 @@ device_groups:
       kind: cisco_xrd
       startup-config: xrd_initial_cfg.j2
     clab_intf_map: true
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+    password: clab@123
+    username: clab
+  xrv9k:
+    clab:
+      env:
+        RAM: 20480
+        VCPU: 4
+      image: vrnetlab/cisco_xrv9k:7.10.2
+      kind: cisco_xrv9k
+      startup-config: xrd_initial_cfg.j2
     intf_naming:
       core_bundle:
         first_id: 1
@@ -76,10 +106,12 @@ devices:
     username: vlisjak
   p1:
     clab:
-      image: ios-xr/xrd-control-plane:24.2.11
-      kind: cisco_xrd
+      env:
+        RAM: 20480
+        VCPU: 4
+      image: vrnetlab/cisco_xrv9k:7.10.2
+      kind: cisco_xrv9k
       startup-config: xrd_initial_cfg.j2
-    clab_intf_map: true
     device_roles:
     - p
     interfaces:

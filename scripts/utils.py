@@ -168,8 +168,6 @@ def create_clab2host_vlans(clab_links):
                 for cmd in cmds:
                     print(f"Executing: {cmd}")
                     proc = subprocess.run(shlex.split(cmd), stdout=subprocess.PIPE, text=True)
-                    print(proc.stdout)
-    return
 
 def resolve_inheritance(config):
     """

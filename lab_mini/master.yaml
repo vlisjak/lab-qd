@@ -7,6 +7,13 @@ clab_startup:
     image: ios-xr/xrd-control-plane:24.2.11
     kind: cisco_xrd
     startup-config: xrd_initial_cfg.j2
+  xrv9k:
+    image: vrnetlab/cisco_xrv9k:7.10.2
+    kind: cisco_xrv9k
+    startup-config: xrd_initial_cfg.j2
+    env:
+      VCPU: 4
+      RAM: 20480
 
 # Nornir parameters
 nornir_startup:
@@ -54,6 +61,25 @@ device_groups:
       loopback0:
         name: Loopback
         first_id: 0
+  xrv9k:
+    # use default clab credentials, because these are baked into xrv9k docker image!
+    username: clab
+    password: clab@123
+    clab:
+      inherit_from: clab_startup.xrv9k
+    nornir:
+      inherit_from: nornir_startup.iosxr
+    # intf_naming is used for auto-allocation of interface IDs for specific interface type
+    intf_naming:
+      default:
+        name: Gi0/0/0/
+        first_id: 0
+      core_bundle: 
+        name: Bundle-Ether
+        first_id: 1
+      loopback0:
+        name: Loopback
+        first_id: 0
   host:
     username: vlisjak
     password: volpe123
@@ -72,7 +98,7 @@ devices:
   p1:
     device_roles: [p]
     inherit_from: 
-      - device_groups.iosxr
+      - device_groups.xrv9k
   p2:
     device_roles: [p]
     inherit_from: 

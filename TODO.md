@@ -3,7 +3,8 @@
 - allow clab nodes data links with physical routers
   - Documented and tested:   
     https://github.com/vlisjak/lab-qd?tab=readme-ov-file#connect-data-interface-from-clab-node-to-physical-router-macvlan
-  - TBD: automate vlan creation on host in lab_create.py
+  - automate vlan creation on host in lab_create.py: done for xrd nodes
+  - TBD: figure how to connect xrv9k (VM in container) because macvlan concept of xrd does not seem to work :(
 
 
 - generate CML topology (in addition to clab)
