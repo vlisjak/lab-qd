@@ -7,6 +7,7 @@ from N2G import drawio_diagram
 import xml.etree.ElementTree as ET
 import os
 import ipaddress
+import shlex, subprocess
 
 
 def load_vars(file_path):
@@ -139,6 +140,36 @@ def create_network_diagram(clab_links, master_complete_dotted):
 
     newXml.write(f"./{master_complete_dotted.drawio_diagram}")
 
+def create_clab2host_vlans(clab_links):
+    """
+    https://github.com/vlisjak/lab-qd?tab=readme-ov-file#connect-data-interface-from-clab-node-to-physical-router-macvlan
+
+    links:
+    - endpoints:
+        - p1:Gi0-0-0-0
+        - macvlan:ens256.111
+
+    Example for vlan 111:
+        ip link set ens256 up
+        ip link add link ens256 name ens256.111 address de:ad:be:ef:01:11 type vlan id 111
+        ip link set ens256.111 up
+    """
+    for link_pair in [x["endpoints"] for x in clab_links]:
+        for link in link_pair:
+            (node, intf) = link.split(":")
+            if node == 'macvlan':
+                (host_phy, host_vlan) = intf.split(".")
+                mac_addr = f"{host_vlan:0>4}"[:-2] + ':' + f"{host_vlan:0>4}"[-2:]
+                cmds = [
+                    f"sudo ip link set {host_phy} up",
+                    f"sudo ip link add link {host_phy} name {intf} address de:ad:be:ef:{mac_addr} type vlan id {host_vlan}",
+                    f"sudo ip link set {intf} up"
+                ]
+                for cmd in cmds:
+                    print(f"Executing: {cmd}")
+                    proc = subprocess.run(shlex.split(cmd), stdout=subprocess.PIPE, text=True)
+                    print(proc.stdout)
+    return
 
 def resolve_inheritance(config):
     """

@@ -3,6 +3,6 @@ iosxr:
   platform: iosxr
   username: clab
 linux:
-  password: vlisjak
+  password: volpe123
   platform: linux
   username: vlisjak

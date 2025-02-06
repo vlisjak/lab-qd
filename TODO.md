@@ -1,5 +1,11 @@
 # TODOs (in no particular order)
 
+- allow clab nodes data links with physical routers
+  - Documented and tested:   
+    https://github.com/vlisjak/lab-qd?tab=readme-ov-file#connect-data-interface-from-clab-node-to-physical-router-macvlan
+  - TBD: automate vlan creation on host in lab_create.py
+
+
 - generate CML topology (in addition to clab)
 
 - add gnmi config capability

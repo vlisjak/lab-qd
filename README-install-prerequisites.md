@@ -9,6 +9,12 @@ Remove old docker (optional)
 for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
 ```
 
+Add myself to sudoers:
+```bash
+(myvenv310) vlisjak@vlisjak:~ sudo grep vlisjak /etc/sudoers
+vlisjak    ALL=(ALL:ALL) NOPASSWD:ALL
+```
+
 Add Docker's official GPG key:
 ```bash
 sudo apt-get update

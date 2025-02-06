@@ -486,3 +486,8 @@ if __name__ == "__main__":
     # Generate Drawio topology diagram - only clab links (eg. Bundles are not included ..
     # TODO: I guess I need to improve this so we draw all links
     utils.create_network_diagram(clab_links["links"], master_complete_dotted)
+
+    # Create vlan subinterfaces in the host, for clab nodes data links with physical routers
+    # https://github.com/vlisjak/lab-qd?tab=readme-ov-file#connect-data-interface-from-clab-node-to-physical-router-macvlan
+    utils.create_clab2host_vlans(clab_links=clab_links["links"])
+

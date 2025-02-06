@@ -56,7 +56,7 @@ device_groups:
         first_id: 0
   host:
     username: vlisjak
-    password: vlisjak
+    password: volpe123
     clab:
       kind: host
     nornir:

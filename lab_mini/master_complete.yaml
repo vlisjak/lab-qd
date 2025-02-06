@@ -15,7 +15,7 @@ device_groups:
     nornir:
       group: linux
       platform: linux
-    password: vlisjak
+    password: volpe123
     username: vlisjak
   iosxr:
     clab:
@@ -72,7 +72,7 @@ devices:
     nornir:
       group: linux
       platform: linux
-    password: vlisjak
+    password: volpe123
     username: vlisjak
   p1:
     clab:
