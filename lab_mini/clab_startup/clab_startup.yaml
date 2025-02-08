@@ -55,6 +55,8 @@ topology:
     p1:
       kind: cisco_xrv9k
       mgmt-ipv4: 10.255.0.2
+      exec:
+        - ip link set Gi0-0-0-0 promisc on
     p2:
       kind: cisco_xrd
       mgmt-ipv4: 10.255.0.3
