@@ -459,9 +459,11 @@ def clab_intf_map(clab_kind, device_if):
         return(clab_if)
 ```
 
-### Connect data interface from clab node to physical router (macvlan)
+### Connect data interface from clab nodes to physical router
 
-> Note: I need to figure how to connect xrv9k (VM in container), because macvlan concept of xrd does not seem to work :(
+#### xRD procedure: macvlan
+
+> Note: please see below changes for external link from xrv9k (VM in container)
 
 ![ Containerlab MACVLAN links to external routers ](diagrams/macvlan_external_links.drawio.svg)
 
@@ -556,6 +558,28 @@ interface TenGigE0/0/0/0
  !
 !
 ```
+#### Xrv9k procedure: macvlan + passthru + promisc
+
+Xrv9k runs as qemu VM (vrnetlab) inside a container. Link to external physical router is also created using `macvlan`, but in addition the `passthru` knob is needed. This requires extended endpoint definition, as described at https://containerlab.dev/manual/topo-def-file/#macvlan
+
+In addition, the link in container must be set to `promiscuous` mode, otherwise isis (multicast) will not be established, despite ping working...
+
+CLAB startup yaml:
+```
+  links
+  - type: macvlan
+    endpoint:
+      node: p1
+      interface: Gi0/0/0/0
+    host-interface: ens256.111
+    mode: passthru
+```
+
+When container is fully booted, execute the following for each xrv9k external link:
+```
+sudo docker exec -it clab-mini-p1 ip link set Gi0-0-0-0 promisc on
+```
+
 
 ### IPv4 address auto-allocation
 

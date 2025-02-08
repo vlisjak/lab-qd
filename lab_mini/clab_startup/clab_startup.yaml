@@ -29,9 +29,16 @@ topology:
         USERNAME: vlisjak
       kind: host
   links:
-  - endpoints:
-    - p1:Gi0/0/0/0
-    - macvlan:ens256.111
+  # 
+  - type: macvlan
+    endpoint:
+      node: p1
+      interface: Gi0/0/0/0
+    host-interface: ens256.111
+    mode: passthru
+  # - endpoints:
+  #   - p1:Gi0-0-0-0
+  #   - macvlan:ens256.111
   - endpoints:
     - p2:Gi0-0-0-0
     - macvlan:ens256.112

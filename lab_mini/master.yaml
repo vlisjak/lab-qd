@@ -98,7 +98,8 @@ devices:
   p1:
     device_roles: [p]
     inherit_from: 
-      - device_groups.xrv9k
+      - device_groups.iosxr
+      # - device_groups.xrv9k
   p2:
     device_roles: [p]
     inherit_from: 

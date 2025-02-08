@@ -106,12 +106,10 @@ devices:
     username: vlisjak
   p1:
     clab:
-      env:
-        RAM: 20480
-        VCPU: 4
-      image: vrnetlab/cisco_xrv9k:7.10.2
-      kind: cisco_xrv9k
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
       startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
     device_roles:
     - p
     interfaces:

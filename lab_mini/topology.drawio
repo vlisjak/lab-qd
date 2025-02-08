@@ -12,15 +12,15 @@
       <mxCell style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="220" y="-110" width="80" height="60" as="geometry" />
       </mxCell>
-    </object><mxCell id="98c2c740f6a1b49c9adaff642d7a0878-src" value="Gi0/0/0/0" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="98c2c740f6a1b49c9adaff642d7a0878">
+    </object><mxCell id="df6b2d740284f2c137f4a776f59716a8-src" value="Gi0-0-0-0" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="df6b2d740284f2c137f4a776f59716a8">
       <mxGeometry x="-0.5" relative="1" as="geometry">
         <mxPoint as="offset" />
       </mxGeometry>
-    </mxCell><mxCell id="98c2c740f6a1b49c9adaff642d7a0878-trgt" value="ens256.111" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="98c2c740f6a1b49c9adaff642d7a0878">
+    </mxCell><mxCell id="df6b2d740284f2c137f4a776f59716a8-trgt" value="ens256.111" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="df6b2d740284f2c137f4a776f59716a8">
       <mxGeometry x="0.5" relative="-1" as="geometry">
         <mxPoint as="offset" />
       </mxGeometry>
-    </mxCell><object id="98c2c740f6a1b49c9adaff642d7a0878" label="" src_label="Gi0/0/0/0" trgt_label="ens256.111" source="p1" target="macvlan">
+    </mxCell><object id="df6b2d740284f2c137f4a776f59716a8" label="" src_label="Gi0-0-0-0" trgt_label="ens256.111" source="p1" target="macvlan">
       <mxCell style="endArrow=none;" edge="1" parent="1" source="p1" target="macvlan">
           <mxGeometry relative="1" as="geometry" />
       </mxCell>
@@ -44,15 +44,15 @@
       <mxCell style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="220" y="230" width="80" height="60" as="geometry" />
       </mxCell>
-    </object><mxCell id="e6d66ea07809f700b9090b62351e07eb-src" value="Gi0/0/0/1" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="e6d66ea07809f700b9090b62351e07eb">
+    </object><mxCell id="a57ddbb104f318767c53ebaeb00d2aca-src" value="Gi0-0-0-1" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="a57ddbb104f318767c53ebaeb00d2aca">
       <mxGeometry x="-0.5" relative="1" as="geometry">
         <mxPoint as="offset" />
       </mxGeometry>
-    </mxCell><mxCell id="e6d66ea07809f700b9090b62351e07eb-trgt" value="Gi0-0-0-0" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="e6d66ea07809f700b9090b62351e07eb">
+    </mxCell><mxCell id="a57ddbb104f318767c53ebaeb00d2aca-trgt" value="Gi0-0-0-0" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="a57ddbb104f318767c53ebaeb00d2aca">
       <mxGeometry x="0.5" relative="-1" as="geometry">
         <mxPoint as="offset" />
       </mxGeometry>
-    </mxCell><object id="e6d66ea07809f700b9090b62351e07eb" label="" src_label="Gi0/0/0/1" trgt_label="Gi0-0-0-0" source="p1" target="p3">
+    </mxCell><object id="a57ddbb104f318767c53ebaeb00d2aca" label="" src_label="Gi0-0-0-1" trgt_label="Gi0-0-0-0" source="p1" target="p3">
       <mxCell style="endArrow=none;" edge="1" parent="1" source="p1" target="p3">
           <mxGeometry relative="1" as="geometry" />
       </mxCell>
