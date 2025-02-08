@@ -294,6 +294,7 @@ def intf_ip_allocation(master_inherit_dotted):
                         ]
                     }
                 )
+            # TBD: add extended link defintion for macvlan links on xrv9k, with passthru 
 
         # now add interfaces also in master_complete.yaml
         nodes_intf[node1].interfaces[full_ifname1] = {
@@ -406,6 +407,7 @@ def generate_clab_startup(master_complete_dotted, clab_links):
             clab_startup.topology.nodes[node].kind = node_details.clab.kind
             mgmt_ipv4 = node_details.interfaces.mgmt.ipv4_address
             clab_startup.topology.nodes[node]["mgmt-ipv4"] = str(ipaddress.ip_interface(mgmt_ipv4).ip)
+            # TBD: add promisc mode cmd for external macvlan links on xrv9k/csr1000 (exec: ip link set Gi0-0-0-0 promisc on)
 
     # add all links for each node
     clab_startup.topology.links = clab_links["links"]

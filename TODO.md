@@ -2,10 +2,29 @@
 
 - allow clab nodes data links with physical routers
   - Documented and tested:   
-    https://github.com/vlisjak/lab-qd?tab=readme-ov-file#connect-data-interface-from-clab-node-to-physical-router-macvlan
+    https://github.com/vlisjak/lab-qd?tab=readme-ov-file#connect-data-interface-from-clab-nodes-to-physical-router
   - automate vlan creation on host in lab_create.py: done for xrd nodes
-  - TBD: figure how to connect xrv9k (VM in container) because macvlan concept of xrd does not seem to work :(
+  - TBD: figure how to connect xrv9k (VM in container) because macvlan concept of xrd does not seem to work :(   
+      --> This works:   
 
+      ```
+          topology:
+            links:
+            - type: macvlan
+              endpoint:
+                node: p1
+                interface: Gi0/0/0/0
+              host-interface: ens256.111
+              mode: passthru
+            nodes:
+              p1:
+                kind: cisco_xrv9k
+                mgmt-ipv4: 10.255.0.2
+                exec:
+                  - ip link set Gi0-0-0-0 promisc on
+      ```
+    - lab_create.py: handle external link definition for macvlan links on xrv9k/csr1000, with passthru (extended format)
+    - lab_create.py: add promisc mode cmd for all macvlan links on xrv9k/csr1000 (exec: ip link set Gi0-0-0-0 promisc on)
 
 - generate CML topology (in addition to clab)
 
