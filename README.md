@@ -581,12 +581,6 @@ CLAB startup yaml:
         - ip link set Gi0-0-0-0 promisc on
 ```
 
-When container is fully booted, execute the following for each xrv9k external link:
-```
-sudo docker exec -it clab-mini-p1 ip link set Gi0-0-0-0 promisc on
-```
-
-
 ### IPv4 address auto-allocation
 
 IPv4 addresses for p2p links are allocated sequentially from `prefix` defined under respective link group.
