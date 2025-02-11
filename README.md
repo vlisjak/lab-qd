@@ -2,6 +2,8 @@
 
 https://github.com/vlisjak/lab-qd
 
+![Conceptual overview](diagrams/lab_qd_overview.drawio.svg)
+
 ## Overview
 
 ### Important functionality
@@ -580,6 +582,11 @@ CLAB startup yaml:
       exec:
         - ip link set Gi0-0-0-0 promisc on
 ```
+
+> Possibly `promiscuous` will be set by default in future clab release: 
+> - https://github.com/srl-labs/containerlab/issues/2455
+> - https://discord.com/channels/860500297297821756/865572914346065920/1337723638539092008
+
 
 ### IPv4 address auto-allocation
 
