@@ -106,6 +106,12 @@
 
   - Test chaining / post-processing between steps
 
+- Add scale testing templates
+  - BGP peers
+  - BGP routes
+  - LxVPN instances
+  - LxVPN routes
+  - Etc.
 
 # Implemented TODOs
 
