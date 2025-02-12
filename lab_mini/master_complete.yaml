@@ -1,11 +1,18 @@
 clab_name: mini
 clab_startup:
+  ios:
+    env:
+      CLAB_MGMT_PASSTHROUGH: true
+    image: vrnetlab/cisco_csr1000v:17.03.08
+    kind: cisco_csr1000v
+    startup-config: ios_initial_cfg.j2
   iosxr:
     image: ios-xr/xrd-control-plane:24.2.11
     kind: cisco_xrd
     startup-config: xrd_initial_cfg.j2
   xrv9k:
     env:
+      CLAB_MGMT_PASSTHROUGH: true
       RAM: 20480
       VCPU: 4
     image: vrnetlab/cisco_xrv9k:7.10.2
@@ -15,6 +22,9 @@ device_groups:
   host:
     clab:
       kind: host
+    interfaces:
+      mgmt:
+        name: ens192
     intf_naming:
       default:
         first_id: 100
@@ -24,12 +34,40 @@ device_groups:
       platform: linux
     password: volpe123
     username: vlisjak
+  ios:
+    clab:
+      env:
+        CLAB_MGMT_PASSTHROUGH: true
+      image: vrnetlab/cisco_csr1000v:17.03.08
+      kind: cisco_csr1000v
+      startup-config: ios_initial_cfg.j2
+    interfaces:
+      mgmt:
+        name: GigabitEthernet1
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: BE
+      default:
+        first_id: 2
+        name: Gi
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: ios
+      platform: ios
+    password: clab@123
+    username: clab
   iosxr:
     clab:
       image: ios-xr/xrd-control-plane:24.2.11
       kind: cisco_xrd
       startup-config: xrd_initial_cfg.j2
     clab_intf_map: true
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -48,11 +86,15 @@ device_groups:
   xrv9k:
     clab:
       env:
+        CLAB_MGMT_PASSTHROUGH: true
         RAM: 20480
         VCPU: 4
       image: vrnetlab/cisco_xrv9k:7.10.2
       kind: cisco_xrv9k
       startup-config: xrd_initial_cfg.j2
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -69,6 +111,59 @@ device_groups:
     password: clab@123
     username: clab
 devices:
+  cpe1:
+    clab:
+      env:
+        CLAB_MGMT_PASSTHROUGH: true
+      image: vrnetlab/cisco_csr1000v:17.03.08
+      kind: cisco_csr1000v
+      startup-config: ios_initial_cfg.j2
+    device_roles:
+    - cpe
+    interfaces:
+      Gi2:
+        description: cpe1:Gi2 -> pe1:Gi0/0/0/2
+        ipv4_address: 1.1.0.2/30
+        link: pe1---cpe1
+        link_group: l3vpn
+        lldp:
+          neighbor: pe1
+          neighbor_intf: Gi0/0/0/2
+          neighbor_ipv4: 1.1.0.1/30
+        mtu: 1505
+        prefix: 1.1.0.0/16
+      Gi3:
+        description: cpe1:Gi3 -> pe1:Gi0/0/0/3
+        ipv4_address: 1.1.0.6/30
+        link: pe1---cpe1
+        link_group: l3vpn
+        lldp:
+          neighbor: pe1
+          neighbor_intf: Gi0/0/0/3
+          neighbor_ipv4: 1.1.0.5/30
+        mtu: 1505
+        prefix: 1.1.0.0/16
+      Loopback0:
+        description: cpe1 Loopback0
+        ipv4_address: 1.255.0.5/32
+      mgmt:
+        ipv4_address: 10.255.0.5/24
+        name: GigabitEthernet1
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: BE
+      default:
+        first_id: 2
+        name: Gi
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: ios
+      platform: ios
+    password: clab@123
+    username: clab
   host:
     clab:
       kind: host
@@ -95,6 +190,7 @@ devices:
           neighbor_intf: Gi0/0/0/0
       mgmt:
         ipv4_address: 10.48.188.45/26
+        name: ens192
     intf_naming:
       default:
         first_id: 100
@@ -106,10 +202,13 @@ devices:
     username: vlisjak
   p1:
     clab:
-      image: ios-xr/xrd-control-plane:24.2.11
-      kind: cisco_xrd
+      env:
+        CLAB_MGMT_PASSTHROUGH: true
+        RAM: 20480
+        VCPU: 4
+      image: vrnetlab/cisco_xrv9k:7.10.2
+      kind: cisco_xrv9k
       startup-config: xrd_initial_cfg.j2
-    clab_intf_map: true
     device_roles:
     - p
     interfaces:
@@ -123,22 +222,35 @@ devices:
           neighbor: host
           neighbor_intf: ens256.111
       Gi0/0/0/1:
-        description: p1:Gi0/0/0/1 -> p3:Gi0/0/0/0
+        description: p1:Gi0/0/0/1 -> p2:Gi0/0/0/1
         ipv4_address: 1.0.0.1/30
         isis:
           instance: CORE
-        link: p1---p3
+        link: p1---p2
         link_group: core
         lldp:
-          neighbor: p3
-          neighbor_intf: Gi0/0/0/0
+          neighbor: p2
+          neighbor_intf: Gi0/0/0/1
           neighbor_ipv4: 1.0.0.2/30
+        prefix: 1.0.0.0/16
+      Gi0/0/0/2:
+        description: p1:Gi0/0/0/2 -> pe1:Gi0/0/0/0
+        ipv4_address: 1.0.0.5/30
+        isis:
+          instance: CORE
+        link: p1---pe1
+        link_group: core
+        lldp:
+          neighbor: pe1
+          neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.0.0.6/30
         prefix: 1.0.0.0/16
       Loopback0:
         description: p1 Loopback0
         ipv4_address: 1.255.0.2/32
       mgmt:
         ipv4_address: 10.255.0.2/24
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -173,22 +285,35 @@ devices:
           neighbor: host
           neighbor_intf: ens256.112
       Gi0/0/0/1:
-        description: p2:Gi0/0/0/1 -> p3:Gi0/0/0/1
-        ipv4_address: 1.0.0.5/30
+        description: p2:Gi0/0/0/1 -> p1:Gi0/0/0/1
+        ipv4_address: 1.0.0.2/30
         isis:
           instance: CORE
-        link: p2---p3
+        link: p1---p2
         link_group: core
         lldp:
-          neighbor: p3
+          neighbor: p1
           neighbor_intf: Gi0/0/0/1
-          neighbor_ipv4: 1.0.0.6/30
+          neighbor_ipv4: 1.0.0.1/30
+        prefix: 1.0.0.0/16
+      Gi0/0/0/2:
+        description: p2:Gi0/0/0/2 -> pe1:Gi0/0/0/1
+        ipv4_address: 1.0.0.9/30
+        isis:
+          instance: CORE
+        link: p2---pe1
+        link_group: core
+        lldp:
+          neighbor: pe1
+          neighbor_intf: Gi0/0/0/1
+          neighbor_ipv4: 1.0.0.10/30
         prefix: 1.0.0.0/16
       Loopback0:
         description: p2 Loopback0
         ipv4_address: 1.255.0.3/32
       mgmt:
         ipv4_address: 10.255.0.3/24
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -204,44 +329,67 @@ devices:
       platform: iosxr
     password: clab@123
     username: clab
-  p3:
+  pe1:
     clab:
       image: ios-xr/xrd-control-plane:24.2.11
       kind: cisco_xrd
       startup-config: xrd_initial_cfg.j2
     clab_intf_map: true
     device_roles:
-    - p
+    - pe
     interfaces:
       Gi0/0/0/0:
-        description: p3:Gi0/0/0/0 -> p1:Gi0/0/0/1
-        ipv4_address: 1.0.0.2/30
-        isis:
-          instance: CORE
-        link: p1---p3
-        link_group: core
-        lldp:
-          neighbor: p1
-          neighbor_intf: Gi0/0/0/1
-          neighbor_ipv4: 1.0.0.1/30
-        prefix: 1.0.0.0/16
-      Gi0/0/0/1:
-        description: p3:Gi0/0/0/1 -> p2:Gi0/0/0/1
+        description: pe1:Gi0/0/0/0 -> p1:Gi0/0/0/2
         ipv4_address: 1.0.0.6/30
         isis:
           instance: CORE
-        link: p2---p3
+        link: p1---pe1
+        link_group: core
+        lldp:
+          neighbor: p1
+          neighbor_intf: Gi0/0/0/2
+          neighbor_ipv4: 1.0.0.5/30
+        prefix: 1.0.0.0/16
+      Gi0/0/0/1:
+        description: pe1:Gi0/0/0/1 -> p2:Gi0/0/0/2
+        ipv4_address: 1.0.0.10/30
+        isis:
+          instance: CORE
+        link: p2---pe1
         link_group: core
         lldp:
           neighbor: p2
-          neighbor_intf: Gi0/0/0/1
-          neighbor_ipv4: 1.0.0.5/30
+          neighbor_intf: Gi0/0/0/2
+          neighbor_ipv4: 1.0.0.9/30
         prefix: 1.0.0.0/16
+      Gi0/0/0/2:
+        description: pe1:Gi0/0/0/2 -> cpe1:Gi2
+        ipv4_address: 1.1.0.1/30
+        link: pe1---cpe1
+        link_group: l3vpn
+        lldp:
+          neighbor: cpe1
+          neighbor_intf: Gi2
+          neighbor_ipv4: 1.1.0.2/30
+        mtu: 1505
+        prefix: 1.1.0.0/16
+      Gi0/0/0/3:
+        description: pe1:Gi0/0/0/3 -> cpe1:Gi3
+        ipv4_address: 1.1.0.5/30
+        link: pe1---cpe1
+        link_group: l3vpn
+        lldp:
+          neighbor: cpe1
+          neighbor_intf: Gi3
+          neighbor_ipv4: 1.1.0.6/30
+        mtu: 1505
+        prefix: 1.1.0.0/16
       Loopback0:
-        description: p3 Loopback0
+        description: pe1 Loopback0
         ipv4_address: 1.255.0.4/32
       mgmt:
         ipv4_address: 10.255.0.4/24
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -259,6 +407,10 @@ devices:
     username: clab
 drawio_diagram: topology.drawio
 link_groups:
+  access_l3vpn:
+    link_group: l3vpn
+    mtu: 1505
+    prefix: 1.1.0.0/16
   core:
     isis:
       instance: CORE
@@ -285,20 +437,36 @@ links:
   link_group: core_host
 - isis:
     instance: CORE
-  link: p1---p3
+  link: p1---p2
   link_group: core
   prefix: 1.0.0.0/16
 - isis:
     instance: CORE
-  link: p2---p3
+  link: p1---pe1
   link_group: core
   prefix: 1.0.0.0/16
+- isis:
+    instance: CORE
+  link: p2---pe1
+  link_group: core
+  prefix: 1.0.0.0/16
+- link: pe1---cpe1
+  link_group: l3vpn
+  mtu: 1505
+  prefix: 1.1.0.0/16
+- link: pe1---cpe1
+  link_group: l3vpn
+  mtu: 1505
+  prefix: 1.1.0.0/16
 nornir_startup:
   inventory:
     options:
       group_file: nornir/nornir_groups.yaml
       host_file: nornir/nornir_hosts.yaml
     plugin: SimpleInventory
+  ios:
+    group: ios
+    platform: ios
   iosxr:
     group: iosxr
     platform: iosxr

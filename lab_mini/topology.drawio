@@ -12,15 +12,15 @@
       <mxCell style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="220" y="-110" width="80" height="60" as="geometry" />
       </mxCell>
-    </object><mxCell id="df6b2d740284f2c137f4a776f59716a8-src" value="Gi0-0-0-0" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="df6b2d740284f2c137f4a776f59716a8">
+    </object><mxCell id="98c2c740f6a1b49c9adaff642d7a0878-src" value="Gi0/0/0/0" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="98c2c740f6a1b49c9adaff642d7a0878">
       <mxGeometry x="-0.5" relative="1" as="geometry">
         <mxPoint as="offset" />
       </mxGeometry>
-    </mxCell><mxCell id="df6b2d740284f2c137f4a776f59716a8-trgt" value="ens256.111" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="df6b2d740284f2c137f4a776f59716a8">
+    </mxCell><mxCell id="98c2c740f6a1b49c9adaff642d7a0878-trgt" value="ens256.111" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="98c2c740f6a1b49c9adaff642d7a0878">
       <mxGeometry x="0.5" relative="-1" as="geometry">
         <mxPoint as="offset" />
       </mxGeometry>
-    </mxCell><object id="df6b2d740284f2c137f4a776f59716a8" label="" src_label="Gi0-0-0-0" trgt_label="ens256.111" source="p1" target="macvlan">
+    </mxCell><object id="98c2c740f6a1b49c9adaff642d7a0878" label="" src_label="Gi0/0/0/0" trgt_label="ens256.111" source="p1" target="macvlan">
       <mxCell style="endArrow=none;" edge="1" parent="1" source="p1" target="macvlan">
           <mxGeometry relative="1" as="geometry" />
       </mxCell>
@@ -40,32 +40,72 @@
       <mxCell style="endArrow=none;" edge="1" parent="1" source="p2" target="macvlan">
           <mxGeometry relative="1" as="geometry" />
       </mxCell>
-    </object><object id="p3" label="p3 1.255.0.4/32">
-      <mxCell style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="220" y="230" width="80" height="60" as="geometry" />
-      </mxCell>
-    </object><mxCell id="a57ddbb104f318767c53ebaeb00d2aca-src" value="Gi0-0-0-1" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="a57ddbb104f318767c53ebaeb00d2aca">
+    </object><mxCell id="e9067e8ab555bc2be04cd6e1b6c7eb32-src" value="Gi0/0/0/1" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="e9067e8ab555bc2be04cd6e1b6c7eb32">
       <mxGeometry x="-0.5" relative="1" as="geometry">
         <mxPoint as="offset" />
       </mxGeometry>
-    </mxCell><mxCell id="a57ddbb104f318767c53ebaeb00d2aca-trgt" value="Gi0-0-0-0" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="a57ddbb104f318767c53ebaeb00d2aca">
+    </mxCell><mxCell id="e9067e8ab555bc2be04cd6e1b6c7eb32-trgt" value="Gi0-0-0-1" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="e9067e8ab555bc2be04cd6e1b6c7eb32">
       <mxGeometry x="0.5" relative="-1" as="geometry">
         <mxPoint as="offset" />
       </mxGeometry>
-    </mxCell><object id="a57ddbb104f318767c53ebaeb00d2aca" label="" src_label="Gi0-0-0-1" trgt_label="Gi0-0-0-0" source="p1" target="p3">
-      <mxCell style="endArrow=none;" edge="1" parent="1" source="p1" target="p3">
+    </mxCell><object id="e9067e8ab555bc2be04cd6e1b6c7eb32" label="" src_label="Gi0/0/0/1" trgt_label="Gi0-0-0-1" source="p1" target="p2">
+      <mxCell style="endArrow=none;" edge="1" parent="1" source="p1" target="p2">
           <mxGeometry relative="1" as="geometry" />
       </mxCell>
-    </object><mxCell id="cde05ff3e8d3f89b35e18fd1287fd90f-src" value="Gi0-0-0-1" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="cde05ff3e8d3f89b35e18fd1287fd90f">
+    </object><object id="pe1" label="pe1 1.255.0.4/32">
+      <mxCell style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="230" y="200" width="80" height="60" as="geometry" />
+      </mxCell>
+    </object><mxCell id="9ddbe0b5858c8935842dc615d04e65fd-src" value="Gi0/0/0/2" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="9ddbe0b5858c8935842dc615d04e65fd">
       <mxGeometry x="-0.5" relative="1" as="geometry">
         <mxPoint as="offset" />
       </mxGeometry>
-    </mxCell><mxCell id="cde05ff3e8d3f89b35e18fd1287fd90f-trgt" value="Gi0-0-0-1" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="cde05ff3e8d3f89b35e18fd1287fd90f">
+    </mxCell><mxCell id="9ddbe0b5858c8935842dc615d04e65fd-trgt" value="Gi0-0-0-0" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="9ddbe0b5858c8935842dc615d04e65fd">
       <mxGeometry x="0.5" relative="-1" as="geometry">
         <mxPoint as="offset" />
       </mxGeometry>
-    </mxCell><object id="cde05ff3e8d3f89b35e18fd1287fd90f" label="" src_label="Gi0-0-0-1" trgt_label="Gi0-0-0-1" source="p2" target="p3">
-      <mxCell style="endArrow=none;" edge="1" parent="1" source="p2" target="p3">
+    </mxCell><object id="9ddbe0b5858c8935842dc615d04e65fd" label="" src_label="Gi0/0/0/2" trgt_label="Gi0-0-0-0" source="p1" target="pe1">
+      <mxCell style="endArrow=none;" edge="1" parent="1" source="p1" target="pe1">
+          <mxGeometry relative="1" as="geometry" />
+      </mxCell>
+    </object><mxCell id="3a3ef6235587b8000ed7a43fb8aaeaab-src" value="Gi0-0-0-2" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="3a3ef6235587b8000ed7a43fb8aaeaab">
+      <mxGeometry x="-0.5" relative="1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><mxCell id="3a3ef6235587b8000ed7a43fb8aaeaab-trgt" value="Gi0-0-0-1" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="3a3ef6235587b8000ed7a43fb8aaeaab">
+      <mxGeometry x="0.5" relative="-1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><object id="3a3ef6235587b8000ed7a43fb8aaeaab" label="" src_label="Gi0-0-0-2" trgt_label="Gi0-0-0-1" source="p2" target="pe1">
+      <mxCell style="endArrow=none;" edge="1" parent="1" source="p2" target="pe1">
+          <mxGeometry relative="1" as="geometry" />
+      </mxCell>
+    </object><object id="cpe1" label="cpe1 1.255.0.5/32">
+      <mxCell style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="230" y="390" width="80" height="60" as="geometry" />
+      </mxCell>
+    </object><mxCell id="ece266b6beffb722fdd0ee24c39e62bc-src" value="Gi0-0-0-2" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="ece266b6beffb722fdd0ee24c39e62bc">
+      <mxGeometry x="-0.5" relative="1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><mxCell id="ece266b6beffb722fdd0ee24c39e62bc-trgt" value="Gi2" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="ece266b6beffb722fdd0ee24c39e62bc">
+      <mxGeometry x="0.5" relative="-1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><object id="ece266b6beffb722fdd0ee24c39e62bc" label="" src_label="Gi0-0-0-2" trgt_label="Gi2" source="pe1" target="cpe1">
+      <mxCell style="endArrow=none;" edge="1" parent="1" source="pe1" target="cpe1">
+          <mxGeometry relative="1" as="geometry" />
+      </mxCell>
+    </object><mxCell id="f1a668c772e625629df611925295c11b-src" value="Gi0-0-0-3" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="f1a668c772e625629df611925295c11b">
+      <mxGeometry x="-0.5" relative="1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><mxCell id="f1a668c772e625629df611925295c11b-trgt" value="Gi3" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="f1a668c772e625629df611925295c11b">
+      <mxGeometry x="0.5" relative="-1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><object id="f1a668c772e625629df611925295c11b" label="" src_label="Gi0-0-0-3" trgt_label="Gi3" source="pe1" target="cpe1">
+      <mxCell style="endArrow=none;" edge="1" parent="1" source="pe1" target="cpe1">
           <mxGeometry relative="1" as="geometry" />
       </mxCell>
     </object></root>

@@ -361,8 +361,14 @@ def intf_ip_allocation(master_inherit_dotted):
         nodes_intf[node].interfaces.mgmt.ipv4_address = f"{str(next(iter_mgmt))}/{prefix_mgmt.prefixlen}"
 
     for node, intf_list in nodes_intf.items():
-        # finally copy all interface parameters/IPs of into master_inherit, which is returned as result
-        master_inherit_dotted.devices[node].interfaces = deepcopy(intf_list.interfaces.to_dict())
+        # finally copy all interface parameters/IPs into master_inherit, which is returned as result
+        # - must preserve parameters previously inherited from device/link groups
+        for intf, intf_details in intf_list.interfaces.items():
+            if intf in master_inherit_dotted.devices[node].interfaces:
+                master_inherit_dotted.devices[node].interfaces[intf].update(intf_details)
+            else:
+                master_inherit_dotted.devices[node].interfaces.update({intf: intf_details})
+
         # and assign bundle_members to respective Bundle (note: a single Bundle is allowed between any pair of nodes)
         for intf, intf_details in intf_list.interfaces.items():
             if "bundle" in intf_details:

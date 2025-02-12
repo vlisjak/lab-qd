@@ -831,6 +831,9 @@ From now on, whenever you run `lab_create.py`, the layout of existing nodes is e
 Note: if you added new node(s) to `master.yaml` again open and manually adjust the new node in `topology.drawio`
 - a bit cumbersome, though still easier than each time manually re-arranging the complete topology
 
+## Packet capturing
+https://containerlab.dev/manual/wireshark/
+
 ## Network services
 
 L3VPN definition example in `master.yaml`:

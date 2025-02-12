@@ -1,3 +1,10 @@
+cpe1:
+  data:
+    device_role:
+    - cpe
+  groups:
+  - ios
+  hostname: 10.255.0.5
 host:
   data:
     device_role:
@@ -19,10 +26,10 @@ p2:
   groups:
   - iosxr
   hostname: 10.255.0.3
-p3:
+pe1:
   data:
     device_role:
-    - p
+    - pe
   groups:
   - iosxr
   hostname: 10.255.0.4

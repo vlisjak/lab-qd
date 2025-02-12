@@ -4,6 +4,15 @@ mgmt:
 name: mini
 topology:
   kinds:
+    cisco_csr1000v:
+      env:
+        CLAB_MGMT_PASSTHROUGH: true
+        CLAB_MGMT_VRF: clab-mgmt
+        PASSWORD: clab@123
+        USERNAME: clab
+      image: vrnetlab/cisco_csr1000v:17.03.08
+      kind: cisco_csr1000v
+      startup-config: ios_initial_cfg.j2
     cisco_xrd:
       env:
         CLAB_MGMT_VRF: clab-mgmt
@@ -14,6 +23,7 @@ topology:
       startup-config: xrd_initial_cfg.j2
     cisco_xrv9k:
       env:
+        CLAB_MGMT_PASSTHROUGH: true
         CLAB_MGMT_VRF: clab-mgmt
         PASSWORD: clab@123
         RAM: 20480
@@ -29,37 +39,40 @@ topology:
         USERNAME: vlisjak
       kind: host
   links:
-  # 
-  - type: macvlan
-    endpoint:
-      node: p1
-      interface: Gi0/0/0/0
-    host-interface: ens256.111
-    mode: passthru
-  # - endpoints:
-  #   - p1:Gi0-0-0-0
-  #   - macvlan:ens256.111
+  - endpoints:
+    - p1:Gi0/0/0/0
+    - macvlan:ens256.111
   - endpoints:
     - p2:Gi0-0-0-0
     - macvlan:ens256.112
   - endpoints:
     - p1:Gi0/0/0/1
-    - p3:Gi0-0-0-0
-  - endpoints:
     - p2:Gi0-0-0-1
-    - p3:Gi0-0-0-1
+  - endpoints:
+    - p1:Gi0/0/0/2
+    - pe1:Gi0-0-0-0
+  - endpoints:
+    - p2:Gi0-0-0-2
+    - pe1:Gi0-0-0-1
+  - endpoints:
+    - pe1:Gi0-0-0-2
+    - cpe1:Gi2
+  - endpoints:
+    - pe1:Gi0-0-0-3
+    - cpe1:Gi3
   nodes:
+    cpe1:
+      kind: cisco_csr1000v
+      mgmt-ipv4: 10.255.0.5
     host:
       kind: host
       mgmt-ipv4: 10.48.188.45
     p1:
       kind: cisco_xrv9k
       mgmt-ipv4: 10.255.0.2
-      exec:
-        - ip link set Gi0-0-0-0 promisc on
     p2:
       kind: cisco_xrd
       mgmt-ipv4: 10.255.0.3
-    p3:
+    pe1:
       kind: cisco_xrd
       mgmt-ipv4: 10.255.0.4

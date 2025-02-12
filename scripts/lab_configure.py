@@ -20,23 +20,36 @@ import pprint as pp
 """
 Usage examples:
 
-./lab_configure.py --sections day0
-./lab_configure.py --sections day0 --node p2
-./lab_configure.py --sections day0 --dry_run=False
+.../scripts/lab_configure.py network --sections day0
+../scripts/lab_configure.py network --sections day0 --node p2
+../scripts/lab_configure.py network --sections day0 --dry_run=False
 
-./lab_configure.py --sections isis
-./lab_configure.py --sections isis --node p2
-./lab_configure.py --sections isis --dry_run=False
+../scripts/lab_configure.py network --sections isis
+../scripts/lab_configure.py network --sections isis --node p2
+../scripts/lab_configure.py network --sections isis --dry_run=False
 
-./lab_configure.py --sections ibgp
-./lab_configure.py --sections ibgp --node rr1_top
-./lab_configure.py --sections ibgp --node pe1
-./lab_configure.py --sections ibgp --dry_run=False
+../scripts/lab_configure.py network --sections srte
+../scripts/lab_configure.py network --sections srte --node p2
+../scripts/lab_configure.py network --sections srte --dry_run=False
 
-./lab_configure.py --sections day0,isis,ibgp --dry_run=False
-./lab_configure.py --sections isis,day0 --dry_run=True --role pe
-./lab_configure.py --sections ibgp --node rr1
-./lab_configure.py --sections isis,srte --dry_run=True --node rr1 --role pce
+../scripts/lab_configure.py network --sections ibgp
+../scripts/lab_configure.py network --sections ibgp --node rr1_top
+../scripts/lab_configure.py network --sections ibgp --node pe1
+../scripts/lab_configure.py network --sections ibgp --dry_run=False
+
+../scripts/lab_configure.py network --sections day0,isis,ibgp --dry_run=False
+../scripts/lab_configure.py network --sections isis,day0 --dry_run=True --role pe
+../scripts/lab_configure.py network --sections ibgp --node rr1
+../scripts/lab_configure.py network --sections isis,srte --dry_run=True --node rr1 --role pce
+
+../scripts/lab_configure.py service --kind l3vpn --instance vrf_1001
+../scripts/lab_configure.py service --kind l3vpn --instance vrf_1002_B
+
+../scripts/lab_configure.py service --kind l3vpn --instance vrf_1001 --dry_run False
+../scripts/lab_configure.py service --kind l3vpn --instance vrf_1002_B --dry_run False
+
+../scripts/lab_configure.py service --kind l3vpn --instance vrf_1001 --endpoints cpe1
+../scripts/lab_configure.py service --kind l3vpn --instance vrf_1001 --endpoints cpe2,cpe3
 
 Common behavior:
 - task is skipped when required jinja2 file does not exist

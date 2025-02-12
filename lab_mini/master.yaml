@@ -14,6 +14,15 @@ clab_startup:
     env:
       VCPU: 4
       RAM: 20480
+      # this is required for correct assignment of mgmt address (otherwise each node gets 10.0.0.15)
+      CLAB_MGMT_PASSTHROUGH: true
+  ios:
+    image: vrnetlab/cisco_csr1000v:17.03.08
+    kind: cisco_csr1000v
+    startup-config: ios_initial_cfg.j2
+    env:
+      # this is required for correct assignment of mgmt address (otherwise each node gets 10.0.0.15)
+      CLAB_MGMT_PASSTHROUGH: true
 
 # Nornir parameters
 nornir_startup:
@@ -21,6 +30,9 @@ nornir_startup:
   iosxr:
     platform: iosxr
     group: iosxr
+  ios:
+    platform: ios
+    group: ios
   linux:
     platform: linux
     group: linux
@@ -61,6 +73,9 @@ device_groups:
       loopback0:
         name: Loopback
         first_id: 0
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
   xrv9k:
     # use default clab credentials, because these are baked into xrv9k docker image!
     username: clab
@@ -80,6 +95,31 @@ device_groups:
       loopback0:
         name: Loopback
         first_id: 0
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
+
+  ios:
+    username: clab
+    password: clab@123
+    clab:
+      inherit_from: clab_startup.ios
+    nornir:
+      inherit_from: nornir_startup.ios
+    # this is used for auto-allocation of interface IDs
+    intf_naming:
+      default:
+        name: Gi
+        first_id: 2
+      core_bundle: 
+        name: BE
+        first_id: 1
+      loopback0:
+        name: Loopback
+        first_id: 0
+    interfaces:
+      mgmt:
+        name: GigabitEthernet1
   host:
     username: vlisjak
     password: volpe123
@@ -91,23 +131,28 @@ device_groups:
       default:
         name: ens256.
         first_id: 100
-
+    interfaces:
+      mgmt:
+        name: ens192
 
 # List of all devices with inherited vendor-specific (device_groups) and role-specific (device_roles) inventory
 devices:
   p1:
     device_roles: [p]
     inherit_from: 
-      - device_groups.iosxr
-      # - device_groups.xrv9k
+      - device_groups.xrv9k
   p2:
     device_roles: [p]
     inherit_from: 
       - device_groups.iosxr
-  p3:
-    device_roles: [p]
+  pe1:
+    device_roles: [pe]
     inherit_from: 
       - device_groups.iosxr
+  cpe1:
+    device_roles: [cpe]
+    inherit_from: 
+      - device_groups.ios
   host:
     device_roles: [host]
     inherit_from:
@@ -123,6 +168,10 @@ link_groups:
     prefix: 1.0.0.0/16
     isis: 
       instance: CORE
+  access_l3vpn:
+    link_group: l3vpn
+    prefix: 1.1.0.0/16
+    mtu: 1505
   host:
     # connect node data port to vlan uplink of host
     link_group: core_host
@@ -145,7 +194,13 @@ links:
     inherit_from: link_groups.host
   - link: p2:Gi0/0/0/0---host:ens256.112
     inherit_from: link_groups.host
-  - link: p1---p3
+  - link: p1---p2
     inherit_from: link_groups.core
-  - link: p2---p3
+  - link: p1---pe1
     inherit_from: link_groups.core
+  - link: p2---pe1
+    inherit_from: link_groups.core
+  - link: pe1---cpe1
+    inherit_from: link_groups.access_l3vpn
+  - link: pe1---cpe1
+    inherit_from: link_groups.access_l3vpn
