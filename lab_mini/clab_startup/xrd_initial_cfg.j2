@@ -15,6 +15,7 @@ grpc
  port 57400
  no-tls
  address-family ipv4
+ no vrf
 !
 line default
   transport input ssh
@@ -22,10 +23,17 @@ line default
 netconf-yang agent
  ssh
 !
+interface MgmtEth0/RP0/CPU0/0 
+ no vrf clab-mgmt
+ no ipv4 address
+ ipv4 address {{ .MgmtIPv4Address }}/24
+ no shutdown
+
 router static
  address-family ipv4 unicast
   0.0.0.0/0 MgmtEth0/RP0/CPU0/0 {{ .MgmtIPv4Gateway }}
   !
+ no vrf clab-mgmt 
 !
 ssh server v2
 ssh server netconf
