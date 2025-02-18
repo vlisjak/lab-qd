@@ -10,9 +10,6 @@ username clab
  group cisco-support
  secret clab@123
 !
-vrf clab-mgmt
- address-family ipv4 unicast
-!
 line default
   transport input ssh
 !
@@ -20,13 +17,16 @@ netconf-yang agent
  ssh
 !
 interface {{ master.devices[node].interfaces.mgmt.name }}
- vrf clab-mgmt
  ipv4 address {{ master.devices[node].interfaces.mgmt.ipv4_address }}
  no shutdown
 !
+grpc
+ port 57400
+ no-tls
+ address-family ipv4
+!
 ssh server v2
-ssh server vrf clab-mgmt
-ssh server netconf vrf clab-mgmt
+ssh server netconf
 xml agent tty iteration off
 lldp
 ipv4 netmask-format bit-count

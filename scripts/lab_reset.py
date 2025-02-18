@@ -30,6 +30,7 @@ Usage examples:
 
 Note:
 - task is skipped when required jinja2 file does not exist
+
 """
 
 def parseArgs():
@@ -91,6 +92,7 @@ def apply_config(task, inv, section, role=None, dry_run=True, replace=False):
             )
             if task.host["config"]:
                 task.run(task=napalm_configure, configuration=task.host["config"], dry_run=dry_run, replace=replace)
+                task.host.close_connections()
 
 if __name__ == "__main__":
 

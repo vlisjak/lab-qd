@@ -12,16 +12,9 @@ username cisco
  secret cisco
 !
 grpc
-{{ if .Env.CLAB_MGMT_VRF }} vrf {{ .Env.CLAB_MGMT_VRF }}{{end}}
  port 57400
  no-tls
- address-family dual
-!
-{{- if .Env.CLAB_MGMT_VRF }}
-vrf {{ .Env.CLAB_MGMT_VRF }}
- address-family ipv4 unicast
- !
-{{- end}}
+ address-family ipv4
 !
 line default
   transport input ssh
@@ -30,17 +23,11 @@ netconf-yang agent
  ssh
 !
 router static
-{{ if .Env.CLAB_MGMT_VRF }} vrf {{ .Env.CLAB_MGMT_VRF }}{{end}}
-{{- if .MgmtIPv4Gateway }}
  address-family ipv4 unicast
   0.0.0.0/0 MgmtEth0/RP0/CPU0/0 {{ .MgmtIPv4Gateway }}
   !
-{{- end}}
 !
 ssh server v2
-{{- if .Env.CLAB_MGMT_VRF }}
-ssh server vrf {{ .Env.CLAB_MGMT_VRF }}
-{{- end}}
-ssh server netconf {{ if .Env.CLAB_MGMT_VRF }} vrf {{ .Env.CLAB_MGMT_VRF }}{{end}}
+ssh server netconf
 xml agent tty iteration off
 lldp

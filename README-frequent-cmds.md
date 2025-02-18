@@ -74,6 +74,15 @@ docker exec -it <xrv9k_container> telnet 0 5000
 ../scripts/lab_configure.py network --sections isis,srte --dry_run=True --node rr1 --role pce
 ```
 
+## Reset lab config
+
+This will come handy when many people share the lab: we replace running config with templates/<min_cfg>/
+
+```bash
+../scripts/lab_reset.py --min_cfg min_cfg --role p
+../scripts/lab_reset.py --min_cfg min_cfg --role p --dry_run False --replace True
+```
+
 ## Deploy network services
 ```bash
 ../scripts/lab_configure.py service --kind l3vpn --instance vrf_1001
