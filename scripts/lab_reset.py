@@ -31,6 +31,10 @@ Usage examples:
 Note:
 - task is skipped when required jinja2 file does not exist
 
+TODO:
+- if --min_cfg is not provided, deploy minimal mgmt config defined within the script below
+- save current config before "commit replace" -> ./config_backups/<hostname>_<date:time>.txt
+
 """
 
 def parseArgs():
