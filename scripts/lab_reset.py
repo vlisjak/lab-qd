@@ -15,6 +15,7 @@ import utils
 from box import Box
 import argparse
 
+
 """
 ********************** WORK IN PROGRESS **********************
 
@@ -25,7 +26,7 @@ Usage examples:
 ../scripts/lab_reset.py --dry --role pe
 ../scripts/lab_reset.py --commit --node p2
 ../scripts/lab_reset.py --templ_dir ./templates/my_day0_config --dry --node p2
-../scripts/lab_reset.py --nornir_cfg ./nornir/nornir_config.yaml --lab_qd_inv ./master_complete.yaml --templ_dir ./templates/min_cfg --dry --node p2
+../scripts/lab_reset.py --nornir_cfg ./nornir/nornir_config.yaml --inv ./master_complete.yaml --templ_dir ./templates/min_cfg --dry --node p2
 
 Expected inputs:
 
@@ -35,30 +36,22 @@ Expected inputs:
     ├── BASE_ios.j2
     ├── BASE_iosxr.j2
     ├── cpe_ios.j2
+    ├── cpe3.txt
     ├── cpe_iosxr.j2
     ├── pe_iosxr.j2
     ├── p_iosxr.j2
-    └── rr_iosxr.j2
-
-Instead of jinja2 templates, you can also provide per-device config files:
-
-./templates/min_cfg/
     ├── p1.txt
-    ├── p2.txt
-    ├── p3.txtx
-    ├── cpe1.txt
+    ├── rr_iosxr.j2
     └── etc.
 
-
-Note:
-- name and IP addressof Mgmt interface is gathered from master_complete.yaml (lab-qd inventory)
-
+Notes:
+- jinja2 templates get the name and IP address of MgmtEth interface from master_complete.yaml (lab-qd inventory)
+- if a static per-device hardcoded configuration file (<hostname>_<device.txt) exists, it overrides the jinja2 template
+    - this is handy for devices that are not part of lab-qd inventory, or completely standalone lab setup (without any yaml inventory)
+    - just make sure that hostname and MgmtEth IP address is indeed correct!
 
 TODO:
 - save current config before "commit replace" -> ./config_backups/<hostname>_<date:time>.txt
-- implement subparsers: 
-    --templ_dir -> master_complete.yaml is mandatory (consuming jinja2 templates)
-    --conf_dir -> then script can run as standalone (consuming hardcoded configs)
 """
 
 
@@ -66,7 +59,7 @@ def parseArgs():
     parser = argparse.ArgumentParser(description="Script will *REPLACE* current device configuration - make sure you don't lock yourself out!")
     parser.add_argument("--templ_dir", help="Directory with templates or configs [./templates/min_cfg]", default="./templates/min_cfg", required=False)
     parser.add_argument("--nornir_cfg", help="Nornir configuration file [./nornir/nornir_config.yaml]", default="./nornir/nornir_config.yaml", required=False)
-    parser.add_argument("--lab_qd_inv", help="Lab-qd inventory file [./master_complete.yaml]", default="./master_complete.yaml", required=False)
+    parser.add_argument("--inv", help="Lab-qd inventory file [./master_complete.yaml]", default="./master_complete.yaml", required=False)
     dry_parser = parser.add_mutually_exclusive_group(required=True)
     dry_parser.add_argument("--dry", dest="dry_run", action="store_true", help="Show the diffs, but do not push the config to devices.")
     dry_parser.add_argument("--commit", dest="dry_run", action="store_false", help="Commit the config to devices!")
@@ -92,7 +85,7 @@ def generate_config(task, templ_dir, role, t_file, inv):
 
     return Result(
         host=task.host,
-        result=f"Configuration for node {task.host.name} [role {role}] generated from {templ_dir}/{t_file}.",
+        result=f"% Configuration for node {task.host.name} [role {role}] generated from template {templ_dir}/{t_file}.",
     )
 
 
@@ -101,17 +94,20 @@ def apply_config(task, inv, templ_dir, role=None, dry_run=True, replace=True):
     roles_to_apply = [role] if role else task.host["device_role"]
 
     for role in roles_to_apply:
-        templ_file = f"{role}_{task.host.platform}.j2"
-        if os.path.isfile(f"{templ_dir}/{templ_file}"):
+        # first check if we have per-device hardcoded configuration file
+        if os.path.isfile(f"{templ_dir}/{task.host.name}.txt"):
+            with open(f"{templ_dir}/{task.host.name}.txt", "r") as cfg_file:
+                node_config = cfg_file.read()
+                task.run(task=napalm_configure, configuration=node_config, dry_run=dry_run, replace=replace)
+                task.host.close_connections()
+        # otherwise try jinja2 template for given device-role
+        elif os.path.isfile(f"{templ_dir}/{role}_{task.host.platform}.j2"):
+            templ_file = f"{role}_{task.host.platform}.j2"
             task.run(task=generate_config, templ_dir=templ_dir, role=role, t_file=templ_file, inv=inv)
             if task.host["config"]:
                 task.run(task=napalm_configure, configuration=task.host["config"], dry_run=dry_run, replace=replace)
                 task.host.close_connections()
-        elif os.path.isfile(f"{templ_dir}/{task.host.name}.txt"):
-            with open(f"{templ_dir}/{task.host.name}.txt", 'r') as cfg_file:
-                node_config = cfg_file.read()
-                task.run(task=napalm_configure, configuration=node_config, dry_run=dry_run, replace=replace)
-                task.host.close_connections()
+        # else fail...
         else:
             exit(f"% Could not open jinja template: {templ_dir}/{templ_file} nor config file: {templ_dir}/{task.host.name}.txt.")
 
@@ -121,7 +117,7 @@ if __name__ == "__main__":
     parser = parseArgs()
     args = parser.parse_args()
 
-    master_complete = utils.load_vars(args.lab_qd_inv)
+    master_complete = utils.load_vars(args.inv)
     lab_inventory = Box(master_complete)
 
     try:

@@ -25,6 +25,7 @@ def save_inventory(config, file_path):
     except:
         exit(f"% Could not save: {file_path}")
 
+
 def regex_search(value, pattern):
     return re.search(pattern, value) is not None
 
