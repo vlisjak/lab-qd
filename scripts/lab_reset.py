@@ -27,13 +27,24 @@ Usage examples:
 ../scripts/lab_reset.py --templ_dir ./templates/my_day0_config --dry --node p2
 ../scripts/lab_reset.py --nornir_cfg ./nornir/nornir_config.yaml --lab_qd_inv ./master_complete.yaml --templ_dir ./templates/min_cfg --dry --node p2
 
+Expected inputs:
+
+./master_complete.yaml
+./nornir/nornir_config.yaml
+./templates/min_cfg/
+                ├── BASE_ios.j2
+                ├── BASE_iosxr.j2
+                ├── cpe_ios.j2
+                ├── cpe_iosxr.j2
+                ├── pe_iosxr.j2
+                ├── p_iosxr.j2
+                └── rr_iosxr.j2
+
 Note:
-- task is skipped when required jinja2 file does not exist
 - name and IP addressof Mgmt interface is gathered from master_complete.yaml (lab-qd inventory)
 
 
 TODO:
-- if jinja2 template does not exist, try to push <node>.txt (hardcoded per-host config.)
 - save current config before "commit replace" -> ./config_backups/<hostname>_<date:time>.txt
 """
 
