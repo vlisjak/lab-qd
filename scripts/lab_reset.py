@@ -32,13 +32,23 @@ Expected inputs:
 ./master_complete.yaml
 ./nornir/nornir_config.yaml
 ./templates/min_cfg/
-                ├── BASE_ios.j2
-                ├── BASE_iosxr.j2
-                ├── cpe_ios.j2
-                ├── cpe_iosxr.j2
-                ├── pe_iosxr.j2
-                ├── p_iosxr.j2
-                └── rr_iosxr.j2
+    ├── BASE_ios.j2
+    ├── BASE_iosxr.j2
+    ├── cpe_ios.j2
+    ├── cpe_iosxr.j2
+    ├── pe_iosxr.j2
+    ├── p_iosxr.j2
+    └── rr_iosxr.j2
+
+Instead of jinja2 templates, you can also provide per-device config files:
+
+./templates/min_cfg/
+    ├── p1.txt
+    ├── p2.txt
+    ├── p3.txtx
+    ├── cpe1.txt
+    └── etc.
+
 
 Note:
 - name and IP addressof Mgmt interface is gathered from master_complete.yaml (lab-qd inventory)
@@ -72,15 +82,14 @@ def generate_config(task, templ_dir, role, t_file, inv):
         template=t_file,
         path=templ_dir,
         node=task.host.name,
-        jinja_env=jinja_env,
-        master=inv,
+        node_inv=inv.devices[task.host.name],
         severity_level=logging.DEBUG,  # comment this line out, if you want to see rendered config (already shown by napalm diffs below..)
     )
     task.host["config"] = config.result
 
     return Result(
         host=task.host,
-        result=f"{templ_dir}/{t_file} configuration generated for node {task.host.name} (role {role}).",
+        result=f"Configuration for node {task.host.name} [role {role}] generated from {templ_dir}/{t_file}.",
     )
 
 
@@ -110,13 +119,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     master_complete = utils.load_vars(args.lab_qd_inv)
-
     lab_inventory = Box(master_complete)
-
-    jinja_env = Environment(trim_blocks=True, lstrip_blocks=True)
-    jinja_env.filters["regex_search"] = utils.regex_search
-    jinja_env.filters["ipv4_to_isis_net"] = utils.ipv4_to_isis_net
-    jinja_env.filters["cidr_to_legacy"] = utils.cidr_to_legacy
 
     try:
         nr = InitNornir(config_file=args.nornir_cfg)
