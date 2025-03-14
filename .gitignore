@@ -5,3 +5,4 @@ __pycache__/
 device_configs/
 scripts/lab_create_gpt1.py
 lab_mini/master_complete_gpt.yaml
+*private*

@@ -12,12 +12,21 @@ import re
 import pprint as pp
 from collections import defaultdict
 
+"""
+TODO:
+- improve dry_run: True/False --> --dry_run", dest="dry", action="store_true", help="Will not run on devices
+"""
+
 
 def parseArgs():
     parser = argparse.ArgumentParser()
     parser.set_defaults(feature=True)
     parser.add_argument(
-        "-m", "--master", help="Master inventory file [default=master.yaml]", default="master.yaml", required=False
+        "-m",
+        "--master",
+        help="Master inventory file [default=master.yaml]",
+        default="master.yaml",
+        required=False,
     )
     return parser.parse_args()
 
@@ -161,19 +170,20 @@ class Subnet_Allocator:
             self.subnet_iterators[prefix] = network.subnets(new_prefix=length)
         return next(self.subnet_iterators[prefix])
 
+
 def get_bundle_id(node, neighbor, interfaces):
     """
     Compute Bundle ID between two nodes.
 
-    Note: only one Bundle is allowed between any two nodes -> hence we can auto-assign 
+    Note: only one Bundle is allowed between any two nodes -> hence we can auto-assign
           all bundle members between these two nodes to respective Bundle
     """
     for intf, intf_details in interfaces.items():
-        
+
         if intf_details.bundle.type == "bundle" and intf_details.lldp.neighbor == neighbor:
             matches = re.match(r"(.+[^\d]+)(\d+)", intf)
             intf_type, intf_id = matches.group(1), int(matches.group(2))
-            return(intf_id)
+            return intf_id
 
 
 def intf_ip_allocation(master_inherit_dotted):
@@ -234,18 +244,18 @@ def intf_ip_allocation(master_inherit_dotted):
             intf_naming2 = n2_dict.intf_naming
 
             if link.link_group in intf_naming1:
-                intf_type1 =      intf_naming1[link.link_group].name
-                intf_first_id1 =  intf_naming1[link.link_group].first_id
+                intf_type1 = intf_naming1[link.link_group].name
+                intf_first_id1 = intf_naming1[link.link_group].first_id
             else:
-                intf_type1 =      intf_naming1.default.name
-                intf_first_id1 =  intf_naming1.default.first_id
+                intf_type1 = intf_naming1.default.name
+                intf_first_id1 = intf_naming1.default.first_id
 
             if link.link_group in intf_naming2:
-                intf_type2 =      intf_naming2[link.link_group].name
-                intf_first_id2 =  intf_naming2[link.link_group].first_id
+                intf_type2 = intf_naming2[link.link_group].name
+                intf_first_id2 = intf_naming2[link.link_group].first_id
             else:
-                intf_type2 =      intf_naming2.default.name
-                intf_first_id2 =  intf_naming2.default.first_id
+                intf_type2 = intf_naming2.default.name
+                intf_first_id2 = intf_naming2.default.first_id
 
             # intf1 was not provided in master.yaml -> auto-allocate
             if not full_ifname1:
@@ -259,7 +269,7 @@ def intf_ip_allocation(master_inherit_dotted):
 
             clab1 = master_inherit_dotted.devices[node1].clab
             clab2 = master_inherit_dotted.devices[node2].clab
-            
+
             if "clab_intf_map" in n1_dict and n1_dict.clab_intf_map == True:
                 clab_ifname1 = utils.clab_intf_map(clab1.kind, full_ifname1)
             else:
@@ -284,8 +294,8 @@ def intf_ip_allocation(master_inherit_dotted):
                 print("Link excluded from clab:", f"{node1}:{clab_ifname1}", f"{node2}:{clab_ifname2}")
                 pass
             else:
-                clab_n1 = 'macvlan' if node1 == 'host' else node1
-                clab_n2 = 'macvlan' if node2 == 'host' else node2
+                clab_n1 = "macvlan" if node1 == "host" else node1
+                clab_n2 = "macvlan" if node2 == "host" else node2
                 clab_links.append(
                     {
                         "endpoints": [
@@ -294,7 +304,7 @@ def intf_ip_allocation(master_inherit_dotted):
                         ]
                     }
                 )
-            # TBD: add extended link defintion for macvlan links on xrv9k, with passthru 
+            # TBD: add extended link defintion for macvlan links on xrv9k, with passthru
 
         # now add interfaces also in master_complete.yaml
         nodes_intf[node1].interfaces[full_ifname1] = {
@@ -352,7 +362,7 @@ def intf_ip_allocation(master_inherit_dotted):
     iter_mgmt = (host for host in prefix_mgmt.hosts() if host not in reserved_mgmt)
 
     for node in nodes_intf:
-        if master_inherit_dotted.devices[node].clab.kind == 'host':
+        if master_inherit_dotted.devices[node].clab.kind == "host":
             nodes_intf[node].interfaces.mgmt.ipv4_address = master_inherit_dotted.devices[node].interfaces.mgmt.ipv4_address
             continue
         loop0_name = f"{master_inherit_dotted.devices[node].intf_naming.loopback0.name}0"
@@ -391,24 +401,23 @@ def generate_clab_startup(master_complete_dotted, clab_links):
 
     # add clab parameters for each device type
     for grp, group_details in master_complete_dotted.device_groups.items():
-        if 'clab' in group_details:
+        if "clab" in group_details:
             clab_kind = group_details.clab.kind
 
             clab_startup.topology.kinds[clab_kind] = deepcopy(group_details.clab)
 
-            if 'image' in group_details.clab:
+            if "image" in group_details.clab:
                 clab_startup.topology.kinds[clab_kind].image = group_details.clab.image
 
             # Continerlab parameters
             # - use default clab credentials (clab/clab@123), because these are baked into xrv9k docker image!
             # - same reason for CLAB_MGMT_VRF (clab-mgmt)
-            clab_startup.topology.kinds[clab_kind].env.CLAB_MGMT_VRF = 'clab-mgmt'
+            clab_startup.topology.kinds[clab_kind].env.CLAB_MGMT_VRF = "clab-mgmt"
             clab_startup.topology.kinds[clab_kind].env.USERNAME = group_details.username
             clab_startup.topology.kinds[clab_kind].env.PASSWORD = group_details.password
 
-
     for node, node_details in master_complete_dotted.devices.items():
-        if 'clab' in node_details:
+        if "clab" in node_details:
             # add node type and mgmt_ip for each node
             clab_startup.topology.nodes[node].kind = node_details.clab.kind
             mgmt_ipv4 = node_details.interfaces.mgmt.ipv4_address
@@ -444,7 +453,7 @@ def generate_nornir_vars(master_complete_dotted):
 
     # nornir_hosts.yaml
     for node, node_details in master_complete_dotted.devices.items():
-    
+
         mgmt_ipv4 = node_details.interfaces.mgmt.ipv4_address
         nornir_hosts[node].hostname = str(ipaddress.ip_interface(mgmt_ipv4).ip)
 
@@ -498,4 +507,3 @@ if __name__ == "__main__":
     # Create vlan subinterfaces in the host, for clab nodes data links with physical routers
     # https://github.com/vlisjak/lab-qd?tab=readme-ov-file#connect-data-interface-from-clab-node-to-physical-router-macvlan
     utils.create_clab2host_vlans(clab_links=clab_links["links"])
-

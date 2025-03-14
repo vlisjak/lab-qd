@@ -11,14 +11,19 @@ import shlex, subprocess
 
 
 def load_vars(file_path):
-    with open(file_path, "r") as file:
-        return yaml.safe_load(file)
+    try:
+        with open(file_path, "r") as file:
+            return yaml.safe_load(file)
+    except:
+        exit(f"Could not open: {file_path}")
 
 
 def save_inventory(config, file_path):
-    with open(file_path, "w") as file:
-        yaml.dump(config, file, default_flow_style=False)
-
+    try:
+        with open(file_path, "w") as file:
+            yaml.dump(config, file, default_flow_style=False)
+    except:
+        exit(f"Could not save: {file_path}")
 
 def regex_search(value, pattern):
     return re.search(pattern, value) is not None
@@ -39,21 +44,23 @@ def yaml_print(object, filename=None):
     else:
         print(json.dumps(object, indent=2))
 
+
 def clab_intf_map(clab_kind, device_if):
     """
     Containerlab interface naming in clab_startup.yaml is not always the same as interface
-    names in device configurations. 
+    names in device configurations.
     This function maps device interface name to clab naming.
     - Please add below an 'if' statement for each clab kind.
     """
-    if clab_kind == 'cisco_xrd':
+    if clab_kind == "cisco_xrd":
         # https://containerlab.dev/manual/kinds/xrd/
-        clab_if = re.sub('/', '-', device_if)
-        return(clab_if)
-    if clab_kind == 'cisco_c8000':
+        clab_if = re.sub("/", "-", device_if)
+        return clab_if
+    if clab_kind == "cisco_c8000":
         # https://containerlab.dev/manual/kinds/c8000/
-        clab_if = re.sub('/', '_', device_if)
-        return(clab_if)
+        clab_if = re.sub("/", "_", device_if)
+        return clab_if
+
 
 def ipv4_to_isis_net(ipv4_address, area_id="49.0001", nsel="00"):
     """
@@ -64,16 +71,18 @@ def ipv4_to_isis_net(ipv4_address, area_id="49.0001", nsel="00"):
     tmp = "{:0>3}{:0>3}{:0>3}{:0>3}".format(*head.split("."))
     return "49.0000.{}.{}.{}.00".format(tmp[0:4], tmp[4:8], tmp[8:12])
 
+
 def cidr_to_legacy(ipv4_cidr):
     """
     Converts CIDR notation (x.x.x./y) to IP address and legacy netmask (x.x.x.x yyy.yyy.yyy.yyy).
     Returns dict:
     {'ip': <ipv4 address>, 'netmask': <legacy netmask>}
     """
-    return({ 
-        'ip': str(ipaddress.ip_interface(ipv4_cidr).ip), 
-        'netmask': str(ipaddress.ip_interface(ipv4_cidr).netmask)
-    })
+    return {
+        "ip": str(ipaddress.ip_interface(ipv4_cidr).ip),
+        "netmask": str(ipaddress.ip_interface(ipv4_cidr).netmask),
+    }
+
 
 def create_network_diagram(clab_links, master_complete_dotted):
     """
@@ -118,8 +127,16 @@ def create_network_diagram(clab_links, master_complete_dotted):
     for link in [x["endpoints"] for x in clab_links]:
         (n1, if1) = link[0].split(":")
         (n2, if2) = link[1].split(":")
-        newD.add_node(id=n1, width=80, label=f"{n1} {master_complete_dotted.devices[n1].interfaces.Loopback0.ipv4_address}")
-        newD.add_node(id=n2, width=80, label=f"{n2} {master_complete_dotted.devices[n2].interfaces.Loopback0.ipv4_address}")
+        newD.add_node(
+            id=n1,
+            width=80,
+            label=f"{n1} {master_complete_dotted.devices[n1].interfaces.Loopback0.ipv4_address}",
+        )
+        newD.add_node(
+            id=n2,
+            width=80,
+            label=f"{n2} {master_complete_dotted.devices[n2].interfaces.Loopback0.ipv4_address}",
+        )
         newD.add_link(n1, n2, src_label=if1, trgt_label=if2)
 
     newD.layout(algo="rt_circular")
@@ -140,6 +157,7 @@ def create_network_diagram(clab_links, master_complete_dotted):
 
     newXml.write(f"./{master_complete_dotted.drawio_diagram}")
 
+
 def create_clab2host_vlans(clab_links):
     """
     https://github.com/vlisjak/lab-qd?tab=readme-ov-file#connect-data-interface-from-clab-node-to-physical-router-macvlan
@@ -157,17 +175,18 @@ def create_clab2host_vlans(clab_links):
     for link_pair in [x["endpoints"] for x in clab_links]:
         for link in link_pair:
             (node, intf) = link.split(":")
-            if node == 'macvlan':
+            if node == "macvlan":
                 (host_phy, host_vlan) = intf.split(".")
-                mac_addr = f"{host_vlan:0>4}"[:-2] + ':' + f"{host_vlan:0>4}"[-2:]
+                mac_addr = f"{host_vlan:0>4}"[:-2] + ":" + f"{host_vlan:0>4}"[-2:]
                 cmds = [
                     f"sudo ip link set {host_phy} up",
                     f"sudo ip link add link {host_phy} name {intf} address de:ad:be:ef:{mac_addr} type vlan id {host_vlan}",
-                    f"sudo ip link set {intf} up"
+                    f"sudo ip link set {intf} up",
                 ]
                 for cmd in cmds:
                     print(f"Executing: {cmd}")
                     proc = subprocess.run(shlex.split(cmd), stdout=subprocess.PIPE, text=True)
+
 
 def resolve_inheritance(config):
     """

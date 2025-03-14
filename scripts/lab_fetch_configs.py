@@ -10,10 +10,8 @@ import sys
 
 # TODO: this is a very basic script that works only for xrd nodes!
 
-show_run_cmd = {
-    'iosxr': 'show run formal',
-    'ios': 'show run'
-}
+show_run_cmd = {"iosxr": "show run formal", "ios": "show run"}
+
 
 def backup_config(task):
     output = task.run(task=netmiko_send_command, command_string=show_run_cmd[task.host.platform])
@@ -27,7 +25,7 @@ def backup_config(task):
 if __name__ == "__main__":
 
     # os.chdir(sys.path[0])
-    os.makedirs('device_configs', exist_ok=True)
+    os.makedirs("device_configs", exist_ok=True)
 
     nr = InitNornir(config_file="nornir/nornir_config.yaml", dry_run=False)
 

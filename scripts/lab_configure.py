@@ -4,6 +4,7 @@ from nornir import InitNornir
 from nornir.core.task import Result
 from nornir.core.inventory import Group
 from nornir_utils.plugins.functions import print_result
+
 # from nornir_netmiko.tasks import netmiko_send_config
 from nornir_napalm.plugins.tasks import napalm_get, napalm_configure
 from nornir_jinja2.plugins.tasks import template_string, template_file
@@ -58,27 +59,31 @@ Common behavior:
 
 def parseArgs():
     parser = argparse.ArgumentParser()
-    subparsers = parser.add_subparsers(dest="cmd", help='Select command')
+    subparsers = parser.add_subparsers(dest="cmd", help="Select command")
 
-    network = subparsers.add_parser('network', help='Configure network infrastructure.')
+    network = subparsers.add_parser("network", help="Configure network infrastructure.")
     network.add_argument("--sections", help="Render jinja2 templates for sections, such as: day0[,isis,bgp,..]", required=True)
     network.add_argument(
         "--dry_run",
         help="True (default): show tentative config diffs / False: apply config to devices",
         choices=["False", "True"],
-        default="True")
+        default="True",
+    )
     network.add_argument("--role", help="Render jinja2 templates only for specific role, such as 'pe'.", required=False)
     network.add_argument("--node", help="Render jinja2 templates only for specific host, such as 'rr1'.", required=False)
 
-    service = subparsers.add_parser('service', help='Configure service instances.')
+    service = subparsers.add_parser("service", help="Configure service instances.")
     service.add_argument("--kind", help="Kind of network service, such as 'l3vpn'.", required=True)
     service.add_argument(
         "--dry_run",
         help="True (default): show tentative config diffs / False: apply config to devices",
         choices=["False", "True"],
-        default="True")
+        default="True",
+    )
     service.add_argument(
-        "--instance", help="Render network service only for specific service instance, such as 'vrf_1001'.", required=True
+        "--instance",
+        help="Render network service only for specific service instance, such as 'vrf_1001'.",
+        required=True,
     )
     service.add_argument(
         "--endpoints",
@@ -88,7 +93,6 @@ def parseArgs():
     service.add_argument("--role", help="Render jinja2 templates only for specific role, such as 'pe'.", required=False)
 
     return parser
-
 
 
 def generate_config(task, section, role, t_file, inv, service, instance, trans_scope):
@@ -173,7 +177,14 @@ def get_trans_scope(inv, service, instance, cpe):
             for uplink in inv.services[service][instance].endpoints[cpe].uplinks:
                 uplink_lldp = inv.devices[cpe].interfaces[uplink].lldp
                 links.append(
-                    Box({"cpe": cpe, "cpe_intf": uplink, "pe": uplink_lldp.neighbor, "pe_intf": uplink_lldp.neighbor_intf})
+                    Box(
+                        {
+                            "cpe": cpe,
+                            "cpe_intf": uplink,
+                            "pe": uplink_lldp.neighbor,
+                            "pe_intf": uplink_lldp.neighbor_intf,
+                        }
+                    )
                 )
 
         # otherwise, include all neighbor PEs where link_group matches service type (eg. l3vpn)
@@ -181,7 +192,14 @@ def get_trans_scope(inv, service, instance, cpe):
             for intf, intf_det in inv.devices[cpe].interfaces.items():
                 if "link_group" in intf_det and intf_det.link_group == service:
                     links.append(
-                        Box({"cpe": cpe, "cpe_intf": intf, "pe": intf_det.lldp.neighbor, "pe_intf": intf_det.lldp.neighbor_intf})
+                        Box(
+                            {
+                                "cpe": cpe,
+                                "cpe_intf": intf,
+                                "pe": intf_det.lldp.neighbor,
+                                "pe_intf": intf_det.lldp.neighbor_intf,
+                            }
+                        )
                     )
         return links
 
@@ -212,21 +230,25 @@ if __name__ == "__main__":
     nr = InitNornir(config_file="nornir/nornir_config.yaml")
 
     # ----- MAIN CHOICE 1: are we applying infrastructure config sections, such as: day0, isis, ibgp
-    if args.cmd == 'network':
+    if args.cmd == "network":
         if args.role:
             nr = nr.filter(F(device_role__contains=args.role))
         if args.node:
             nr = nr.filter(name=args.node)
         for section in args.sections.split(","):
             results = nr.run(
-                task=apply_config, inv=lab_inventory, section=section, role=args.role, dry_run=(args.dry_run == "True")
+                task=apply_config,
+                inv=lab_inventory,
+                section=section,
+                role=args.role,
+                dry_run=(args.dry_run == "True"),
             )
             print_result(results)
 
     # ----- MAIN CHOICE 2: Are we deploying network service instance, such as l3vpn/vrf_1001
     # ----- Note: computation of transaction scope is service-specific (eg. service may only need PE config - no CPEs)
     #             and is defined in function get_trans_scope()
-    elif args.cmd == 'service':
+    elif args.cmd == "service":
 
         if args.kind not in lab_inventory.services:
             print(f"{args.kind} service does not exist in inventory.. exiting.")
