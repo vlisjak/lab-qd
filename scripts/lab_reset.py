@@ -56,6 +56,9 @@ Note:
 
 TODO:
 - save current config before "commit replace" -> ./config_backups/<hostname>_<date:time>.txt
+- implement subparsers: 
+    --templ_dir -> master_complete.yaml is mandatory (consuming jinja2 templates)
+    --conf_dir -> then script can run as standalone (consuming hardcoded configs)
 """
 
 
