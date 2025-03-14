@@ -21,12 +21,11 @@ import argparse
 Usage examples:
 
 ../scripts/lab_reset.py --h
-../scripts/lab_reset.py --dry
 ../scripts/lab_reset.py --dry --node p2
 ../scripts/lab_reset.py --dry --role pe
 ../scripts/lab_reset.py --commit --node p2
-../scripts/lab_reset.py --templ_dir ./templates/day1_configs --dry --node p2
-../scripts/lab_reset.py --nornir_cfg ./nornir/nornir_config.yaml --lab_qd_inv ./master_complete.yaml --templ_dir ./templates/day1_configs --dry --node p2
+../scripts/lab_reset.py --templ_dir ./templates/my_day0_config --dry --node p2
+../scripts/lab_reset.py --nornir_cfg ./nornir/nornir_config.yaml --lab_qd_inv ./master_complete.yaml --templ_dir ./templates/min_cfg --dry --node p2
 
 Note:
 - task is skipped when required jinja2 file does not exist
@@ -85,6 +84,13 @@ def apply_config(task, inv, templ_dir, role=None, dry_run=True, replace=True):
             if task.host["config"]:
                 task.run(task=napalm_configure, configuration=task.host["config"], dry_run=dry_run, replace=replace)
                 task.host.close_connections()
+        elif os.path.isfile(f"{templ_dir}/{task.host.name}.txt"):
+            with open(f"{templ_dir}/{task.host.name}.txt", 'r') as cfg_file:
+                node_config = cfg_file.read()
+                task.run(task=napalm_configure, configuration=node_config, dry_run=dry_run, replace=replace)
+                task.host.close_connections()
+        else:
+            exit(f"% Could not open jinja template: {templ_dir}/{templ_file} nor config file: {templ_dir}/{task.host.name}.txt.")
 
 
 if __name__ == "__main__":
@@ -104,7 +110,7 @@ if __name__ == "__main__":
     try:
         nr = InitNornir(config_file=args.nornir_cfg)
     except:
-        exit(f"Could not open Nornir configuration file: {args.nornir_cfg}")
+        exit(f"% Could not open Nornir configuration file: {args.nornir_cfg}")
 
     if args.role:
         nr = nr.filter(F(device_role__contains=args.role))
@@ -115,4 +121,4 @@ if __name__ == "__main__":
         results = nr.run(task=apply_config, inv=lab_inventory, templ_dir=args.templ_dir, role=args.role, dry_run=args.dry_run, replace=True)
         print_result(results)
     else:
-        exit(f"Result of Nornir filter is empty -> verify {os.path.basename(__file__)} --role/--node arguments.")
+        exit(f"% Result of Nornir filter is empty -> verify {os.path.basename(__file__)} --role/--node arguments.")

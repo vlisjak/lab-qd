@@ -15,7 +15,7 @@ def load_vars(file_path):
         with open(file_path, "r") as file:
             return yaml.safe_load(file)
     except:
-        exit(f"Could not open: {file_path}")
+        exit(f"% Could not open: {file_path}")
 
 
 def save_inventory(config, file_path):
@@ -23,7 +23,7 @@ def save_inventory(config, file_path):
         with open(file_path, "w") as file:
             yaml.dump(config, file, default_flow_style=False)
     except:
-        exit(f"Could not save: {file_path}")
+        exit(f"% Could not save: {file_path}")
 
 def regex_search(value, pattern):
     return re.search(pattern, value) is not None
