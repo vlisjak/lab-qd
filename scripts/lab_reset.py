@@ -52,6 +52,7 @@ Notes:
 
 TODO:
 - save current config before "commit replace" -> ./config_backups/<hostname>_<date:time>.txt
+- lab_create.py should embed mgmth Eth interface name into nornir_hosts.yaml -> then lab_reset.py does not need master_complete.yaml for basic day0 config
 """
 
 
