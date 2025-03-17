@@ -1,5 +1,8 @@
 # TODOs (in no particular order)
 
+
+- allow multiple nodes/roles in CLI argument of all scripts
+
 - Implement lab-reset and lab_upgrade scripts - mainly for physical routers
   - lab_reset.py: replace current config with minimal mgmt. config
     - challenge: how to prevent users from modifying root user and mgmt_intf?
@@ -49,6 +52,7 @@
   - port_allocation()
   - ipv4_allocation()
   - IP address auto-allocate should be done also for loop0/mgmt
+  - even better: complete OOP rewrite!
 
 - allow manual IPv4 address in topology (links) defintion
   - mainly to allow physical routers, which may already have IPs assigned
@@ -173,5 +177,12 @@
 
 - allow xpath search in jinja templates: 
   - xpath expressions are perhaps too complicated on itself ..
+
 - documentation: show a sample master.yaml with all possible fields/features, and mark bold all mandatory variables
   - will show step by step how we add functionality to master.yaml (starting from minimal 4-node topo and day0)
+
+- Move master_complete.yaml (devices subtree) to nornir_hosts.yaml => CAN'T DO THAT (because we also have services subtree!)
+  - Reasoning:
+    - links and link_groups (in master.yaml) is used only to generate (inheritance) content within devices subtree (master_complete.yaml)
+    - and then per-device content can be also embeded directly in nornir_hosts.yaml (data subtree)
+    - this way all scripts (that use Nornir anyway) could get any per-device parameter from nornir->data subtree

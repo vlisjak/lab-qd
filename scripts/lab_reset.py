@@ -1,24 +1,6 @@
 #!/usr/bin/env python
 
-from nornir import InitNornir
-from nornir.core.task import Result
-from nornir.core.inventory import Group
-from nornir_netmiko.tasks import netmiko_send_command
-from nornir_utils.plugins.functions import print_result
-from nornir_napalm.plugins.tasks import napalm_get, napalm_configure
-from nornir_jinja2.plugins.tasks import template_string, template_file
-from nornir.core.filter import F
-import os
-from jinja2 import Environment
-import logging
-import utils
-from box import Box
-import argparse
-
-
 """
-********************** WORK IN PROGRESS **********************
-
 Usage examples:
 
 ../scripts/lab_reset.py --h
@@ -46,20 +28,39 @@ Expected inputs:
 
 Notes:
 - jinja2 templates get the name and IP address of MgmtEth interface from master_complete.yaml (lab-qd inventory)
-- if a static per-device hardcoded configuration file (<hostname>_<device.txt) exists, it overrides the jinja2 template
+- if a static (hardcoded) device configuration file (<hostname>.txt) exists, respective device_role .j2 is ignored
     - this is handy for devices that are not part of lab-qd inventory, or completely standalone lab setup (without any yaml inventory)
-    - just make sure that hostname and MgmtEth IP address is indeed correct!
+    - just make sure that hostname and MgmtEth IP address in the config file is indeed correct!
 
 TODO:
 - save current config before "commit replace" -> ./config_backups/<hostname>_<date:time>.txt
 - lab_create.py should embed mgmth Eth interface name into nornir_hosts.yaml -> then lab_reset.py does not need master_complete.yaml for basic day0 config
 """
 
+from nornir import InitNornir
+from nornir.core.task import Result
+from nornir.core.inventory import Group
+from nornir_netmiko.tasks import netmiko_send_command
+from nornir_utils.plugins.functions import print_result
+from nornir_napalm.plugins.tasks import napalm_get, napalm_configure
+from nornir_jinja2.plugins.tasks import template_string, template_file
+from nornir.core.filter import F
+import os
+from jinja2 import Environment
+import logging
+import utils
+from box import Box
+import argparse
+
 
 def parseArgs():
-    parser = argparse.ArgumentParser(description="Script will *REPLACE* current device configuration - make sure you don't lock yourself out!")
-    parser.add_argument("--templ_dir", help="Directory with templates or configs [./templates/min_cfg]", default="./templates/min_cfg", required=False)
-    parser.add_argument("--nornir_cfg", help="Nornir configuration file [./nornir/nornir_config.yaml]", default="./nornir/nornir_config.yaml", required=False)
+    parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, epilog=__doc__)
+    parser.add_argument(
+        "--templ_dir", help="Directory with templates or configs [./templates/min_cfg]", default="./templates/min_cfg", required=False
+    )
+    parser.add_argument(
+        "--nornir_cfg", help="Nornir configuration file [./nornir/nornir_config.yaml]", default="./nornir/nornir_config.yaml", required=False
+    )
     parser.add_argument("--inv", help="Lab-qd inventory file [./master_complete.yaml]", default="./master_complete.yaml", required=False)
     dry_parser = parser.add_mutually_exclusive_group(required=True)
     dry_parser.add_argument("--dry", dest="dry_run", action="store_true", help="Show the diffs, but do not push the config to devices.")
@@ -92,7 +93,7 @@ def generate_config(task, templ_dir, role, t_file, inv):
 
 def apply_config(task, inv, templ_dir, role=None, dry_run=True, replace=True):
 
-    roles_to_apply = [role] if role else task.host["device_role"]
+    roles_to_apply = [role] if role else task.host["device_roles"]
 
     for role in roles_to_apply:
         # first check if we have per-device hardcoded configuration file
@@ -127,7 +128,7 @@ if __name__ == "__main__":
         exit(f"% Could not open Nornir configuration file: {args.nornir_cfg}")
 
     if args.role:
-        nr = nr.filter(F(device_role__contains=args.role))
+        nr = nr.filter(F(device_roles__contains=args.role))
     if args.node:
         nr = nr.filter(name=args.node)
 

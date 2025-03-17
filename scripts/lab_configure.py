@@ -232,7 +232,7 @@ if __name__ == "__main__":
     # ----- MAIN CHOICE 1: are we applying infrastructure config sections, such as: day0, isis, ibgp
     if args.cmd == "network":
         if args.role:
-            nr = nr.filter(F(device_role__contains=args.role))
+            nr = nr.filter(F(device_roles__contains=args.role))
         if args.node:
             nr = nr.filter(name=args.node)
         for section in args.sections.split(","):
@@ -264,7 +264,7 @@ if __name__ == "__main__":
             exit(1)
 
         if args.role:
-            nr = nr.filter(F(device_role__contains=args.role))
+            nr = nr.filter(F(device_roles__contains=args.role))
 
         # determine CPEs to configure (either defined by args.endpoints or all endpoints in services/l3vpn/instance)
         cpe_list = set()

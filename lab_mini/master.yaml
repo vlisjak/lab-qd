@@ -147,6 +147,9 @@ devices:
       - device_groups.iosxr
   pe1:
     device_roles: [pe]
+    ibgp:
+      asn: 100
+      client_of: rr
     inherit_from: 
       - device_groups.iosxr
   cpe1:

@@ -337,6 +337,9 @@ devices:
     clab_intf_map: true
     device_roles:
     - pe
+    ibgp:
+      asn: 100
+      client_of: rr
     interfaces:
       Gi0/0/0/0:
         description: pe1:Gi0/0/0/0 -> p1:Gi0/0/0/2

@@ -458,7 +458,7 @@ def generate_nornir_vars(master_complete_dotted):
         nornir_hosts[node].hostname = str(ipaddress.ip_interface(mgmt_ipv4).ip)
 
         nornir_hosts[node].groups = [master_complete_dotted.devices[node].nornir.platform]
-        nornir_hosts[node].data.device_role = master_complete_dotted.devices[node].device_roles
+        nornir_hosts[node].data.device_roles = master_complete_dotted.devices[node].device_roles
 
     # nornir_config.yaml
     nornir_config["inventory"] = deepcopy(master_complete_dotted.nornir_startup.inventory)
