@@ -16,8 +16,8 @@ line default
 netconf-yang agent
  ssh
 !
-interface {{ node_inv.interfaces.mgmt.name }}
- ipv4 address {{ node_inv.interfaces.mgmt.ipv4_address }}
+interface {{ node_inv.mgmt.name }}
+ ipv4 address {{ node_inv.mgmt.ipv4_address }}
  no shutdown
 !
 grpc

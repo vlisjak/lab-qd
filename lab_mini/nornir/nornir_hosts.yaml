@@ -2,6 +2,9 @@ cpe1:
   data:
     device_roles:
     - cpe
+    mgmt:
+      ipv4_address: 10.255.0.5/24
+      name: GigabitEthernet1
   groups:
   - ios
   hostname: 10.255.0.5
@@ -9,6 +12,9 @@ host:
   data:
     device_roles:
     - host
+    mgmt:
+      ipv4_address: 10.48.188.45/26
+      name: ens192
   groups:
   - linux
   hostname: 10.48.188.45
@@ -16,6 +22,9 @@ p1:
   data:
     device_roles:
     - p
+    mgmt:
+      ipv4_address: 10.255.0.2/24
+      name: MgmtEth0/RP0/CPU0/0
   groups:
   - iosxr
   hostname: 10.255.0.2
@@ -23,6 +32,9 @@ p2:
   data:
     device_roles:
     - p
+    mgmt:
+      ipv4_address: 10.255.0.3/24
+      name: MgmtEth0/RP0/CPU0/0
   groups:
   - iosxr
   hostname: 10.255.0.3
@@ -30,6 +42,9 @@ pe1:
   data:
     device_roles:
     - pe
+    mgmt:
+      ipv4_address: 10.255.0.4/24
+      name: MgmtEth0/RP0/CPU0/0
   groups:
   - iosxr
   hostname: 10.255.0.4

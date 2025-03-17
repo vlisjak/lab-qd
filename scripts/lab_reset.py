@@ -8,7 +8,7 @@ Usage examples:
 ../scripts/lab_reset.py --dry --role pe
 ../scripts/lab_reset.py --commit --node p2
 ../scripts/lab_reset.py --templ_dir ./templates/my_day0_config --dry --node p2
-../scripts/lab_reset.py --nornir_cfg ./nornir/nornir_config.yaml --inv ./master_complete.yaml --templ_dir ./templates/min_cfg --dry --node p2
+../scripts/lab_reset.py --nornir_cfg ./nornir/nornir_config.yaml --templ_dir ./templates/min_cfg --dry --node p2
 
 Expected inputs:
 
@@ -34,7 +34,7 @@ Notes:
 
 TODO:
 - save current config before "commit replace" -> ./config_backups/<hostname>_<date:time>.txt
-- lab_create.py should embed mgmth Eth interface name into nornir_hosts.yaml -> then lab_reset.py does not need master_complete.yaml for basic day0 config
+- DONE: lab_create.py should embed mgmth Eth interface name into nornir_hosts.yaml -> then lab_reset.py does not need master_complete.yaml for basic day0 config
 """
 
 from nornir import InitNornir
@@ -61,7 +61,6 @@ def parseArgs():
     parser.add_argument(
         "--nornir_cfg", help="Nornir configuration file [./nornir/nornir_config.yaml]", default="./nornir/nornir_config.yaml", required=False
     )
-    parser.add_argument("--inv", help="Lab-qd inventory file [./master_complete.yaml]", default="./master_complete.yaml", required=False)
     dry_parser = parser.add_mutually_exclusive_group(required=True)
     dry_parser.add_argument("--dry", dest="dry_run", action="store_true", help="Show the diffs, but do not push the config to devices.")
     dry_parser.add_argument("--commit", dest="dry_run", action="store_false", help="Commit the config to devices!")
@@ -71,7 +70,7 @@ def parseArgs():
     return parser
 
 
-def generate_config(task, templ_dir, role, t_file, inv):
+def generate_config(task, templ_dir, t_file, role):
 
     task.host["config"] = None
 
@@ -80,7 +79,7 @@ def generate_config(task, templ_dir, role, t_file, inv):
         template=t_file,
         path=templ_dir,
         node=task.host.name,
-        node_inv=inv.devices[task.host.name],
+        node_inv=task.host.data,
         severity_level=logging.DEBUG,  # comment this line out, if you want to see rendered config (already shown by napalm diffs below..)
     )
     task.host["config"] = config.result
@@ -91,7 +90,7 @@ def generate_config(task, templ_dir, role, t_file, inv):
     )
 
 
-def apply_config(task, inv, templ_dir, role=None, dry_run=True, replace=True):
+def apply_config(task, templ_dir, role=None, dry_run=True, replace=True):
 
     roles_to_apply = [role] if role else task.host["device_roles"]
 
@@ -105,7 +104,7 @@ def apply_config(task, inv, templ_dir, role=None, dry_run=True, replace=True):
         # otherwise try jinja2 template for given device-role
         elif os.path.isfile(f"{templ_dir}/{role}_{task.host.platform}.j2"):
             templ_file = f"{role}_{task.host.platform}.j2"
-            task.run(task=generate_config, templ_dir=templ_dir, role=role, t_file=templ_file, inv=inv)
+            task.run(task=generate_config, templ_dir=templ_dir, t_file=templ_file, role=role)
             if task.host["config"]:
                 task.run(task=napalm_configure, configuration=task.host["config"], dry_run=dry_run, replace=replace)
                 task.host.close_connections()
@@ -119,9 +118,6 @@ if __name__ == "__main__":
     parser = parseArgs()
     args = parser.parse_args()
 
-    master_complete = utils.load_vars(args.inv)
-    lab_inventory = Box(master_complete)
-
     try:
         nr = InitNornir(config_file=args.nornir_cfg)
     except:
@@ -133,7 +129,7 @@ if __name__ == "__main__":
         nr = nr.filter(name=args.node)
 
     if nr.inventory.hosts.keys():
-        results = nr.run(task=apply_config, inv=lab_inventory, templ_dir=args.templ_dir, role=args.role, dry_run=args.dry_run, replace=True)
+        results = nr.run(task=apply_config, templ_dir=args.templ_dir, role=args.role, dry_run=args.dry_run, replace=True)
         print_result(results)
     else:
         exit(f"% Result of Nornir filter is empty -> verify {os.path.basename(__file__)} --role/--node arguments.")
