@@ -5,7 +5,9 @@ Usage examples:
 
 ../scripts/lab_reset.py --h
 ../scripts/lab_reset.py --dry --node p2
+../scripts/lab_reset.py --dry --node p2 pe2
 ../scripts/lab_reset.py --dry --role pe
+../scripts/lab_reset.py --dry --role pe cpe
 ../scripts/lab_reset.py --commit --node p2
 ../scripts/lab_reset.py --templ_dir ./templates/my_day0_config --dry --node p2
 ../scripts/lab_reset.py --nornir_cfg ./nornir/nornir_config.yaml --templ_dir ./templates/min_cfg --dry --node p2
@@ -56,17 +58,23 @@ import argparse
 def parseArgs():
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, epilog=__doc__)
     parser.add_argument(
-        "--templ_dir", help="Directory with templates or configs [./templates/min_cfg]", default="./templates/min_cfg", required=False
+        "--templ_dir",
+        help="Directory with templates or configs [./templates/min_cfg]",
+        default="./templates/min_cfg",
+        required=False,
     )
     parser.add_argument(
-        "--nornir_cfg", help="Nornir configuration file [./nornir/nornir_config.yaml]", default="./nornir/nornir_config.yaml", required=False
+        "--nornir_cfg",
+        help="Nornir configuration file [./nornir/nornir_config.yaml]",
+        default="./nornir/nornir_config.yaml",
+        required=False,
     )
     dry_parser = parser.add_mutually_exclusive_group(required=True)
     dry_parser.add_argument("--dry", dest="dry_run", action="store_true", help="Show the diffs, but do not push the config to devices.")
     dry_parser.add_argument("--commit", dest="dry_run", action="store_false", help="Commit the config to devices!")
     parser.set_defaults(dry_run=True)
-    parser.add_argument("--role", help="Configure only devices of specific role, such as 'pe'.", required=False)
-    parser.add_argument("--node", help="Configure only selected device, such as 'rr1'.", required=False)
+    parser.add_argument("--role", help="Configure only devices of specific role, such as 'pe'.", required=False, nargs="+")
+    parser.add_argument("--node", help="Configure only selected device, such as 'rr1'.", required=False, nargs="+")
     return parser
 
 
@@ -90,17 +98,19 @@ def generate_config(task, templ_dir, t_file, role):
     )
 
 
-def apply_config(task, templ_dir, role=None, dry_run=True, replace=True):
+def apply_config(task, templ_dir, roles=None, dry_run=True, replace=True):
 
-    roles_to_apply = [role] if role else task.host["device_roles"]
+    roles_to_apply = [role for role in roles if role in task.host["device_roles"]]
 
     for role in roles_to_apply:
+
         # first check if we have per-device hardcoded configuration file
         if os.path.isfile(f"{templ_dir}/{task.host.name}.txt"):
             with open(f"{templ_dir}/{task.host.name}.txt", "r") as cfg_file:
                 node_config = cfg_file.read()
                 task.run(task=napalm_configure, configuration=node_config, dry_run=dry_run, replace=replace)
                 task.host.close_connections()
+
         # otherwise try jinja2 template for given device-role
         elif os.path.isfile(f"{templ_dir}/{role}_{task.host.platform}.j2"):
             templ_file = f"{role}_{task.host.platform}.j2"
@@ -110,7 +120,7 @@ def apply_config(task, templ_dir, role=None, dry_run=True, replace=True):
                 task.host.close_connections()
         # else fail...
         else:
-            exit(f"% Could not open jinja template: {templ_dir}/{templ_file} nor config file: {templ_dir}/{task.host.name}.txt.")
+            exit(f"% Could not open jinja template nor config file for {task.host.name}.")
 
 
 if __name__ == "__main__":
@@ -124,12 +134,14 @@ if __name__ == "__main__":
         exit(f"% Could not open Nornir configuration file: {args.nornir_cfg}")
 
     if args.role:
-        nr = nr.filter(F(device_roles__contains=args.role))
+        nr = nr.filter(F(device_roles__any=args.role))
+
     if args.node:
-        nr = nr.filter(name=args.node)
+        nr = nr.filter(F(name__in=args.node))
 
     if nr.inventory.hosts.keys():
-        results = nr.run(task=apply_config, templ_dir=args.templ_dir, role=args.role, dry_run=args.dry_run, replace=True)
+        print(f"% We will reset nodes: {list(nr.inventory.hosts)}")
+        results = nr.run(task=apply_config, templ_dir=args.templ_dir, roles=args.role, dry_run=args.dry_run, replace=True)
         print_result(results)
     else:
         exit(f"% Result of Nornir filter is empty -> verify {os.path.basename(__file__)} --role/--node arguments.")
