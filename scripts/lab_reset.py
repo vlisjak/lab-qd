@@ -3,18 +3,16 @@
 """
 Usage examples:
 
-../scripts/lab_reset.py --h
-../scripts/lab_reset.py --dry --node p2
-../scripts/lab_reset.py --dry --node p2 pe2
-../scripts/lab_reset.py --dry --role pe
-../scripts/lab_reset.py --dry --role pe cpe
-../scripts/lab_reset.py --commit --node p2
-../scripts/lab_reset.py --templ_dir ./templates/my_day0_config --dry --node p2
-../scripts/lab_reset.py --nornir_cfg ./nornir/nornir_config.yaml --templ_dir ./templates/min_cfg --dry --node p2
+../scripts/lab_reset.py --dry --node p1 [p2 pe2 cpe1]
+../scripts/lab_reset.py --dry --role pe [cpe pe]
+
+../scripts/lab_reset.py --commit --node p1 p2
+../scripts/lab_reset.py --commit --role pe cpe
+
+../scripts/lab_reset.py --nornir_inv ./nornir/nornir_config.yaml --templ_dir ./templates/min_cfg --cfg_backup_dir ./backups_20250319 --dry --node p2
 
 Expected inputs:
 
-./master_complete.yaml
 ./nornir/nornir_config.yaml
 ./templates/min_cfg/
     ├── BASE_ios.j2
@@ -45,6 +43,7 @@ from nornir.core.inventory import Group
 from nornir_netmiko.tasks import netmiko_send_command
 from nornir_utils.plugins.functions import print_result
 from nornir_napalm.plugins.tasks import napalm_get, napalm_configure
+from nornir_utils.plugins.tasks.files import write_file
 from nornir_jinja2.plugins.tasks import template_string, template_file
 from nornir.core.filter import F
 import os
@@ -64,9 +63,14 @@ def parseArgs():
         required=False,
     )
     parser.add_argument(
-        "--nornir_cfg",
+        "--nornir_inv",
         help="Nornir configuration file [./nornir/nornir_config.yaml]",
         default="./nornir/nornir_config.yaml",
+        required=False,
+    )
+    parser.add_argument(
+        "--cfg_backup_dir",
+        help="Fetch and save current device configs, before resetting the lab.",
         required=False,
     )
     dry_parser = parser.add_mutually_exclusive_group(required=True)
@@ -78,7 +82,7 @@ def parseArgs():
     return parser
 
 
-def generate_config(task, templ_dir, t_file, role):
+def render_j2_template(task, templ_dir, t_file, role):
 
     task.host["config"] = None
 
@@ -98,30 +102,50 @@ def generate_config(task, templ_dir, t_file, role):
     )
 
 
-def apply_config(task, templ_dir, roles=None, dry_run=True, replace=True):
+def apply_configs(task, templ_dir, roles=None, dry_run=True, replace=True):
 
-    roles_to_apply = [role for role in roles if role in task.host["device_roles"]]
+    if roles == None:
+        roles_to_apply = task.host["device_roles"]
+    else:
+        roles_to_apply = [role for role in roles if role in task.host["device_roles"]]
 
     for role in roles_to_apply:
 
-        # first check if we have per-device hardcoded configuration file
-        if os.path.isfile(f"{templ_dir}/{task.host.name}.txt"):
-            with open(f"{templ_dir}/{task.host.name}.txt", "r") as cfg_file:
-                node_config = cfg_file.read()
-                task.run(task=napalm_configure, configuration=node_config, dry_run=dry_run, replace=replace)
-                task.host.close_connections()
+        cfg_input = f"{templ_dir}/{task.host.name}.txt"
+        j2_input = f"{templ_dir}/{role}_{task.host.platform}.j2"
 
-        # otherwise try jinja2 template for given device-role
-        elif os.path.isfile(f"{templ_dir}/{role}_{task.host.platform}.j2"):
+        # first check if we have hardcoded device configuration file: cfg_input
+        if os.path.isfile(cfg_input):
+            with open(cfg_input, "r") as cfg_file:
+                node_config = cfg_file.read()
+
+        # otherwise try jinja2 template for given device-role: j2_input
+        elif os.path.isfile(j2_input):
             templ_file = f"{role}_{task.host.platform}.j2"
-            task.run(task=generate_config, templ_dir=templ_dir, t_file=templ_file, role=role)
-            if task.host["config"]:
-                task.run(task=napalm_configure, configuration=task.host["config"], dry_run=dry_run, replace=replace)
-                task.host.close_connections()
+            task.run(task=render_j2_template, templ_dir=templ_dir, t_file=templ_file, role=role)
+            node_config = task.host["config"]
+
         # else fail...
         else:
-            exit(f"% Could not open jinja template nor config file for {task.host.name}.")
+            raise Exception(f"% Could not open jinja template nor config file for {task.host.name}.")
 
+        if node_config:
+            task.run(task=napalm_configure, configuration=node_config, dry_run=dry_run, replace=replace)
+            task.host.close_connections()
+
+def fetch_configs(task, cfg_backup_dir):
+    os.makedirs(args.cfg_backup_dir, exist_ok=True)
+    fetched = task.run(task=napalm_get, getters=['config'])
+    task.host.close_connections()
+    task.run(
+        task=write_file,
+        filename=f"{cfg_backup_dir}/{task.host}-backup.txt",
+        content=fetched[0].result["config"]["running"],
+    )
+    return Result(
+        host=task.host,
+        result=f"% Configuration for node {task.host.name} has been saved.",
+    )
 
 if __name__ == "__main__":
 
@@ -129,9 +153,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     try:
-        nr = InitNornir(config_file=args.nornir_cfg)
+        nr = InitNornir(config_file=args.nornir_inv)
     except:
-        exit(f"% Could not open Nornir configuration file: {args.nornir_cfg}")
+        exit(f"% Could not open Nornir configuration file: {args.nornir_inv}")
 
     if args.role:
         nr = nr.filter(F(device_roles__any=args.role))
@@ -140,8 +164,19 @@ if __name__ == "__main__":
         nr = nr.filter(F(name__in=args.node))
 
     if nr.inventory.hosts.keys():
-        print(f"% We will reset nodes: {list(nr.inventory.hosts)}")
-        results = nr.run(task=apply_config, templ_dir=args.templ_dir, roles=args.role, dry_run=args.dry_run, replace=True)
-        print_result(results)
+        if not args.dry_run:
+            print(f"% We will reset the nodes: {list(nr.inventory.hosts)}")
+            if input("Y[es] to continue?").lower() not in ("y", "yes"):
+                print("Exiting.")
+                exit()
+
+        if args.cfg_backup_dir:
+            fetch_results = nr.run(task=fetch_configs, cfg_backup_dir=args.cfg_backup_dir)
+            for hostname in nr.inventory.hosts.keys():
+                print_result(fetch_results[hostname][0])
+
+        apply_results = nr.run(task=apply_configs, templ_dir=args.templ_dir, roles=args.role, dry_run=args.dry_run, replace=True)
+        print_result(apply_results)
+
     else:
         exit(f"% Result of Nornir filter is empty -> verify {os.path.basename(__file__)} --role/--node arguments.")

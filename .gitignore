@@ -1,4 +1,5 @@
 nornir.log
+backup*
 clab-*/
 *.bak
 __pycache__/
