@@ -457,7 +457,7 @@ def generate_nornir_vars(master_complete_dotted):
         mgmt_ipv4 = node_details.interfaces.mgmt.ipv4_address
         nornir_hosts[node].hostname = str(ipaddress.ip_interface(mgmt_ipv4).ip)
 
-        nornir_hosts[node].groups = [master_complete_dotted.devices[node].nornir.platform]
+        nornir_hosts[node].groups = [master_complete_dotted.devices[node].nornir.group]
         nornir_hosts[node].data.device_roles = master_complete_dotted.devices[node].device_roles
         nornir_hosts[node].data.mgmt = deepcopy(master_complete_dotted.devices[node].interfaces.mgmt)
 

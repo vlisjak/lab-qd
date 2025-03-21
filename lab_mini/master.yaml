@@ -42,7 +42,7 @@ nornir_startup:
     platform: ios
     group: ios
   nxos:
-    platform: nxos
+    platform: nxos_ssh
     group: nxos
   linux:
     platform: linux

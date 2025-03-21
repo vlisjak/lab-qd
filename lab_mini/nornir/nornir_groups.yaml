@@ -12,5 +12,5 @@ linux:
   username: vlisjak
 nxos:
   password: admin
-  platform: nxos
+  platform: nxos_ssh
   username: admin

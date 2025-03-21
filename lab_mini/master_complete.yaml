@@ -112,7 +112,7 @@ device_groups:
         name: Loopback
     nornir:
       group: nxos
-      platform: nxos
+      platform: nxos_ssh
     password: admin
     username: admin
   xrv9k:
@@ -271,7 +271,7 @@ devices:
         name: Loopback
     nornir:
       group: nxos
-      platform: nxos
+      platform: nxos_ssh
     password: admin
     username: admin
   p1:
@@ -571,7 +571,7 @@ nornir_startup:
     log_file: nornir/nornir.log
   nxos:
     group: nxos
-    platform: nxos
+    platform: nxos_ssh
   runner:
     options:
       num_workers: 10
