@@ -230,6 +230,108 @@ clab_startup:
     startup-config: ios_initial_cfg.j2
 ```
 
+# Onboard N9kv
+
+https://containerlab.dev/manual/kinds/vr-n9kv/
+
+`git clone https://github.com/hellt/vrnetlab.git`
+
+Or try: `git clone https://github.com/kaelemc/vrnetlab` which sometimes has additional patches on top of official hellt/vrnetlab...
+
+```bash
+(myvenv310) vlisjak@vlisjak:~/containerlab/vrnetlab/n9kv$ ls -l
+total 16
+drwxrwxr-x 2 vlisjak vlisjak 4096 Mar 20 17:59 docker
+-rw-rw-r-- 1 vlisjak vlisjak  405 Mar 20 17:22 Makefile
+lrwxrwxrwx 1 vlisjak vlisjak   61 Mar 20 16:28 nexus9500v64.10.4.5.M.qcow2 -> /home/vlisjak/containerlab/images/nexus9500v64.10.4.5.M.qcow2
+-rw-rw-r-- 1 vlisjak vlisjak  587 Mar 20 17:22 README.md
+```
+Update Makefile to correctly parse the latest n9kv image VERSION:
+
+```bash
+(myvenv310) vlisjak@vlisjak:~/containerlab/vrnetlab/n9kv$ more Makefile 
+VENDOR=Cisco
+NAME=n9kv
+IMAGE_FORMAT=qcow2
+IMAGE_GLOB=*.qcow2
+
+# rename the disk image file as n9kv-<version>.qcow2
+# examples:
+# for a file named "n9kv-9300-10.5.2.qcow2" the image will be named "vrnetlab/cisco_n9kv:9300-10.5.2"
+# nexus9500v64.10.4.5.M.qcow2
+#
+VERSION=$(shell echo $(IMAGE) | sed -e 's/nexus9500v64.\(.*\)\.M\.qcow2/\1/')
+
+-include ../makefile-sanity.include
+-include ../makefile.include
+```
+
+Update proxy (note: not sure if this is actually needed, or it was temporary issue during my image creation ..)
+
+```bash
+(myvenv310) vlisjak@vlisjak:~/containerlab/vrnetlab/n9kv$ git diff
+diff --git a/makefile.include b/makefile.include
+index 0f1be99..d1d7479 100644
+--- a/makefile.include
++++ b/makefile.include
+@@ -36,7 +36,7 @@ else
+ endif
+        @[ -f ./vswitch.xml ] && cp vswitch.xml docker/ || true
+        $(MAKE) IMAGE=$$IMAGE docker-build-image-copy
+-       (cd docker; source /etc/profile.d/proxy.sh; docker build --build-arg http_proxy=$(http_proxy) --build-arg HTTP_PROXY=$(HTTP_PROXY) --build-arg https_proxy=$(https_proxy) --build-arg HTTPS_PROXY=$(HTTPS_PROXY) --build-arg IMAGE=$(IMAGE) --build-arg VERSION=$(VERSION) --label "vrnetlab-version=$(VRNETLAB_VERION)" -t $(REGISTRY)$(IMG_VENDOR)_$(IMG_NAME):$(VERSION) .)
++       (. /etc/profile.d/proxy.sh; cd docker; docker build --build-arg http_proxy=http://proxy.esl.cisco.com:80/ --build-arg HTTP_PROXY=http://proxy.esl.cisco.com:80/ --build-arg https_proxy=http://proxy.esl.cisco.com:80/ --build-arg HTTPS_PROXY=http://proxy.esl.cisco.com:80/ --build-arg IMAGE=$(IMAGE) --build-arg VERSION=$(VERSION) --label "vrnetlab-version=$(VRNETLAB_VERION)" -t $(REGISTRY)$(IMG_VENDOR)_$(IMG_NAME):$(VERSION) .)
+ 
+ docker-build: docker-build-common docker-clean-build
+ ```
+
+Finally: `sudo make docker-image`
+
+Verify docker image:
+```bash
+(myvenv310) vlisjak@vlisjak:~/containerlab/vrnetlab/n9kv$ docker image ls|grep n9kv
+vrnetlab/cisco_n9kv         10.4.5           dc116a7d3270   19 hours ago    3.24GB
+```
+
+- default user: admin/admin
+- master.yaml:
+```yaml
+nornir_startup:
+  nxos:
+    platform: nxos
+    group: nxos
+
+clab_startup:
+  n9kv:
+    image: vrnetlab/cisco_n9kv:10.4.5
+    kind: cisco_n9kv
+    startup-config: nxos_initial_cfg.j2
+    env:
+      VCPU: 4
+      RAM: 10240
+      # this is required for correct assignment of mgmt address (otherwise each node gets 10.0.0.15)
+      CLAB_MGMT_PASSTHROUGH: true
+
+device_groups:
+  n9kv:
+    username: admin
+    password: admin
+    clab:
+      inherit_from: clab_startup.n9kv
+    nornir:
+      inherit_from: nornir_startup.nxos
+    intf_naming: # intf_naming is used for auto-allocation of interface IDs for specific interface type
+      default:
+        name: Ethernet1/
+        first_id: 1
+      loopback0:
+        name: Loopback
+        first_id: 0
+    interfaces:
+      mgmt:
+        name: eth0
+```
+
+
 # Proxy - if needed
 ```bash
 root@vlisjak:/home/vlisjak# cat /etc/profile.d/proxy.sh

@@ -23,7 +23,15 @@ clab_startup:
     env:
       # this is required for correct assignment of mgmt address (otherwise each node gets 10.0.0.15)
       CLAB_MGMT_PASSTHROUGH: true
-
+  n9kv:
+    image: vrnetlab/cisco_n9kv:10.4.5
+    kind: cisco_n9kv
+    startup-config: nxos_initial_cfg.j2
+    env:
+      VCPU: 4
+      RAM: 10240
+      # this is required for correct assignment of mgmt address (otherwise each node gets 10.0.0.15)
+      CLAB_MGMT_PASSTHROUGH: true
 # Nornir parameters
 nornir_startup:
   # note: xrd and xrv9k are equivalent configuration wise -> the same iosxr nornir platform 
@@ -33,6 +41,9 @@ nornir_startup:
   ios:
     platform: ios
     group: ios
+  nxos:
+    platform: nxos
+    group: nxos
   linux:
     platform: linux
     group: linux
@@ -120,6 +131,27 @@ device_groups:
     interfaces:
       mgmt:
         name: GigabitEthernet1
+
+  n9kv:
+    # use default clab credentials, because these are baked into n9kv docker image!
+    username: admin
+    password: admin
+    clab:
+      inherit_from: clab_startup.n9kv
+    nornir:
+      inherit_from: nornir_startup.nxos
+    # intf_naming is used for auto-allocation of interface IDs for specific interface type
+    intf_naming:
+      default:
+        name: Ethernet1/
+        first_id: 1
+      loopback0:
+        name: Loopback
+        first_id: 0
+    interfaces:
+      mgmt:
+        name: eth0
+
   host:
     username: vlisjak
     password: volpe123
@@ -156,6 +188,10 @@ devices:
     device_roles: [cpe]
     inherit_from: 
       - device_groups.ios
+  n9kv1:
+    device_roles: [pe]
+    inherit_from: 
+      - device_groups.n9kv
   host:
     device_roles: [host]
     inherit_from:
@@ -207,3 +243,5 @@ links:
     inherit_from: link_groups.access_l3vpn
   - link: pe1---cpe1
     inherit_from: link_groups.access_l3vpn
+  - link: pe1---n9kv1
+    inherit_from: link_groups.core

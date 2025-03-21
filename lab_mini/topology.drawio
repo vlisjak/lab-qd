@@ -108,6 +108,22 @@
       <mxCell style="endArrow=none;" edge="1" parent="1" source="pe1" target="cpe1">
           <mxGeometry relative="1" as="geometry" />
       </mxCell>
+    </object><object id="n9kv1" label="n9kv1 1.255.0.6/32">
+      <mxCell style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="0" y="0" width="80" height="60" as="geometry" />
+      </mxCell>
+    </object><mxCell id="474902778a48380fdede0d574a071d05-src" value="Gi0-0-0-4" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="474902778a48380fdede0d574a071d05">
+      <mxGeometry x="-0.5" relative="1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><mxCell id="474902778a48380fdede0d574a071d05-trgt" value="Ethernet1/1" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="474902778a48380fdede0d574a071d05">
+      <mxGeometry x="0.5" relative="-1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><object id="474902778a48380fdede0d574a071d05" label="" src_label="Gi0-0-0-4" trgt_label="Ethernet1/1" source="pe1" target="n9kv1">
+      <mxCell style="endArrow=none;" edge="1" parent="1" source="pe1" target="n9kv1">
+          <mxGeometry relative="1" as="geometry" />
+      </mxCell>
     </object></root>
       </mxGraphModel>
     </diagram></mxfile>

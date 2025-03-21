@@ -18,6 +18,16 @@ host:
   groups:
   - linux
   hostname: 10.48.188.45
+n9kv1:
+  data:
+    device_roles:
+    - pe
+    mgmt:
+      ipv4_address: 10.255.0.6/24
+      name: eth0
+  groups:
+  - nxos
+  hostname: 10.255.0.6
 p1:
   data:
     device_roles:

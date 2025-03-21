@@ -10,6 +10,14 @@ clab_startup:
     image: ios-xr/xrd-control-plane:24.2.11
     kind: cisco_xrd
     startup-config: xrd_initial_cfg.j2
+  n9kv:
+    env:
+      CLAB_MGMT_PASSTHROUGH: true
+      RAM: 10240
+      VCPU: 4
+    image: vrnetlab/cisco_n9kv:10.4.5
+    kind: cisco_n9kv
+    startup-config: nxos_initial_cfg.j2
   xrv9k:
     env:
       CLAB_MGMT_PASSTHROUGH: true
@@ -83,6 +91,30 @@ device_groups:
       platform: iosxr
     password: clab@123
     username: clab
+  n9kv:
+    clab:
+      env:
+        CLAB_MGMT_PASSTHROUGH: true
+        RAM: 10240
+        VCPU: 4
+      image: vrnetlab/cisco_n9kv:10.4.5
+      kind: cisco_n9kv
+      startup-config: nxos_initial_cfg.j2
+    interfaces:
+      mgmt:
+        name: eth0
+    intf_naming:
+      default:
+        first_id: 1
+        name: Ethernet1/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: nxos
+      platform: nxos
+    password: admin
+    username: admin
   xrv9k:
     clab:
       env:
@@ -200,6 +232,48 @@ devices:
       platform: linux
     password: volpe123
     username: vlisjak
+  n9kv1:
+    clab:
+      env:
+        CLAB_MGMT_PASSTHROUGH: true
+        RAM: 10240
+        VCPU: 4
+      image: vrnetlab/cisco_n9kv:10.4.5
+      kind: cisco_n9kv
+      startup-config: nxos_initial_cfg.j2
+    device_roles:
+    - pe
+    interfaces:
+      Ethernet1/1:
+        description: n9kv1:Ethernet1/1 -> pe1:Gi0/0/0/4
+        ipv4_address: 1.0.0.14/30
+        isis:
+          instance: CORE
+        link: pe1---n9kv1
+        link_group: core
+        lldp:
+          neighbor: pe1
+          neighbor_intf: Gi0/0/0/4
+          neighbor_ipv4: 1.0.0.13/30
+        prefix: 1.0.0.0/16
+      Loopback0:
+        description: n9kv1 Loopback0
+        ipv4_address: 1.255.0.6/32
+      mgmt:
+        ipv4_address: 10.255.0.6/24
+        name: eth0
+    intf_naming:
+      default:
+        first_id: 1
+        name: Ethernet1/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: nxos
+      platform: nxos
+    password: admin
+    username: admin
   p1:
     clab:
       env:
@@ -387,6 +461,18 @@ devices:
           neighbor_ipv4: 1.1.0.6/30
         mtu: 1505
         prefix: 1.1.0.0/16
+      Gi0/0/0/4:
+        description: pe1:Gi0/0/0/4 -> n9kv1:Ethernet1/1
+        ipv4_address: 1.0.0.13/30
+        isis:
+          instance: CORE
+        link: pe1---n9kv1
+        link_group: core
+        lldp:
+          neighbor: n9kv1
+          neighbor_intf: Ethernet1/1
+          neighbor_ipv4: 1.0.0.14/30
+        prefix: 1.0.0.0/16
       Loopback0:
         description: pe1 Loopback0
         ipv4_address: 1.255.0.4/32
@@ -461,6 +547,11 @@ links:
   link_group: l3vpn
   mtu: 1505
   prefix: 1.1.0.0/16
+- isis:
+    instance: CORE
+  link: pe1---n9kv1
+  link_group: core
+  prefix: 1.0.0.0/16
 nornir_startup:
   inventory:
     options:
@@ -478,6 +569,9 @@ nornir_startup:
     platform: linux
   logging:
     log_file: nornir/nornir.log
+  nxos:
+    group: nxos
+    platform: nxos
   runner:
     options:
       num_workers: 10

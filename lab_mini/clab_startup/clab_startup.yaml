@@ -13,6 +13,17 @@ topology:
       image: vrnetlab/cisco_csr1000v:17.03.08
       kind: cisco_csr1000v
       startup-config: ios_initial_cfg.j2
+    cisco_n9kv:
+      env:
+        CLAB_MGMT_PASSTHROUGH: true
+        CLAB_MGMT_VRF: clab-mgmt
+        PASSWORD: admin
+        RAM: 10240
+        USERNAME: admin
+        VCPU: 4
+      image: vrnetlab/cisco_n9kv:10.4.5
+      kind: cisco_n9kv
+      startup-config: nxos_initial_cfg.j2
     cisco_xrd:
       env:
         CLAB_MGMT_VRF: clab-mgmt
@@ -60,6 +71,9 @@ topology:
   - endpoints:
     - pe1:Gi0-0-0-3
     - cpe1:Gi3
+  - endpoints:
+    - pe1:Gi0-0-0-4
+    - n9kv1:Ethernet1/1
   nodes:
     cpe1:
       kind: cisco_csr1000v
@@ -67,6 +81,9 @@ topology:
     host:
       kind: host
       mgmt-ipv4: 10.48.188.45
+    n9kv1:
+      kind: cisco_n9kv
+      mgmt-ipv4: 10.255.0.6
     p1:
       kind: cisco_xrv9k
       mgmt-ipv4: 10.255.0.2
