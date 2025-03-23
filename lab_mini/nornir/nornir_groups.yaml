@@ -14,4 +14,3 @@ nxos_ssh:
   password: admin
   platform: nxos_ssh
   username: admin
-
