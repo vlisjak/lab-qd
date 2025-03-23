@@ -1,6 +1,9 @@
 # TODOs (in no particular order)
 
 
+- fix nxos_ssh replace config
+  - https://github.com/nornir-automation/nornir/issues/991
+
 - allow multiple nodes/roles in CLI argument of all scripts
 
 - Implement lab-reset and lab_upgrade scripts - mainly for physical routers

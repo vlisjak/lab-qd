@@ -91,6 +91,7 @@ def render_j2_template(task, templ_dir, t_file, role):
         template=t_file,
         path=templ_dir,
         node=task.host.name,
+        jinja_env=jinja_env,
         node_inv=task.host.data,
         severity_level=logging.DEBUG,  # comment this line out, if you want to see rendered config (already shown by napalm diffs below..)
     )
@@ -111,6 +112,8 @@ def apply_configs(task, templ_dir, roles=None, dry_run=True, replace=True):
 
     for role in roles_to_apply:
 
+        node_config = None
+
         cfg_input = f"{templ_dir}/{task.host.name}.txt"
         j2_input = f"{templ_dir}/{role}_{task.host.platform}.j2"
 
@@ -130,7 +133,6 @@ def apply_configs(task, templ_dir, roles=None, dry_run=True, replace=True):
             raise Exception(f"% Could not open jinja template nor config file for {task.host.name}.")
 
         if node_config:
-            print(task.host.platform)
             task.run(task=napalm_configure, configuration=node_config, dry_run=dry_run, replace=replace)
             task.host.close_connections()
 
@@ -152,6 +154,11 @@ if __name__ == "__main__":
 
     parser = parseArgs()
     args = parser.parse_args()
+
+    jinja_env = Environment(trim_blocks=True, lstrip_blocks=True)
+    jinja_env.filters["regex_search"] = utils.regex_search
+    jinja_env.filters["ipv4_to_isis_net"] = utils.ipv4_to_isis_net
+    jinja_env.filters["cidr_to_legacy"] = utils.cidr_to_legacy
 
     try:
         nr = InitNornir(config_file=args.nornir_inv)
