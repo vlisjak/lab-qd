@@ -6,7 +6,6 @@
 - Implement lab-reset and lab_upgrade scripts - mainly for physical routers
   - lab_reset.py: replace current config with minimal mgmt. config
     - challenge: how to prevent users from modifying root user and mgmt_intf?
-    - can we make day0 and min_cfg templates the same?
   - lab_upgrade: replace OS version on physical routers
 
 - allow clab nodes data links with physical routers

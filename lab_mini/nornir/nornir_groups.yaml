@@ -10,7 +10,8 @@ linux:
   password: volpe123
   platform: linux
   username: vlisjak
-nxos:
+nxos_ssh:
   password: admin
   platform: nxos_ssh
   username: admin
+

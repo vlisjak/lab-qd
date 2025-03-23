@@ -42,7 +42,7 @@ from nornir.core.task import Result
 from nornir.core.inventory import Group
 from nornir_netmiko.tasks import netmiko_send_command
 from nornir_utils.plugins.functions import print_result
-from nornir_napalm.plugins.tasks import napalm_get, napalm_configure
+from nornir_napalm.plugins.tasks import napalm_get, napalm_configure, napalm_cli
 from nornir_utils.plugins.tasks.files import write_file
 from nornir_jinja2.plugins.tasks import template_string, template_file
 from nornir.core.filter import F
@@ -130,6 +130,7 @@ def apply_configs(task, templ_dir, roles=None, dry_run=True, replace=True):
             raise Exception(f"% Could not open jinja template nor config file for {task.host.name}.")
 
         if node_config:
+            print(task.host.platform)
             task.run(task=napalm_configure, configuration=node_config, dry_run=dry_run, replace=replace)
             task.host.close_connections()
 

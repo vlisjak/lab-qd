@@ -26,7 +26,7 @@ clab_startup:
   n9kv:
     image: vrnetlab/cisco_n9kv:10.4.5
     kind: cisco_n9kv
-    startup-config: nxos_initial_cfg.j2
+    startup-config: nxos_ssh_initial_cfg.j2
     env:
       VCPU: 4
       RAM: 10240
@@ -37,16 +37,12 @@ nornir_startup:
   # note: xrd and xrv9k are equivalent configuration wise -> the same iosxr nornir platform 
   iosxr:
     platform: iosxr
-    group: iosxr
   ios:
     platform: ios
-    group: ios
-  nxos:
+  nxos_ssh:
     platform: nxos_ssh
-    group: nxos
   linux:
     platform: linux
-    group: linux
   inventory:
     plugin: SimpleInventory
     options:
@@ -139,7 +135,7 @@ device_groups:
     clab:
       inherit_from: clab_startup.n9kv
     nornir:
-      inherit_from: nornir_startup.nxos
+      inherit_from: nornir_startup.nxos_ssh
     # intf_naming is used for auto-allocation of interface IDs for specific interface type
     intf_naming:
       default:
@@ -150,7 +146,7 @@ device_groups:
         first_id: 0
     interfaces:
       mgmt:
-        name: eth0
+        name: mgmt0
 
   host:
     username: vlisjak

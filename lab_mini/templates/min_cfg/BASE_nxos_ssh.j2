@@ -1,0 +1,16 @@
+hostname {{ node }}
+no password strength-check
+username cisco password 0 cisco role network-admin
+feature telnet
+feature nxapi
+feature scp-server
+feature netconf
+feature grpc
+ssh key rsa 2048 
+no ip domain-lookup
+vlan 1
+interface mgmt0
+  vrf member management
+  ip address {{ node_inv.mgmt.ipv4_address }}
+line console
+line vty

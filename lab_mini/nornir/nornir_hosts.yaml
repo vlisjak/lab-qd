@@ -24,9 +24,9 @@ n9kv1:
     - pe
     mgmt:
       ipv4_address: 10.255.0.6/24
-      name: eth0
+      name: mgmt0
   groups:
-  - nxos
+  - nxos_ssh
   hostname: 10.255.0.6
 p1:
   data:

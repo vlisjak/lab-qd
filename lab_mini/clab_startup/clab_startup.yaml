@@ -23,7 +23,7 @@ topology:
         VCPU: 4
       image: vrnetlab/cisco_n9kv:10.4.5
       kind: cisco_n9kv
-      startup-config: nxos_initial_cfg.j2
+      startup-config: nxos_ssh_initial_cfg.j2
     cisco_xrd:
       env:
         CLAB_MGMT_VRF: clab-mgmt
