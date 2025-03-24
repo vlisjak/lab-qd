@@ -171,6 +171,9 @@ if __name__ == "__main__":
     if args.node:
         nr = nr.filter(F(name__in=args.node))
 
+    # Exclude linux host
+    nr = nr.filter(~F(platform__eq="linux"))
+
     if nr.inventory.hosts.keys():
         if not args.dry_run:
             print(f"% We will reset the nodes: {list(nr.inventory.hosts)}")
