@@ -295,12 +295,14 @@ vrnetlab/cisco_n9kv         10.4.5           dc116a7d3270   19 hours ago    3.24
 ```
 
 - default user: admin/admin
+- add 'timeout:60' to nornir_startup, because nxos is sometimes really slow to respond to napalm_configure (timeouts ...)
+
 - master.yaml:
 ```yaml
 nornir_startup:
   nxos:
     platform: nxos
-    group: nxos
+    timeout: 60
 
 clab_startup:
   n9kv:
