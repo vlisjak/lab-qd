@@ -1,33 +1,32 @@
 ios:
+  connection_options:
+    napalm:
+      extras:
+        optional_args:
+          banner_timeout: 30
+          conn_timeout: 30
+          timeout: 30
+    netmiko:
+      extras:
+        banner_timeout: 30
+        conn_timeout: 30
+        timeout: 30
   password: clab@123
   platform: ios
   username: clab
+nxos_ssh:
   connection_options:
-    netmiko:
-      extras:
-        conn_timeout: 30
-        timeout: 30
-        banner_timeout: 30
     napalm:
       extras:
         optional_args:
+          banner_timeout: 30
           conn_timeout: 30
           timeout: 30
-          banner_timeout: 30
-
-nxos_ssh:
+    netmiko:
+      extras:
+        banner_timeout: 30
+        conn_timeout: 30
+        timeout: 30
   password: admin
   platform: nxos_ssh
   username: admin
-  connection_options:
-    netmiko:
-      extras:
-        conn_timeout: 30
-        timeout: 30
-        banner_timeout: 30
-    napalm:
-      extras:
-        optional_args:
-          conn_timeout: 30
-          timeout: 30
-          banner_timeout: 30

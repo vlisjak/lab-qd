@@ -23,8 +23,10 @@ clab_startup:
 nornir_startup:
   ios:
     platform: ios
+    timeout: 30
   nxos_ssh:
     platform: nxos_ssh
+    timeout: 30
   linux:
     platform: linux
   inventory:

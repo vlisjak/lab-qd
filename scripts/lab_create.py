@@ -447,9 +447,33 @@ def generate_nornir_vars(master_complete_dotted):
     # nornir_groups.yaml
     for clab_grp, group_details in master_complete_dotted.device_groups.items():
         group = group_details.nornir.platform
-        nornir_groups[group].platform = group_details.nornir.platform
-        nornir_groups[group].username = group_details.username
-        nornir_groups[group].password = group_details.password
+        timeout = group_details.nornir.timeout
+        # nornir_groups[group].platform = group_details.nornir.platform
+        # nornir_groups[group].username = group_details.username
+        # nornir_groups[group].password = group_details.password
+        nornir_groups[group].update({
+            "platform": group_details.nornir.platform,
+            "username": group_details.username,
+            "password": group_details.password,
+            "connection_options": {
+                "netmiko": {
+                    "extras": {
+                        "conn_timeout": timeout,
+                        "timeout": timeout,
+                        "banner_timeout": timeout
+                    }
+                },
+                "napalm": {
+                    "extras": {
+                        "optional_args": {
+                            "conn_timeout": timeout,
+                            "timeout": timeout,
+                            "banner_timeout": timeout
+                        }
+                    }
+                }
+            }
+        })
 
     # nornir_hosts.yaml
     for node, node_details in master_complete_dotted.devices.items():
