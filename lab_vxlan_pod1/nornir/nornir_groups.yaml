@@ -3,14 +3,14 @@ ios:
     napalm:
       extras:
         optional_args:
-          banner_timeout: 30
-          conn_timeout: 30
-          timeout: 30
+          banner_timeout: 60
+          conn_timeout: 60
+          timeout: 60
     netmiko:
       extras:
-        banner_timeout: 30
-        conn_timeout: 30
-        timeout: 30
+        banner_timeout: 60
+        conn_timeout: 60
+        timeout: 60
   password: clab@123
   platform: ios
   username: clab
@@ -19,14 +19,14 @@ nxos_ssh:
     napalm:
       extras:
         optional_args:
-          banner_timeout: 30
-          conn_timeout: 30
-          timeout: 30
+          banner_timeout: 60
+          conn_timeout: 60
+          timeout: 60
     netmiko:
       extras:
-        banner_timeout: 30
-        conn_timeout: 30
-        timeout: 30
+        banner_timeout: 60
+        conn_timeout: 60
+        timeout: 60
   password: admin
   platform: nxos_ssh
   username: admin

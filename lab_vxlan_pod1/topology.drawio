@@ -1,230 +1,185 @@
-<mxfile host="65bd71144e" compressed="false">
+<mxfile type="device" compressed="false">
     <diagram id="Topology" name="Topology">
-        <mxGraphModel dx="844" dy="499" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="1">
-            <root>
-                <mxCell id="0"/>
-                <mxCell id="1" parent="0"/>
-                <object label="spine1 1.255.0.2/32" id="spine1">
-                    <mxCell style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                        <mxGeometry x="254" y="260" width="80" height="60" as="geometry"/>
-                    </mxCell>
-                </object>
-                <object label="leaf1 1.255.0.3/32" id="leaf1">
-                    <mxCell style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                        <mxGeometry x="174" y="490" width="80" height="60" as="geometry"/>
-                    </mxCell>
-                </object>
-                <object label="" src_label="Ethernet1/1" trgt_label="Ethernet1/1" source="spine1" target="leaf1" id="fc1fc896193796708c58910a07595d53">
-                    <mxCell style="endArrow=none;" parent="1" source="spine1" target="leaf1" edge="1">
-                        <mxGeometry relative="1" as="geometry"/>
-                    </mxCell>
-                </object>
-                <mxCell id="fc1fc896193796708c58910a07595d53-src" value="Ethernet1/1" style="labelBackgroundColor=#ffffff;;" parent="fc1fc896193796708c58910a07595d53" vertex="1" connectable="0">
-                    <mxGeometry x="-0.5" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="fc1fc896193796708c58910a07595d53-trgt" value="Ethernet1/1" style="labelBackgroundColor=#ffffff;;" parent="fc1fc896193796708c58910a07595d53" vertex="1" connectable="0">
-                    <mxGeometry x="0.5" relative="-1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <object label="leaf2 1.255.0.4/32" id="leaf2">
-                    <mxCell style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                        <mxGeometry x="310" y="540" width="80" height="60" as="geometry"/>
-                    </mxCell>
-                </object>
-                <object label="" src_label="Ethernet1/2" trgt_label="Ethernet1/1" source="spine1" target="leaf2" id="1355327d60cabe80e927ea8173c03d77">
-                    <mxCell style="endArrow=none;" parent="1" source="spine1" target="leaf2" edge="1">
-                        <mxGeometry relative="1" as="geometry"/>
-                    </mxCell>
-                </object>
-                <mxCell id="1355327d60cabe80e927ea8173c03d77-src" value="Ethernet1/2" style="labelBackgroundColor=#ffffff;;" parent="1355327d60cabe80e927ea8173c03d77" vertex="1" connectable="0">
-                    <mxGeometry x="-0.5" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="1355327d60cabe80e927ea8173c03d77-trgt" value="Ethernet1/1" style="labelBackgroundColor=#ffffff;;" parent="1355327d60cabe80e927ea8173c03d77" vertex="1" connectable="0">
-                    <mxGeometry x="0.5" relative="-1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <object label="leaf3 1.255.0.5/32" id="leaf3">
-                    <mxCell style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                        <mxGeometry x="670" y="540" width="80" height="60" as="geometry"/>
-                    </mxCell>
-                </object>
-                <object label="" src_label="Ethernet1/3" trgt_label="Ethernet1/1" source="spine1" target="leaf3" id="746d86753780fde5e71fc229f4e04cf8">
-                    <mxCell style="endArrow=none;" parent="1" source="spine1" target="leaf3" edge="1">
-                        <mxGeometry relative="1" as="geometry"/>
-                    </mxCell>
-                </object>
-                <mxCell id="746d86753780fde5e71fc229f4e04cf8-src" value="Ethernet1/3" style="labelBackgroundColor=#ffffff;;" parent="746d86753780fde5e71fc229f4e04cf8" vertex="1" connectable="0">
-                    <mxGeometry x="-0.5" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="746d86753780fde5e71fc229f4e04cf8-trgt" value="Ethernet1/1" style="labelBackgroundColor=#ffffff;;" parent="746d86753780fde5e71fc229f4e04cf8" vertex="1" connectable="0">
-                    <mxGeometry x="0.5" relative="-1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <object label="leaf4 1.255.0.6/32" id="leaf4">
-                    <mxCell style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                        <mxGeometry x="840" y="490" width="80" height="60" as="geometry"/>
-                    </mxCell>
-                </object>
-                <object label="" src_label="Ethernet1/4" trgt_label="Ethernet1/1" source="spine1" target="leaf4" id="36be90b444516b4a4d2a33d62ace90e3">
-                    <mxCell style="endArrow=none;" parent="1" source="spine1" target="leaf4" edge="1">
-                        <mxGeometry relative="1" as="geometry"/>
-                    </mxCell>
-                </object>
-                <mxCell id="36be90b444516b4a4d2a33d62ace90e3-src" value="Ethernet1/4" style="labelBackgroundColor=#ffffff;;" parent="36be90b444516b4a4d2a33d62ace90e3" vertex="1" connectable="0">
-                    <mxGeometry x="-0.5" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="36be90b444516b4a4d2a33d62ace90e3-trgt" value="Ethernet1/1" style="labelBackgroundColor=#ffffff;;" parent="36be90b444516b4a4d2a33d62ace90e3" vertex="1" connectable="0">
-                    <mxGeometry x="0.5" relative="-1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <object label="spine2 1.255.0.7/32" id="spine2">
-                    <mxCell style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                        <mxGeometry x="760" y="260" width="80" height="60" as="geometry"/>
-                    </mxCell>
-                </object>
-                <object label="" src_label="Ethernet1/1" trgt_label="Ethernet1/2" source="spine2" target="leaf1" id="10346e6a2ae0ec5156dc8f3a9d7c1d75">
-                    <mxCell style="endArrow=none;" parent="1" source="spine2" target="leaf1" edge="1">
-                        <mxGeometry relative="1" as="geometry"/>
-                    </mxCell>
-                </object>
-                <mxCell id="10346e6a2ae0ec5156dc8f3a9d7c1d75-src" value="Ethernet1/1" style="labelBackgroundColor=#ffffff;;" parent="10346e6a2ae0ec5156dc8f3a9d7c1d75" vertex="1" connectable="0">
-                    <mxGeometry x="-0.5" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="10346e6a2ae0ec5156dc8f3a9d7c1d75-trgt" value="Ethernet1/2" style="labelBackgroundColor=#ffffff;;" parent="10346e6a2ae0ec5156dc8f3a9d7c1d75" vertex="1" connectable="0">
-                    <mxGeometry x="0.5" relative="-1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <object label="" src_label="Ethernet1/2" trgt_label="Ethernet1/2" source="spine2" target="leaf2" id="0415b7aa52831782602d594e323c028c">
-                    <mxCell style="endArrow=none;" parent="1" source="spine2" target="leaf2" edge="1">
-                        <mxGeometry relative="1" as="geometry"/>
-                    </mxCell>
-                </object>
-                <mxCell id="0415b7aa52831782602d594e323c028c-src" value="Ethernet1/2" style="labelBackgroundColor=#ffffff;;" parent="0415b7aa52831782602d594e323c028c" vertex="1" connectable="0">
-                    <mxGeometry x="-0.5" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="0415b7aa52831782602d594e323c028c-trgt" value="Ethernet1/2" style="labelBackgroundColor=#ffffff;;" parent="0415b7aa52831782602d594e323c028c" vertex="1" connectable="0">
-                    <mxGeometry x="0.5" relative="-1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <object label="" src_label="Ethernet1/3" trgt_label="Ethernet1/2" source="spine2" target="leaf3" id="b8401775363703f3aefda1bdeac80fa0">
-                    <mxCell style="endArrow=none;" parent="1" source="spine2" target="leaf3" edge="1">
-                        <mxGeometry relative="1" as="geometry"/>
-                    </mxCell>
-                </object>
-                <mxCell id="b8401775363703f3aefda1bdeac80fa0-src" value="Ethernet1/3" style="labelBackgroundColor=#ffffff;;" parent="b8401775363703f3aefda1bdeac80fa0" vertex="1" connectable="0">
-                    <mxGeometry x="-0.5" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="b8401775363703f3aefda1bdeac80fa0-trgt" value="Ethernet1/2" style="labelBackgroundColor=#ffffff;;" parent="b8401775363703f3aefda1bdeac80fa0" vertex="1" connectable="0">
-                    <mxGeometry x="0.5" relative="-1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <object label="" src_label="Ethernet1/4" trgt_label="Ethernet1/2" source="spine2" target="leaf4" id="981051333f4cd171595d833434e81752">
-                    <mxCell style="endArrow=none;" parent="1" source="spine2" target="leaf4" edge="1">
-                        <mxGeometry relative="1" as="geometry"/>
-                    </mxCell>
-                </object>
-                <mxCell id="981051333f4cd171595d833434e81752-src" value="Ethernet1/4" style="labelBackgroundColor=#ffffff;;" parent="981051333f4cd171595d833434e81752" vertex="1" connectable="0">
-                    <mxGeometry x="-0.5" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="981051333f4cd171595d833434e81752-trgt" value="Ethernet1/2" style="labelBackgroundColor=#ffffff;;" parent="981051333f4cd171595d833434e81752" vertex="1" connectable="0">
-                    <mxGeometry x="0.5" relative="-1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <object label="cpe1 1.255.0.8/32" id="cpe1">
-                    <mxCell style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                        <mxGeometry x="254" y="690" width="80" height="60" as="geometry"/>
-                    </mxCell>
-                </object>
-                <object label="" src_label="Ethernet1/3" trgt_label="Gi2" source="leaf1" target="cpe1" id="f8b711ccc170f66b02c78f345c6199f0">
-                    <mxCell style="endArrow=none;" parent="1" source="leaf1" target="cpe1" edge="1">
-                        <mxGeometry relative="1" as="geometry"/>
-                    </mxCell>
-                </object>
-                <mxCell id="f8b711ccc170f66b02c78f345c6199f0-src" value="Ethernet1/3" style="labelBackgroundColor=#ffffff;;" parent="f8b711ccc170f66b02c78f345c6199f0" vertex="1" connectable="0">
-                    <mxGeometry x="-0.5" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="f8b711ccc170f66b02c78f345c6199f0-trgt" value="Gi2" style="labelBackgroundColor=#ffffff;;" parent="f8b711ccc170f66b02c78f345c6199f0" vertex="1" connectable="0">
-                    <mxGeometry x="0.5" relative="-1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <object label="" src_label="Ethernet1/3" trgt_label="Gi3" source="leaf2" target="cpe1" id="d44d46da5f5f1d5e462585fd8f0d7404">
-                    <mxCell style="endArrow=none;" parent="1" source="leaf2" target="cpe1" edge="1">
-                        <mxGeometry relative="1" as="geometry"/>
-                    </mxCell>
-                </object>
-                <mxCell id="d44d46da5f5f1d5e462585fd8f0d7404-src" value="Ethernet1/3" style="labelBackgroundColor=#ffffff;;" parent="d44d46da5f5f1d5e462585fd8f0d7404" vertex="1" connectable="0">
-                    <mxGeometry x="-0.5" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="d44d46da5f5f1d5e462585fd8f0d7404-trgt" value="Gi3" style="labelBackgroundColor=#ffffff;;" parent="d44d46da5f5f1d5e462585fd8f0d7404" vertex="1" connectable="0">
-                    <mxGeometry x="0.5" relative="-1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <object label="cpe2 1.255.0.9/32" id="cpe2">
-                    <mxCell style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                        <mxGeometry x="760" y="690" width="80" height="60" as="geometry"/>
-                    </mxCell>
-                </object>
-                <object label="" src_label="Ethernet1/3" trgt_label="Gi2" source="leaf3" target="cpe2" id="08a0c76d479c54e62097121a6f84fa19">
-                    <mxCell style="endArrow=none;" parent="1" source="leaf3" target="cpe2" edge="1">
-                        <mxGeometry relative="1" as="geometry"/>
-                    </mxCell>
-                </object>
-                <mxCell id="08a0c76d479c54e62097121a6f84fa19-src" value="Ethernet1/3" style="labelBackgroundColor=#ffffff;;" parent="08a0c76d479c54e62097121a6f84fa19" vertex="1" connectable="0">
-                    <mxGeometry x="-0.5" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="08a0c76d479c54e62097121a6f84fa19-trgt" value="Gi2" style="labelBackgroundColor=#ffffff;;" parent="08a0c76d479c54e62097121a6f84fa19" vertex="1" connectable="0">
-                    <mxGeometry x="0.5" relative="-1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <object label="" src_label="Ethernet1/3" trgt_label="Gi3" source="leaf4" target="cpe2" id="effb3d244df6569a6ab76856af78dea0">
-                    <mxCell style="endArrow=none;" parent="1" source="leaf4" target="cpe2" edge="1">
-                        <mxGeometry relative="1" as="geometry"/>
-                    </mxCell>
-                </object>
-                <mxCell id="effb3d244df6569a6ab76856af78dea0-src" value="Ethernet1/3" style="labelBackgroundColor=#ffffff;;" parent="effb3d244df6569a6ab76856af78dea0" vertex="1" connectable="0">
-                    <mxGeometry x="-0.5" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="effb3d244df6569a6ab76856af78dea0-trgt" value="Gi3" style="labelBackgroundColor=#ffffff;;" parent="effb3d244df6569a6ab76856af78dea0" vertex="1" connectable="0">
-                    <mxGeometry x="0.5" relative="-1" as="geometry">
-                        <mxPoint as="offset"/>
-                    </mxGeometry>
-                </mxCell>
-            </root>
-        </mxGraphModel>
-    </diagram>
-</mxfile>
+      <mxGraphModel dx="1000" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="1">
+        <root>
+          <mxCell id="0" />   
+          <mxCell id="1" parent="0" />
+        <object id="spine1" label="spine1 1.255.0.2/32">
+      <mxCell style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="254" y="260" width="80" height="60" as="geometry" />
+      </mxCell>
+    </object><object id="leaf1" label="leaf1 1.255.0.3/32">
+      <mxCell style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="174" y="490" width="80" height="60" as="geometry" />
+      </mxCell>
+    </object><mxCell id="fc1fc896193796708c58910a07595d53-src" value="Ethernet1/1" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="fc1fc896193796708c58910a07595d53">
+      <mxGeometry x="-0.5" relative="1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><mxCell id="fc1fc896193796708c58910a07595d53-trgt" value="Ethernet1/1" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="fc1fc896193796708c58910a07595d53">
+      <mxGeometry x="0.5" relative="-1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><object id="fc1fc896193796708c58910a07595d53" label="" src_label="Ethernet1/1" trgt_label="Ethernet1/1" source="spine1" target="leaf1">
+      <mxCell style="endArrow=none;" edge="1" parent="1" source="spine1" target="leaf1">
+          <mxGeometry relative="1" as="geometry" />
+      </mxCell>
+    </object><object id="leaf2" label="leaf2 1.255.0.4/32">
+      <mxCell style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="310" y="540" width="80" height="60" as="geometry" />
+      </mxCell>
+    </object><mxCell id="1355327d60cabe80e927ea8173c03d77-src" value="Ethernet1/2" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="1355327d60cabe80e927ea8173c03d77">
+      <mxGeometry x="-0.5" relative="1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><mxCell id="1355327d60cabe80e927ea8173c03d77-trgt" value="Ethernet1/1" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="1355327d60cabe80e927ea8173c03d77">
+      <mxGeometry x="0.5" relative="-1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><object id="1355327d60cabe80e927ea8173c03d77" label="" src_label="Ethernet1/2" trgt_label="Ethernet1/1" source="spine1" target="leaf2">
+      <mxCell style="endArrow=none;" edge="1" parent="1" source="spine1" target="leaf2">
+          <mxGeometry relative="1" as="geometry" />
+      </mxCell>
+    </object><object id="leaf3" label="leaf3 1.255.0.5/32">
+      <mxCell style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="670" y="540" width="80" height="60" as="geometry" />
+      </mxCell>
+    </object><mxCell id="746d86753780fde5e71fc229f4e04cf8-src" value="Ethernet1/3" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="746d86753780fde5e71fc229f4e04cf8">
+      <mxGeometry x="-0.5" relative="1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><mxCell id="746d86753780fde5e71fc229f4e04cf8-trgt" value="Ethernet1/1" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="746d86753780fde5e71fc229f4e04cf8">
+      <mxGeometry x="0.5" relative="-1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><object id="746d86753780fde5e71fc229f4e04cf8" label="" src_label="Ethernet1/3" trgt_label="Ethernet1/1" source="spine1" target="leaf3">
+      <mxCell style="endArrow=none;" edge="1" parent="1" source="spine1" target="leaf3">
+          <mxGeometry relative="1" as="geometry" />
+      </mxCell>
+    </object><object id="leaf4" label="leaf4 1.255.0.6/32">
+      <mxCell style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="840" y="490" width="80" height="60" as="geometry" />
+      </mxCell>
+    </object><mxCell id="36be90b444516b4a4d2a33d62ace90e3-src" value="Ethernet1/4" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="36be90b444516b4a4d2a33d62ace90e3">
+      <mxGeometry x="-0.5" relative="1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><mxCell id="36be90b444516b4a4d2a33d62ace90e3-trgt" value="Ethernet1/1" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="36be90b444516b4a4d2a33d62ace90e3">
+      <mxGeometry x="0.5" relative="-1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><object id="36be90b444516b4a4d2a33d62ace90e3" label="" src_label="Ethernet1/4" trgt_label="Ethernet1/1" source="spine1" target="leaf4">
+      <mxCell style="endArrow=none;" edge="1" parent="1" source="spine1" target="leaf4">
+          <mxGeometry relative="1" as="geometry" />
+      </mxCell>
+    </object><object id="spine2" label="spine2 1.255.0.7/32">
+      <mxCell style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="760" y="260" width="80" height="60" as="geometry" />
+      </mxCell>
+    </object><mxCell id="10346e6a2ae0ec5156dc8f3a9d7c1d75-src" value="Ethernet1/1" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="10346e6a2ae0ec5156dc8f3a9d7c1d75">
+      <mxGeometry x="-0.5" relative="1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><mxCell id="10346e6a2ae0ec5156dc8f3a9d7c1d75-trgt" value="Ethernet1/2" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="10346e6a2ae0ec5156dc8f3a9d7c1d75">
+      <mxGeometry x="0.5" relative="-1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><object id="10346e6a2ae0ec5156dc8f3a9d7c1d75" label="" src_label="Ethernet1/1" trgt_label="Ethernet1/2" source="spine2" target="leaf1">
+      <mxCell style="endArrow=none;" edge="1" parent="1" source="spine2" target="leaf1">
+          <mxGeometry relative="1" as="geometry" />
+      </mxCell>
+    </object><mxCell id="0415b7aa52831782602d594e323c028c-src" value="Ethernet1/2" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="0415b7aa52831782602d594e323c028c">
+      <mxGeometry x="-0.5" relative="1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><mxCell id="0415b7aa52831782602d594e323c028c-trgt" value="Ethernet1/2" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="0415b7aa52831782602d594e323c028c">
+      <mxGeometry x="0.5" relative="-1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><object id="0415b7aa52831782602d594e323c028c" label="" src_label="Ethernet1/2" trgt_label="Ethernet1/2" source="spine2" target="leaf2">
+      <mxCell style="endArrow=none;" edge="1" parent="1" source="spine2" target="leaf2">
+          <mxGeometry relative="1" as="geometry" />
+      </mxCell>
+    </object><mxCell id="b8401775363703f3aefda1bdeac80fa0-src" value="Ethernet1/3" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="b8401775363703f3aefda1bdeac80fa0">
+      <mxGeometry x="-0.5" relative="1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><mxCell id="b8401775363703f3aefda1bdeac80fa0-trgt" value="Ethernet1/2" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="b8401775363703f3aefda1bdeac80fa0">
+      <mxGeometry x="0.5" relative="-1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><object id="b8401775363703f3aefda1bdeac80fa0" label="" src_label="Ethernet1/3" trgt_label="Ethernet1/2" source="spine2" target="leaf3">
+      <mxCell style="endArrow=none;" edge="1" parent="1" source="spine2" target="leaf3">
+          <mxGeometry relative="1" as="geometry" />
+      </mxCell>
+    </object><mxCell id="981051333f4cd171595d833434e81752-src" value="Ethernet1/4" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="981051333f4cd171595d833434e81752">
+      <mxGeometry x="-0.5" relative="1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><mxCell id="981051333f4cd171595d833434e81752-trgt" value="Ethernet1/2" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="981051333f4cd171595d833434e81752">
+      <mxGeometry x="0.5" relative="-1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><object id="981051333f4cd171595d833434e81752" label="" src_label="Ethernet1/4" trgt_label="Ethernet1/2" source="spine2" target="leaf4">
+      <mxCell style="endArrow=none;" edge="1" parent="1" source="spine2" target="leaf4">
+          <mxGeometry relative="1" as="geometry" />
+      </mxCell>
+    </object><object id="cpe1" label="cpe1 1.255.0.8/32">
+      <mxCell style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="254" y="690" width="80" height="60" as="geometry" />
+      </mxCell>
+    </object><mxCell id="f8b711ccc170f66b02c78f345c6199f0-src" value="Ethernet1/3" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="f8b711ccc170f66b02c78f345c6199f0">
+      <mxGeometry x="-0.5" relative="1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><mxCell id="f8b711ccc170f66b02c78f345c6199f0-trgt" value="Gi2" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="f8b711ccc170f66b02c78f345c6199f0">
+      <mxGeometry x="0.5" relative="-1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><object id="f8b711ccc170f66b02c78f345c6199f0" label="" src_label="Ethernet1/3" trgt_label="Gi2" source="leaf1" target="cpe1">
+      <mxCell style="endArrow=none;" edge="1" parent="1" source="leaf1" target="cpe1">
+          <mxGeometry relative="1" as="geometry" />
+      </mxCell>
+    </object><mxCell id="d44d46da5f5f1d5e462585fd8f0d7404-src" value="Ethernet1/3" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="d44d46da5f5f1d5e462585fd8f0d7404">
+      <mxGeometry x="-0.5" relative="1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><mxCell id="d44d46da5f5f1d5e462585fd8f0d7404-trgt" value="Gi3" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="d44d46da5f5f1d5e462585fd8f0d7404">
+      <mxGeometry x="0.5" relative="-1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><object id="d44d46da5f5f1d5e462585fd8f0d7404" label="" src_label="Ethernet1/3" trgt_label="Gi3" source="leaf2" target="cpe1">
+      <mxCell style="endArrow=none;" edge="1" parent="1" source="leaf2" target="cpe1">
+          <mxGeometry relative="1" as="geometry" />
+      </mxCell>
+    </object><object id="cpe2" label="cpe2 1.255.0.9/32">
+      <mxCell style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="760" y="690" width="80" height="60" as="geometry" />
+      </mxCell>
+    </object><mxCell id="08a0c76d479c54e62097121a6f84fa19-src" value="Ethernet1/3" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="08a0c76d479c54e62097121a6f84fa19">
+      <mxGeometry x="-0.5" relative="1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><mxCell id="08a0c76d479c54e62097121a6f84fa19-trgt" value="Gi2" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="08a0c76d479c54e62097121a6f84fa19">
+      <mxGeometry x="0.5" relative="-1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><object id="08a0c76d479c54e62097121a6f84fa19" label="" src_label="Ethernet1/3" trgt_label="Gi2" source="leaf3" target="cpe2">
+      <mxCell style="endArrow=none;" edge="1" parent="1" source="leaf3" target="cpe2">
+          <mxGeometry relative="1" as="geometry" />
+      </mxCell>
+    </object><mxCell id="effb3d244df6569a6ab76856af78dea0-src" value="Ethernet1/3" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="effb3d244df6569a6ab76856af78dea0">
+      <mxGeometry x="-0.5" relative="1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><mxCell id="effb3d244df6569a6ab76856af78dea0-trgt" value="Gi3" style="labelBackgroundColor=#ffffff;;" vertex="1" connectable="0" parent="effb3d244df6569a6ab76856af78dea0">
+      <mxGeometry x="0.5" relative="-1" as="geometry">
+        <mxPoint as="offset" />
+      </mxGeometry>
+    </mxCell><object id="effb3d244df6569a6ab76856af78dea0" label="" src_label="Ethernet1/3" trgt_label="Gi3" source="leaf4" target="cpe2">
+      <mxCell style="endArrow=none;" edge="1" parent="1" source="leaf4" target="cpe2">
+          <mxGeometry relative="1" as="geometry" />
+      </mxCell>
+    </object></root>
+      </mxGraphModel>
+    </diagram></mxfile>

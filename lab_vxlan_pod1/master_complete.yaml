@@ -37,7 +37,7 @@ device_groups:
         name: Loopback
     nornir:
       platform: ios
-      timeout: 30
+      timeout: 60
     password: clab@123
     username: clab
   n9kv:
@@ -61,7 +61,7 @@ device_groups:
         name: Loopback
     nornir:
       platform: nxos_ssh
-      timeout: 30
+      timeout: 60
     password: admin
     username: admin
 devices:
@@ -115,7 +115,7 @@ devices:
         name: Loopback
     nornir:
       platform: ios
-      timeout: 30
+      timeout: 60
     password: clab@123
     username: clab
   cpe2:
@@ -168,7 +168,7 @@ devices:
         name: Loopback
     nornir:
       platform: ios
-      timeout: 30
+      timeout: 60
     password: clab@123
     username: clab
   leaf1:
@@ -233,7 +233,7 @@ devices:
         name: Loopback
     nornir:
       platform: nxos_ssh
-      timeout: 30
+      timeout: 60
     password: admin
     username: admin
   leaf2:
@@ -298,7 +298,7 @@ devices:
         name: Loopback
     nornir:
       platform: nxos_ssh
-      timeout: 30
+      timeout: 60
     password: admin
     username: admin
   leaf3:
@@ -363,7 +363,7 @@ devices:
         name: Loopback
     nornir:
       platform: nxos_ssh
-      timeout: 30
+      timeout: 60
     password: admin
     username: admin
   leaf4:
@@ -428,7 +428,7 @@ devices:
         name: Loopback
     nornir:
       platform: nxos_ssh
-      timeout: 30
+      timeout: 60
     password: admin
     username: admin
   spine1:
@@ -506,7 +506,7 @@ devices:
         name: Loopback
     nornir:
       platform: nxos_ssh
-      timeout: 30
+      timeout: 60
     password: admin
     username: admin
   spine2:
@@ -584,7 +584,7 @@ devices:
         name: Loopback
     nornir:
       platform: nxos_ssh
-      timeout: 30
+      timeout: 60
     password: admin
     username: admin
 drawio_diagram: topology.drawio
@@ -669,14 +669,14 @@ nornir_startup:
     plugin: SimpleInventory
   ios:
     platform: ios
-    timeout: 30
+    timeout: 60
   linux:
     platform: linux
   logging:
     log_file: nornir/nornir.log
   nxos_ssh:
     platform: nxos_ssh
-    timeout: 30
+    timeout: 60
   runner:
     options:
       num_workers: 10
