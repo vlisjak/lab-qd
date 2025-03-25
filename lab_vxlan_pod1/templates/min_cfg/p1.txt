@@ -1,0 +1,37 @@
+hostname p1
+!
+username cisco
+ group root-lr
+ group cisco-support
+ secret cisco
+!
+username lisko
+ group root-lr
+ group cisco-support
+ secret lisko
+!
+username clab
+ group root-lr
+ group cisco-support
+ secret clab@123
+!
+line default
+  transport input ssh
+!
+netconf-yang agent
+ ssh
+!
+interface MgmtEth0/RP0/CPU0/0
+ ipv4 address 10.255.0.2/24
+ no shutdown
+!
+grpc
+ port 57400
+ no-tls
+ address-family ipv4
+!
+ssh server v2
+ssh server netconf
+xml agent tty iteration off
+lldp
+ipv4 netmask-format bit-count

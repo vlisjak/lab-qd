@@ -1,0 +1,19 @@
+hostname {{ .ShortName }}
+no password strength-check
+username {{ .Env.USERNAME }} password 0 {{ .Env.PASSWORD }} role network-admin
+username cisco password 0 cisco role network-admin
+feature telnet
+feature nxapi
+feature scp-server
+feature netconf
+feature grpc
+ssh key rsa 2048 
+no ip domain-lookup
+vlan 1
+vrf context management
+  ip route 0.0.0.0/0 {{ .MgmtIPv4Gateway }}
+interface mgmt0
+  vrf member management
+  ip address {{ .MgmtIPv4Address }}/24
+line console
+line vty

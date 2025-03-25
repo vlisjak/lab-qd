@@ -52,6 +52,7 @@ import logging
 import utils
 from box import Box
 import argparse
+from datetime import datetime
 
 
 def parseArgs():
@@ -71,6 +72,7 @@ def parseArgs():
     parser.add_argument(
         "--cfg_backup_dir",
         help="Fetch and save current device configs, before resetting the lab.",
+        default=f"cfg_backup_{datetime.now():%Y%m%d}",
         required=False,
     )
     dry_parser = parser.add_mutually_exclusive_group(required=True)
@@ -165,14 +167,14 @@ if __name__ == "__main__":
     except:
         exit(f"% Could not open Nornir configuration file: {args.nornir_inv}")
 
+    # Exclude linux host
+    nr = nr.filter(~F(platform__eq="linux"))
+
     if args.role:
         nr = nr.filter(F(device_roles__any=args.role))
 
     if args.node:
         nr = nr.filter(F(name__in=args.node))
-
-    # Exclude linux host
-    nr = nr.filter(~F(platform__eq="linux"))
 
     if nr.inventory.hosts.keys():
         if not args.dry_run:

@@ -1,0 +1,80 @@
+cpe1:
+  data:
+    device_roles:
+    - cpe
+    mgmt:
+      ipv4_address: 10.255.11.8/24
+      name: GigabitEthernet1
+  groups:
+  - ios
+  hostname: 10.255.11.8
+cpe2:
+  data:
+    device_roles:
+    - cpe
+    mgmt:
+      ipv4_address: 10.255.11.9/24
+      name: GigabitEthernet1
+  groups:
+  - ios
+  hostname: 10.255.11.9
+leaf1:
+  data:
+    device_roles:
+    - leaf
+    mgmt:
+      ipv4_address: 10.255.11.3/24
+      name: mgmt0
+  groups:
+  - nxos_ssh
+  hostname: 10.255.11.3
+leaf2:
+  data:
+    device_roles:
+    - leaf
+    mgmt:
+      ipv4_address: 10.255.11.4/24
+      name: mgmt0
+  groups:
+  - nxos_ssh
+  hostname: 10.255.11.4
+leaf3:
+  data:
+    device_roles:
+    - leaf
+    mgmt:
+      ipv4_address: 10.255.11.5/24
+      name: mgmt0
+  groups:
+  - nxos_ssh
+  hostname: 10.255.11.5
+leaf4:
+  data:
+    device_roles:
+    - leaf
+    mgmt:
+      ipv4_address: 10.255.11.6/24
+      name: mgmt0
+  groups:
+  - nxos_ssh
+  hostname: 10.255.11.6
+spine1:
+  data:
+    device_roles:
+    - spine
+    mgmt:
+      ipv4_address: 10.255.11.2/24
+      name: mgmt0
+  groups:
+  - nxos_ssh
+  hostname: 10.255.11.2
+spine2:
+  data:
+    device_roles:
+    - spine
+    mgmt:
+      ipv4_address: 10.255.11.7/24
+      name: mgmt0
+  groups:
+  - nxos_ssh
+  hostname: 10.255.11.7

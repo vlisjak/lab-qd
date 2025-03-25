@@ -1,0 +1,671 @@
+clab_name: vxlan_pod1
+clab_startup:
+  ios:
+    env:
+      CLAB_MGMT_PASSTHROUGH: true
+    image: vrnetlab/cisco_csr1000v:17.03.08
+    kind: cisco_csr1000v
+    startup-config: ios_initial_cfg.j2
+  n9kv:
+    env:
+      CLAB_MGMT_PASSTHROUGH: true
+      RAM: 10240
+      VCPU: 4
+    image: vrnetlab/cisco_n9kv:10.4.5
+    kind: cisco_n9kv
+    startup-config: nxos_ssh_initial_cfg.j2
+device_groups:
+  ios:
+    clab:
+      env:
+        CLAB_MGMT_PASSTHROUGH: true
+      image: vrnetlab/cisco_csr1000v:17.03.08
+      kind: cisco_csr1000v
+      startup-config: ios_initial_cfg.j2
+    interfaces:
+      mgmt:
+        name: GigabitEthernet1
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: BE
+      default:
+        first_id: 2
+        name: Gi
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      platform: ios
+    password: clab@123
+    username: clab
+  n9kv:
+    clab:
+      env:
+        CLAB_MGMT_PASSTHROUGH: true
+        RAM: 10240
+        VCPU: 4
+      image: vrnetlab/cisco_n9kv:10.4.5
+      kind: cisco_n9kv
+      startup-config: nxos_ssh_initial_cfg.j2
+    interfaces:
+      mgmt:
+        name: mgmt0
+    intf_naming:
+      default:
+        first_id: 1
+        name: Ethernet1/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      platform: nxos_ssh
+    password: admin
+    username: admin
+devices:
+  cpe1:
+    clab:
+      env:
+        CLAB_MGMT_PASSTHROUGH: true
+      image: vrnetlab/cisco_csr1000v:17.03.08
+      kind: cisco_csr1000v
+      startup-config: ios_initial_cfg.j2
+    device_roles:
+    - cpe
+    interfaces:
+      Gi2:
+        description: cpe1:Gi2 -> leaf1:Ethernet1/3
+        ipv4_address: 1.1.0.2/30
+        link: leaf1---cpe1
+        link_group: access
+        lldp:
+          neighbor: leaf1
+          neighbor_intf: Ethernet1/3
+          neighbor_ipv4: 1.1.0.1/30
+        mtu: 1505
+        prefix: 1.1.0.0/16
+      Gi3:
+        description: cpe1:Gi3 -> leaf2:Ethernet1/3
+        ipv4_address: 1.1.0.6/30
+        link: leaf2---cpe1
+        link_group: access
+        lldp:
+          neighbor: leaf2
+          neighbor_intf: Ethernet1/3
+          neighbor_ipv4: 1.1.0.5/30
+        mtu: 1505
+        prefix: 1.1.0.0/16
+      Loopback0:
+        description: cpe1 Loopback0
+        ipv4_address: 1.255.0.8/32
+      mgmt:
+        ipv4_address: 10.255.11.8/24
+        name: GigabitEthernet1
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: BE
+      default:
+        first_id: 2
+        name: Gi
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      platform: ios
+    password: clab@123
+    username: clab
+  cpe2:
+    clab:
+      env:
+        CLAB_MGMT_PASSTHROUGH: true
+      image: vrnetlab/cisco_csr1000v:17.03.08
+      kind: cisco_csr1000v
+      startup-config: ios_initial_cfg.j2
+    device_roles:
+    - cpe
+    interfaces:
+      Gi2:
+        description: cpe2:Gi2 -> leaf3:Ethernet1/3
+        ipv4_address: 1.1.0.10/30
+        link: leaf3---cpe2
+        link_group: access
+        lldp:
+          neighbor: leaf3
+          neighbor_intf: Ethernet1/3
+          neighbor_ipv4: 1.1.0.9/30
+        mtu: 1505
+        prefix: 1.1.0.0/16
+      Gi3:
+        description: cpe2:Gi3 -> leaf4:Ethernet1/3
+        ipv4_address: 1.1.0.14/30
+        link: leaf4---cpe2
+        link_group: access
+        lldp:
+          neighbor: leaf4
+          neighbor_intf: Ethernet1/3
+          neighbor_ipv4: 1.1.0.13/30
+        mtu: 1505
+        prefix: 1.1.0.0/16
+      Loopback0:
+        description: cpe2 Loopback0
+        ipv4_address: 1.255.0.9/32
+      mgmt:
+        ipv4_address: 10.255.11.9/24
+        name: GigabitEthernet1
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: BE
+      default:
+        first_id: 2
+        name: Gi
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      platform: ios
+    password: clab@123
+    username: clab
+  leaf1:
+    clab:
+      env:
+        CLAB_MGMT_PASSTHROUGH: true
+        RAM: 10240
+        VCPU: 4
+      image: vrnetlab/cisco_n9kv:10.4.5
+      kind: cisco_n9kv
+      startup-config: nxos_ssh_initial_cfg.j2
+    device_roles:
+    - leaf
+    interfaces:
+      Ethernet1/1:
+        description: leaf1:Ethernet1/1 -> spine1:Ethernet1/1
+        ipv4_address: 1.0.0.2/30
+        isis:
+          instance: FABRIC
+        link: spine1---leaf1
+        link_group: fabric
+        lldp:
+          neighbor: spine1
+          neighbor_intf: Ethernet1/1
+          neighbor_ipv4: 1.0.0.1/30
+        prefix: 1.0.0.0/16
+      Ethernet1/2:
+        description: leaf1:Ethernet1/2 -> spine2:Ethernet1/1
+        ipv4_address: 1.0.0.18/30
+        isis:
+          instance: FABRIC
+        link: spine2---leaf1
+        link_group: fabric
+        lldp:
+          neighbor: spine2
+          neighbor_intf: Ethernet1/1
+          neighbor_ipv4: 1.0.0.17/30
+        prefix: 1.0.0.0/16
+      Ethernet1/3:
+        description: leaf1:Ethernet1/3 -> cpe1:Gi2
+        ipv4_address: 1.1.0.1/30
+        link: leaf1---cpe1
+        link_group: access
+        lldp:
+          neighbor: cpe1
+          neighbor_intf: Gi2
+          neighbor_ipv4: 1.1.0.2/30
+        mtu: 1505
+        prefix: 1.1.0.0/16
+      Loopback0:
+        description: leaf1 Loopback0
+        ipv4_address: 1.255.0.3/32
+      mgmt:
+        ipv4_address: 10.255.11.3/24
+        name: mgmt0
+    intf_naming:
+      default:
+        first_id: 1
+        name: Ethernet1/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      platform: nxos_ssh
+    password: admin
+    username: admin
+  leaf2:
+    clab:
+      env:
+        CLAB_MGMT_PASSTHROUGH: true
+        RAM: 10240
+        VCPU: 4
+      image: vrnetlab/cisco_n9kv:10.4.5
+      kind: cisco_n9kv
+      startup-config: nxos_ssh_initial_cfg.j2
+    device_roles:
+    - leaf
+    interfaces:
+      Ethernet1/1:
+        description: leaf2:Ethernet1/1 -> spine1:Ethernet1/2
+        ipv4_address: 1.0.0.6/30
+        isis:
+          instance: FABRIC
+        link: spine1---leaf2
+        link_group: fabric
+        lldp:
+          neighbor: spine1
+          neighbor_intf: Ethernet1/2
+          neighbor_ipv4: 1.0.0.5/30
+        prefix: 1.0.0.0/16
+      Ethernet1/2:
+        description: leaf2:Ethernet1/2 -> spine2:Ethernet1/2
+        ipv4_address: 1.0.0.22/30
+        isis:
+          instance: FABRIC
+        link: spine2---leaf2
+        link_group: fabric
+        lldp:
+          neighbor: spine2
+          neighbor_intf: Ethernet1/2
+          neighbor_ipv4: 1.0.0.21/30
+        prefix: 1.0.0.0/16
+      Ethernet1/3:
+        description: leaf2:Ethernet1/3 -> cpe1:Gi3
+        ipv4_address: 1.1.0.5/30
+        link: leaf2---cpe1
+        link_group: access
+        lldp:
+          neighbor: cpe1
+          neighbor_intf: Gi3
+          neighbor_ipv4: 1.1.0.6/30
+        mtu: 1505
+        prefix: 1.1.0.0/16
+      Loopback0:
+        description: leaf2 Loopback0
+        ipv4_address: 1.255.0.4/32
+      mgmt:
+        ipv4_address: 10.255.11.4/24
+        name: mgmt0
+    intf_naming:
+      default:
+        first_id: 1
+        name: Ethernet1/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      platform: nxos_ssh
+    password: admin
+    username: admin
+  leaf3:
+    clab:
+      env:
+        CLAB_MGMT_PASSTHROUGH: true
+        RAM: 10240
+        VCPU: 4
+      image: vrnetlab/cisco_n9kv:10.4.5
+      kind: cisco_n9kv
+      startup-config: nxos_ssh_initial_cfg.j2
+    device_roles:
+    - leaf
+    interfaces:
+      Ethernet1/1:
+        description: leaf3:Ethernet1/1 -> spine1:Ethernet1/3
+        ipv4_address: 1.0.0.10/30
+        isis:
+          instance: FABRIC
+        link: spine1---leaf3
+        link_group: fabric
+        lldp:
+          neighbor: spine1
+          neighbor_intf: Ethernet1/3
+          neighbor_ipv4: 1.0.0.9/30
+        prefix: 1.0.0.0/16
+      Ethernet1/2:
+        description: leaf3:Ethernet1/2 -> spine2:Ethernet1/3
+        ipv4_address: 1.0.0.26/30
+        isis:
+          instance: FABRIC
+        link: spine2---leaf3
+        link_group: fabric
+        lldp:
+          neighbor: spine2
+          neighbor_intf: Ethernet1/3
+          neighbor_ipv4: 1.0.0.25/30
+        prefix: 1.0.0.0/16
+      Ethernet1/3:
+        description: leaf3:Ethernet1/3 -> cpe2:Gi2
+        ipv4_address: 1.1.0.9/30
+        link: leaf3---cpe2
+        link_group: access
+        lldp:
+          neighbor: cpe2
+          neighbor_intf: Gi2
+          neighbor_ipv4: 1.1.0.10/30
+        mtu: 1505
+        prefix: 1.1.0.0/16
+      Loopback0:
+        description: leaf3 Loopback0
+        ipv4_address: 1.255.0.5/32
+      mgmt:
+        ipv4_address: 10.255.11.5/24
+        name: mgmt0
+    intf_naming:
+      default:
+        first_id: 1
+        name: Ethernet1/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      platform: nxos_ssh
+    password: admin
+    username: admin
+  leaf4:
+    clab:
+      env:
+        CLAB_MGMT_PASSTHROUGH: true
+        RAM: 10240
+        VCPU: 4
+      image: vrnetlab/cisco_n9kv:10.4.5
+      kind: cisco_n9kv
+      startup-config: nxos_ssh_initial_cfg.j2
+    device_roles:
+    - leaf
+    interfaces:
+      Ethernet1/1:
+        description: leaf4:Ethernet1/1 -> spine1:Ethernet1/4
+        ipv4_address: 1.0.0.14/30
+        isis:
+          instance: FABRIC
+        link: spine1---leaf4
+        link_group: fabric
+        lldp:
+          neighbor: spine1
+          neighbor_intf: Ethernet1/4
+          neighbor_ipv4: 1.0.0.13/30
+        prefix: 1.0.0.0/16
+      Ethernet1/2:
+        description: leaf4:Ethernet1/2 -> spine2:Ethernet1/4
+        ipv4_address: 1.0.0.30/30
+        isis:
+          instance: FABRIC
+        link: spine2---leaf4
+        link_group: fabric
+        lldp:
+          neighbor: spine2
+          neighbor_intf: Ethernet1/4
+          neighbor_ipv4: 1.0.0.29/30
+        prefix: 1.0.0.0/16
+      Ethernet1/3:
+        description: leaf4:Ethernet1/3 -> cpe2:Gi3
+        ipv4_address: 1.1.0.13/30
+        link: leaf4---cpe2
+        link_group: access
+        lldp:
+          neighbor: cpe2
+          neighbor_intf: Gi3
+          neighbor_ipv4: 1.1.0.14/30
+        mtu: 1505
+        prefix: 1.1.0.0/16
+      Loopback0:
+        description: leaf4 Loopback0
+        ipv4_address: 1.255.0.6/32
+      mgmt:
+        ipv4_address: 10.255.11.6/24
+        name: mgmt0
+    intf_naming:
+      default:
+        first_id: 1
+        name: Ethernet1/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      platform: nxos_ssh
+    password: admin
+    username: admin
+  spine1:
+    clab:
+      env:
+        CLAB_MGMT_PASSTHROUGH: true
+        RAM: 10240
+        VCPU: 4
+      image: vrnetlab/cisco_n9kv:10.4.5
+      kind: cisco_n9kv
+      startup-config: nxos_ssh_initial_cfg.j2
+    device_roles:
+    - spine
+    interfaces:
+      Ethernet1/1:
+        description: spine1:Ethernet1/1 -> leaf1:Ethernet1/1
+        ipv4_address: 1.0.0.1/30
+        isis:
+          instance: FABRIC
+        link: spine1---leaf1
+        link_group: fabric
+        lldp:
+          neighbor: leaf1
+          neighbor_intf: Ethernet1/1
+          neighbor_ipv4: 1.0.0.2/30
+        prefix: 1.0.0.0/16
+      Ethernet1/2:
+        description: spine1:Ethernet1/2 -> leaf2:Ethernet1/1
+        ipv4_address: 1.0.0.5/30
+        isis:
+          instance: FABRIC
+        link: spine1---leaf2
+        link_group: fabric
+        lldp:
+          neighbor: leaf2
+          neighbor_intf: Ethernet1/1
+          neighbor_ipv4: 1.0.0.6/30
+        prefix: 1.0.0.0/16
+      Ethernet1/3:
+        description: spine1:Ethernet1/3 -> leaf3:Ethernet1/1
+        ipv4_address: 1.0.0.9/30
+        isis:
+          instance: FABRIC
+        link: spine1---leaf3
+        link_group: fabric
+        lldp:
+          neighbor: leaf3
+          neighbor_intf: Ethernet1/1
+          neighbor_ipv4: 1.0.0.10/30
+        prefix: 1.0.0.0/16
+      Ethernet1/4:
+        description: spine1:Ethernet1/4 -> leaf4:Ethernet1/1
+        ipv4_address: 1.0.0.13/30
+        isis:
+          instance: FABRIC
+        link: spine1---leaf4
+        link_group: fabric
+        lldp:
+          neighbor: leaf4
+          neighbor_intf: Ethernet1/1
+          neighbor_ipv4: 1.0.0.14/30
+        prefix: 1.0.0.0/16
+      Loopback0:
+        description: spine1 Loopback0
+        ipv4_address: 1.255.0.2/32
+      mgmt:
+        ipv4_address: 10.255.11.2/24
+        name: mgmt0
+    intf_naming:
+      default:
+        first_id: 1
+        name: Ethernet1/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      platform: nxos_ssh
+    password: admin
+    username: admin
+  spine2:
+    clab:
+      env:
+        CLAB_MGMT_PASSTHROUGH: true
+        RAM: 10240
+        VCPU: 4
+      image: vrnetlab/cisco_n9kv:10.4.5
+      kind: cisco_n9kv
+      startup-config: nxos_ssh_initial_cfg.j2
+    device_roles:
+    - spine
+    interfaces:
+      Ethernet1/1:
+        description: spine2:Ethernet1/1 -> leaf1:Ethernet1/2
+        ipv4_address: 1.0.0.17/30
+        isis:
+          instance: FABRIC
+        link: spine2---leaf1
+        link_group: fabric
+        lldp:
+          neighbor: leaf1
+          neighbor_intf: Ethernet1/2
+          neighbor_ipv4: 1.0.0.18/30
+        prefix: 1.0.0.0/16
+      Ethernet1/2:
+        description: spine2:Ethernet1/2 -> leaf2:Ethernet1/2
+        ipv4_address: 1.0.0.21/30
+        isis:
+          instance: FABRIC
+        link: spine2---leaf2
+        link_group: fabric
+        lldp:
+          neighbor: leaf2
+          neighbor_intf: Ethernet1/2
+          neighbor_ipv4: 1.0.0.22/30
+        prefix: 1.0.0.0/16
+      Ethernet1/3:
+        description: spine2:Ethernet1/3 -> leaf3:Ethernet1/2
+        ipv4_address: 1.0.0.25/30
+        isis:
+          instance: FABRIC
+        link: spine2---leaf3
+        link_group: fabric
+        lldp:
+          neighbor: leaf3
+          neighbor_intf: Ethernet1/2
+          neighbor_ipv4: 1.0.0.26/30
+        prefix: 1.0.0.0/16
+      Ethernet1/4:
+        description: spine2:Ethernet1/4 -> leaf4:Ethernet1/2
+        ipv4_address: 1.0.0.29/30
+        isis:
+          instance: FABRIC
+        link: spine2---leaf4
+        link_group: fabric
+        lldp:
+          neighbor: leaf4
+          neighbor_intf: Ethernet1/2
+          neighbor_ipv4: 1.0.0.30/30
+        prefix: 1.0.0.0/16
+      Loopback0:
+        description: spine2 Loopback0
+        ipv4_address: 1.255.0.7/32
+      mgmt:
+        ipv4_address: 10.255.11.7/24
+        name: mgmt0
+    intf_naming:
+      default:
+        first_id: 1
+        name: Ethernet1/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      platform: nxos_ssh
+    password: admin
+    username: admin
+drawio_diagram: topology.drawio
+link_groups:
+  access:
+    link_group: access
+    mtu: 1505
+    prefix: 1.1.0.0/16
+  fabric:
+    isis:
+      instance: FABRIC
+    link_group: fabric
+    prefix: 1.0.0.0/16
+  loopback0:
+    link_group: loopback0
+    prefix: 1.255.0.0/24
+  mgmt:
+    link_group: mgmt
+    prefix: 10.255.11.0/24
+links:
+- isis:
+    instance: FABRIC
+  link: spine1---leaf1
+  link_group: fabric
+  prefix: 1.0.0.0/16
+- isis:
+    instance: FABRIC
+  link: spine1---leaf2
+  link_group: fabric
+  prefix: 1.0.0.0/16
+- isis:
+    instance: FABRIC
+  link: spine1---leaf3
+  link_group: fabric
+  prefix: 1.0.0.0/16
+- isis:
+    instance: FABRIC
+  link: spine1---leaf4
+  link_group: fabric
+  prefix: 1.0.0.0/16
+- isis:
+    instance: FABRIC
+  link: spine2---leaf1
+  link_group: fabric
+  prefix: 1.0.0.0/16
+- isis:
+    instance: FABRIC
+  link: spine2---leaf2
+  link_group: fabric
+  prefix: 1.0.0.0/16
+- isis:
+    instance: FABRIC
+  link: spine2---leaf3
+  link_group: fabric
+  prefix: 1.0.0.0/16
+- isis:
+    instance: FABRIC
+  link: spine2---leaf4
+  link_group: fabric
+  prefix: 1.0.0.0/16
+- link: leaf1---cpe1
+  link_group: access
+  mtu: 1505
+  prefix: 1.1.0.0/16
+- link: leaf2---cpe1
+  link_group: access
+  mtu: 1505
+  prefix: 1.1.0.0/16
+- link: leaf3---cpe2
+  link_group: access
+  mtu: 1505
+  prefix: 1.1.0.0/16
+- link: leaf4---cpe2
+  link_group: access
+  mtu: 1505
+  prefix: 1.1.0.0/16
+nornir_startup:
+  inventory:
+    options:
+      group_file: nornir/nornir_groups.yaml
+      host_file: nornir/nornir_hosts.yaml
+    plugin: SimpleInventory
+  ios:
+    platform: ios
+  linux:
+    platform: linux
+  logging:
+    log_file: nornir/nornir.log
+  nxos_ssh:
+    platform: nxos_ssh
+  runner:
+    options:
+      num_workers: 10
+    plugin: threaded

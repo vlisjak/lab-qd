@@ -1,0 +1,69 @@
+{% set nodes = master.devices %}
+
+{# Find all isis instances to be configured on this node #}
+{% set instances = {} %}
+{% for intf, intf_details in nodes[node].interfaces.items() if intf_details.isis is defined %}
+  {% set _ = instances.update({intf_details.isis.instance: 'True'}) %}
+{% endfor %}
+
+{# render all isis instances and respective isis interfaces #}
+{% for instance in instances %}
+no router isis {{ instance }}
+router isis {{ instance }}
+  set-overload-bit on-startup 360 level 2
+  is-type level-2-only
+  net {{ nodes[node].interfaces.Loopback0.ipv4_address | ipv4_to_isis_net }}
+  nsf cisco
+  log adjacency changes
+  lsp-gen-interval maximum-wait 5000 initial-wait 1 secondary-wait 50
+  lsp-refresh-interval 65000
+  max-lsp-lifetime 65535
+  address-family ipv4 unicast
+    metric-style wide
+    advertise passive-only
+    metric-style wide level 2
+    fast-reroute per-prefix tiebreaker node-protecting index 100
+    fast-reroute per-prefix priority-limit critical
+    microloop avoidance segment-routing
+    microloop avoidance rib-update-delay 3000
+    spf-interval maximum-wait 5000 initial-wait 1 secondary-wait 50
+    segment-routing mpls sr-prefer
+    spf periodic disable
+    maximum-redistributed-prefixes 1000
+    spf prefix-priority critical tag 100
+    {# different ISIS instance towards RR nodes -> redistribute between CORE/RR instances #}
+    {# TODO: create RPL to prevent routing loops #}
+    {% if 'isis' in nodes[node] and 'redistribute_from_isis' in nodes[node].isis[instance] %}
+    redistribute isis {{ nodes[node].isis[instance].redistribute_from_isis.instance }}
+    {% endif %}
+  !
+  address-family ipv4 unicast
+    metric-style wide
+    spf-interval maximum-wait 5000 initial-wait 1 secondary-wait 50
+    spf prefix-priority critical tag 100
+  !
+  interface Loopback0
+    passive
+    circuit-type level-2-only
+    address-family ipv4 unicast
+      tag 100
+      prefix-sid absolute {{ 16000 + nodes[node].interfaces.Loopback0.ipv4_address.split('/')[0].split('.') | last | int }}
+     !
+    !
+    address-family ipv4 unicast
+      tag 100
+  {% for intf, intf_details in nodes[node].interfaces.items() if intf_details.isis is defined %}
+  {% if intf_details.isis.instance == instance %}
+  !
+  interface {{ intf }}
+    circuit-type level-2-only
+    point-to-point
+    hello-padding disable
+    address-family ipv4 unicast
+      metric {{ intf_details.isis.metric | default(1000) }}
+      fast-reroute per-prefix level 2
+      fast-reroute per-prefix ti-lfa level 2
+  {% endif %}
+  {% endfor %}
+{% endfor %}
+end
