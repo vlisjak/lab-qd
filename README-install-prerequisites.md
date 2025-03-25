@@ -232,6 +232,8 @@ clab_startup:
 
 # Onboard N9kv
 
+Download image: nexus9500v64.10.4.5.M.qcow2
+
 https://containerlab.dev/manual/kinds/vr-n9kv/
 
 `git clone https://github.com/hellt/vrnetlab.git`

@@ -1,0 +1,34 @@
+{% set nodes = master.devices %}
+
+{# Find all isis instances to be configured on this node #}
+{% set instances = {} %}
+{% for intf, intf_details in nodes[node].interfaces.items() if intf_details.isis is defined %}
+  {% set _ = instances.update({intf_details.isis.instance: 'True'}) %}
+{% endfor %}
+
+feature isis
+{# render all isis instances and respective isis interfaces #}
+{% for instance in instances %}
+no router isis {{ instance }}
+router isis {{ instance }}
+  set-overload-bit on-startup 60
+  is-type level-2
+  net {{ nodes[node].interfaces.Loopback0.ipv4_address | ipv4_to_isis_net }}
+
+interface Loopback0
+  isis passive-interface level-2
+  isis circuit-type level-2
+  ip router isis {{ instance }}
+
+  {% for intf, intf_details in nodes[node].interfaces.items() if intf_details.isis is defined %}
+  {% if intf_details.isis.instance == instance %}
+  !
+interface {{ intf }}
+  isis network point-to-point
+  no isis hello-padding 
+  isis circuit-type level-2
+  ip router isis {{ instance }}
+  {% endif %}
+  {% endfor %}
+{% endfor %}
+
