@@ -1,5 +1,7 @@
 # TODOs (in no particular order)
 
+- do not start all clab nodes at same time
+  - issue in nxos lab -> I had to increase VM CPUs and MEM
 
 - fix nxos_ssh replace config
   - https://github.com/nornir-automation/nornir/issues/991
@@ -59,7 +61,7 @@
 - allow manual IPv4 address in topology (links) defintion
   - mainly to allow physical routers, which may already have IPs assigned
 
-- implement remote ssh using 'socat' port mapping
+- lab_create.py: implement remote ssh using 'socat' port mapping
   https://github.com/chadell/nornir-playground/tree/main
     socat TCP-LISTEN:12001,reuseaddr,fork TCP:clab-mini-pe1:22 &
           ssh cisco@vlisjak -p 12001

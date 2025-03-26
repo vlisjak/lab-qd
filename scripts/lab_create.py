@@ -447,10 +447,7 @@ def generate_nornir_vars(master_complete_dotted):
     # nornir_groups.yaml
     for clab_grp, group_details in master_complete_dotted.device_groups.items():
         group = group_details.nornir.platform
-        timeout = group_details.nornir.timeout
-        # nornir_groups[group].platform = group_details.nornir.platform
-        # nornir_groups[group].username = group_details.username
-        # nornir_groups[group].password = group_details.password
+        timeout = group_details.nornir.get('timeout', 30)
         nornir_groups[group].update({
             "platform": group_details.nornir.platform,
             "username": group_details.username,
