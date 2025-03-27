@@ -37,10 +37,13 @@ nornir_startup:
   # note: xrd and xrv9k are equivalent configuration wise -> the same iosxr nornir platform 
   iosxr:
     platform: iosxr
+    timeout: 60
   ios:
     platform: ios
+    timeout: 60
   nxos_ssh:
     platform: nxos_ssh
+    timeout: 60
   linux:
     platform: linux
   inventory:

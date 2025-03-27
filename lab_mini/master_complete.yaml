@@ -63,6 +63,7 @@ device_groups:
         name: Loopback
     nornir:
       platform: ios
+      timeout: 60
     password: clab@123
     username: clab
   iosxr:
@@ -86,6 +87,7 @@ device_groups:
         name: Loopback
     nornir:
       platform: iosxr
+      timeout: 60
     password: clab@123
     username: clab
   n9kv:
@@ -109,6 +111,7 @@ device_groups:
         name: Loopback
     nornir:
       platform: nxos_ssh
+      timeout: 60
     password: admin
     username: admin
   xrv9k:
@@ -135,6 +138,7 @@ device_groups:
         name: Loopback
     nornir:
       platform: iosxr
+      timeout: 60
     password: clab@123
     username: clab
 devices:
@@ -188,6 +192,7 @@ devices:
         name: Loopback
     nornir:
       platform: ios
+      timeout: 60
     password: clab@123
     username: clab
   host:
@@ -264,6 +269,7 @@ devices:
         name: Loopback
     nornir:
       platform: nxos_ssh
+      timeout: 60
     password: admin
     username: admin
   p1:
@@ -329,6 +335,7 @@ devices:
         name: Loopback
     nornir:
       platform: iosxr
+      timeout: 60
     password: clab@123
     username: clab
   p2:
@@ -391,6 +398,7 @@ devices:
         name: Loopback
     nornir:
       platform: iosxr
+      timeout: 60
     password: clab@123
     username: clab
   pe1:
@@ -481,6 +489,7 @@ devices:
         name: Loopback
     nornir:
       platform: iosxr
+      timeout: 60
     password: clab@123
     username: clab
 drawio_diagram: topology.drawio
@@ -549,14 +558,17 @@ nornir_startup:
     plugin: SimpleInventory
   ios:
     platform: ios
+    timeout: 60
   iosxr:
     platform: iosxr
+    timeout: 60
   linux:
     platform: linux
   logging:
     log_file: nornir/nornir.log
   nxos_ssh:
     platform: nxos_ssh
+    timeout: 60
   runner:
     options:
       num_workers: 10
