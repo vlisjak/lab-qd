@@ -15,6 +15,7 @@ https://github.com/vlisjak/lab-qd
 - Generate **drawio topology** (manual layout of nodes required only on first run - positions are then preserved)
 - When appropriate, use of **python functions in Jinja** templates (native Jinja code can get really ugly compared to python, even for simple tasks)
 - Provision **physical labs** by manually specified interface names in YAML topology (IP addresses are still auto-allocated)
+- Allow remote access into Containerlab nodes through **socat SSH port mappings**
 
 ### System overview
 - Yellow-shaded text: user-define content (YAML inventory and Jinja2 device templates)
@@ -278,6 +279,20 @@ INFO[0000] Parsing & checking topology file: clab_startup.yaml
 +---+--------------+--------------+----------------------------------+-----------+---------+---------------+--------------+
 ```
 
+Create SSH port mappings for remote access to clab nodes:
+```bash
+(myvenv310) vlisjak@vlisjak:~/containerlab/lab-qd/lab_vxlan_pod1$ ../scripts/lab_ssh_bindings.py --create --start_port 12000 --clab_yaml clab_startup/clab_startup.yaml
+
+clab-vxlan_pod1-cpe1 ssh-reachable remotely on port 12000
+clab-vxlan_pod1-cpe2 ssh-reachable remotely on port 12001
+clab-vxlan_pod1-leaf1 ssh-reachable remotely on port 12002
+clab-vxlan_pod1-leaf2 ssh-reachable remotely on port 12003
+clab-vxlan_pod1-leaf3 ssh-reachable remotely on port 12004
+clab-vxlan_pod1-leaf4 ssh-reachable remotely on port 12005
+clab-vxlan_pod1-spine1 ssh-reachable remotely on port 12006
+clab-vxlan_pod1-spine2 ssh-reachable remotely on port 12007
+```
+Now you can ssh directly into clab nodes from remote laptop; eg. for clab-vxlan_pod1-leaf2: `ssh cisco@vlisjak.cisco.com -p 12003`
 
 ### Unshut interfaces and apply IP addresses (jinja: day0)
 

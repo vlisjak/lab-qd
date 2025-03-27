@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 
 """
-! Creating reverse-ssh bindings:
+! Create ssh port mappings:
 ../scripts/lab_ssh_bindings.py --create --start_port 12000 --clab_yaml clab_startup/clab_startup.yaml
-    Command executed for clab_node clab-vxlan_pod1-cpe1: socat TCP-LISTEN:12000,reuseaddr,fork TCP:clab-vxlan_pod1-cpe1:22 &
-    Command executed for clab_node clab-vxlan_pod1-cpe2: socat TCP-LISTEN:12001,reuseaddr,fork TCP:clab-vxlan_pod1-cpe2:22 &
+
+    clab-vxlan_pod1-cpe1 ssh-reachable remotely on port 12000
+    clab-vxlan_pod1-cpe2 ssh-reachable remotely on port 12001
+    clab-vxlan_pod1-leaf1 ssh-reachable remotely on port 12002
     <snip>
 
 ! SSH to containerlab node clab-vxlan_pod1-cpe2 (that runs on VM vlisjak.cisco.com) from remote laptops:
@@ -12,6 +14,7 @@ ssh cisco@vlisjak.cisco.com -p 12001
 
 ! Kill reverse-ssh bindings:
 ../scripts/lab_ssh_bindings.py --kill --start_port 12000 --clab_yaml clab_startup/clab_startup.yaml
+
     Terminated PID: 626292 for socat TCP-LISTEN:12000,reuseaddr,fork TCP:clab-vxlan_pod1-cpe1:22
     Terminated PID: 626294 for socat TCP-LISTEN:12001,reuseaddr,fork TCP:clab-vxlan_pod1-cpe2:22
     <snip>
@@ -55,9 +58,9 @@ def create_socat_bindings(clab_list, start_port):
         command = f"socat TCP-LISTEN:{n},reuseaddr,fork TCP:{clab_node}:22 &"
         try:
             Popen(command, shell=True)
-            print(f"Command executed for clab_node {clab_node}: {command}")
+            print(f"{clab_node} ssh-reachable remotely on port {n}")
         except Exception as e:
-            print(f"Failed to execute command for clab_node {clab_node}: {e}")
+            print(f"Failed to create ssh port mapping for clab_node {clab_node}: {e}")
 
 def kill_socat(clab_list, start_port):
     for index, clab_node in enumerate(clab_list, start=0):

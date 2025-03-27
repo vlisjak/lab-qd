@@ -39,6 +39,9 @@ sudo containerlab -t clab_startup/clab_startup.yaml destroy
 # Wipe the lab completely
 sudo containerlab -t clab_startup/clab_startup.yaml destroy --cleanup
 
+# Create SSH port mappings for remote access to clab nodes
+../scripts/lab_ssh_bindings.py --create --start_port 12000 --clab_yaml clab_startup/clab_startup.yaml
+
 # Few useful docker commands
 docker container ls
 docker network ls
