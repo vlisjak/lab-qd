@@ -32,6 +32,7 @@ sudo containerlab -t clab_startup/clab_startup.yaml deploy
 
 # Show summary of all started
 sudo containerlab -t clab_startup/clab_startup.yaml inspect
+sudo containerlab -a inspect
 
 # Configs of Xrd nodes is preserved, but not xrv9k!
 sudo containerlab -t clab_startup/clab_startup.yaml destroy
@@ -40,7 +41,8 @@ sudo containerlab -t clab_startup/clab_startup.yaml destroy
 sudo containerlab -t clab_startup/clab_startup.yaml destroy --cleanup
 
 # Create SSH port mappings for remote access to clab nodes
-../scripts/lab_ssh_bindings.py --create --start_port 12000 --clab_yaml clab_startup/clab_startup.yaml
+../scripts/lab_ssh_bindings.py --create --start_port 10000 --clab_yaml clab_startup/clab_startup.yaml
+../scripts/lab_ssh_bindings.py --kill --start_port 10000 --clab_yaml clab_startup/clab_startup.yaml
 
 # Few useful docker commands
 docker container ls

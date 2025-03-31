@@ -1,0 +1,100 @@
+cpe1:
+  data:
+    device_roles:
+    - cpe
+    mgmt:
+      ipv4_address: 10.255.5.10/24
+      name: GigabitEthernet1
+  groups:
+  - ios
+  hostname: 10.255.5.10
+cpe2:
+  data:
+    device_roles:
+    - cpe
+    mgmt:
+      ipv4_address: 10.255.5.11/24
+      name: GigabitEthernet1
+  groups:
+  - ios
+  hostname: 10.255.5.11
+p1:
+  data:
+    device_roles:
+    - p
+    mgmt:
+      ipv4_address: 10.255.5.2/24
+      name: MgmtEth0/RP0/CPU0/0
+  groups:
+  - iosxr
+  hostname: 10.255.5.2
+p2:
+  data:
+    device_roles:
+    - p
+    mgmt:
+      ipv4_address: 10.255.5.3/24
+      name: MgmtEth0/RP0/CPU0/0
+  groups:
+  - iosxr
+  hostname: 10.255.5.3
+pe1:
+  data:
+    device_roles:
+    - pe
+    mgmt:
+      ipv4_address: 10.255.5.4/24
+      name: MgmtEth0/RP0/CPU0/0
+  groups:
+  - iosxr
+  hostname: 10.255.5.4
+pe2:
+  data:
+    device_roles:
+    - pe
+    mgmt:
+      ipv4_address: 10.255.5.5/24
+      name: MgmtEth0/RP0/CPU0/0
+  groups:
+  - iosxr
+  hostname: 10.255.5.5
+pe3:
+  data:
+    device_roles:
+    - pe
+    mgmt:
+      ipv4_address: 10.255.5.6/24
+      name: MgmtEth0/RP0/CPU0/0
+  groups:
+  - iosxr
+  hostname: 10.255.5.6
+pe4:
+  data:
+    device_roles:
+    - pe
+    mgmt:
+      ipv4_address: 10.255.5.7/24
+      name: MgmtEth0/RP0/CPU0/0
+  groups:
+  - iosxr
+  hostname: 10.255.5.7
+rr1:
+  data:
+    device_roles:
+    - rr
+    mgmt:
+      ipv4_address: 10.255.5.8/24
+      name: MgmtEth0/RP0/CPU0/0
+  groups:
+  - iosxr
+  hostname: 10.255.5.8
+rr2:
+  data:
+    device_roles:
+    - rr
+    mgmt:
+      ipv4_address: 10.255.5.9/24
+      name: MgmtEth0/RP0/CPU0/0
+  groups:
+  - iosxr
+  hostname: 10.255.5.9

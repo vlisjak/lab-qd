@@ -1,0 +1,124 @@
+{% set nodes = master.devices %}
+{% set this_inst = master.services[service][instance] %}
+{# 
+At this point I know that I'm one of the PEs for specific service instance -> so we can surely configure the VRF
+  - then we'll still need to figure out which are my CPEs for this instance (because there could be CPEs of other PEs in trans_scope)
+  - and whether each CPE is routed statically or ebgp 
+
+Sample master_complete.yaml l3vpn instance:
+- note that cpe2 is dual-homed to pe2 and pe3, which is visible from topology but not required in instance definition
+
+services:
+  l3vpn:
+    vrf_1001:
+      rd: 1001
+      endpoints:
+        cpe1:
+          pe_routing:
+            protocol: static
+        cpe2:
+          pe_routing:
+            protocol: ebgp
+        cpe3:
+          pe_routing:
+            protocol: static
+#}
+
+{# TBD: for now 999 is just hardcoded .. #}
+!
+extcommunity-set opaque AVOID_DWDM
+  999
+end-set
+!
+route-policy DWDM
+  set extcommunity color AVOID_DWDM
+end-policy
+!
+vrf {{ instance }}
+ rd {{ nodes[node].ibgp.asn }}:{{ this_inst.rd }}
+ address-family ipv4 unicast
+  import route-target
+   {{ nodes[node].ibgp.asn }}:{{ this_inst.rd }}
+  !
+  export route-target
+   {{ nodes[node].ibgp.asn }}:{{ this_inst.rd }}
+  !
+ !
+!
+{# 
+Process only CPEs behind this PE .. trans_scope:
+
+[Box({'cpe': 'cpe3', 'cpe_intf': 'Gi0/0/0/0', 'pe': 'pe2', 'pe_intf': 'Gi0/0/0/3'}),
+ Box({'cpe': 'cpe2', 'cpe_intf': 'Gi0/0/0/0', 'pe': 'pe2', 'pe_intf': 'Gi0/0/0/2'}),
+ Box({'cpe': 'cpe2', 'cpe_intf': 'Gi0/0/0/1', 'pe': 'pe3', 'pe_intf': 'Gi0/0/0/2'}),
+ Box({'cpe': 'cpe1', 'cpe_intf': 'Gi0/0/0/0', 'pe': 'pe1', 'pe_intf': 'Gi0/0/0/2'})]
+
+#}
+{% for lldp in trans_scope | selectattr('pe', "equalto", node) | list %}
+  {% set cpe_ip = nodes[lldp.cpe].interfaces[lldp.cpe_intf].ipv4_address.split('/') | first %}
+  {# check if this cpe is bgp-routed #}
+  {% if this_inst.endpoints[lldp.cpe].pe_routing.protocol == 'ebgp' %}
+    {% set pe_ipv4_addr = nodes[node].interfaces[lldp.pe_intf].ipv4_address %}
+route-policy PASS-ALL
+  pass
+end-policy
+!
+interface {{ lldp.pe_intf }}
+ vrf {{ instance }}
+ no ipv4 address {{ pe_ipv4_addr }}
+ ipv4 address {{ pe_ipv4_addr }}
+!
+router bgp {{ nodes[node].ibgp.asn }}
+ vrf {{ instance }}
+  rd {{ nodes[node].ibgp.asn }}:{{ this_inst.rd }}
+  address-family ipv4 unicast
+    {% if this_inst.affinity_exclude %}
+   redistribute static route-policy {{ this_inst.affinity_exclude }}
+    {% else %}
+   redistribute static
+    {% endif %}
+   redistribute connected
+  !
+    {% set neighbor_asn = this_inst.endpoints[lldp.cpe].pe_routing.asn | default(64000 + this_inst.rd) %}
+  neighbor {{ cpe_ip }}
+   remote-as {{ neighbor_asn }}
+   description {{ lldp.pe_intf }} -> {{ lldp.cpe }}:{{ lldp.cpe_intf }}
+   address-family ipv4 unicast
+    {% if this_inst.affinity_exclude %}
+    route-policy {{ this_inst.affinity_exclude }} in
+    {% else %}
+    route-policy PASS-ALL in
+    {% endif %}
+    route-policy PASS-ALL out
+    as-override
+   !
+  !
+ !
+  {# otherwise, check if it is statically routed #}
+  {% elif this_inst.endpoints[lldp.cpe].pe_routing.protocol == 'static' %}
+    {% set pe_ipv4_addr = nodes[node].interfaces[lldp.pe_intf].ipv4_address %}
+interface {{ lldp.pe_intf }}
+ vrf {{ instance }}
+ no ipv4 address {{ pe_ipv4_addr }}
+ ipv4 address {{ pe_ipv4_addr }}
+!
+router bgp {{ nodes[node].ibgp.asn }}
+ vrf {{ instance }}
+  rd {{ nodes[node].ibgp.asn }}:{{ this_inst.rd }}
+  address-family ipv4 unicast
+    {% if this_inst.affinity_exclude %}
+   redistribute static route-policy {{ this_inst.affinity_exclude }}
+    {% else %}
+   redistribute static
+    {% endif %}
+   redistribute connected
+  !
+!
+router static
+  vrf {{ instance }}
+  address-family ipv4 unicast
+    {{ nodes[lldp.cpe].interfaces['Loopback0'].ipv4_address }} {{ cpe_ip }} description {{ lldp.cpe }}:{{ lldp.cpe_intf }}
+  {% endif %}
+!
+{% endfor %}
+!

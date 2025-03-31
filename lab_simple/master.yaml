@@ -1,4 +1,4 @@
-clab_name: shams
+clab_name: simple
 drawio_diagram: topology.drawio
 
 # Continerlab parameters
@@ -7,15 +7,6 @@ clab_startup:
     image: ios-xr/xrd-control-plane:24.2.11
     kind: cisco_xrd
     startup-config: xrd_initial_cfg.j2
-  xrv9k:
-    image: vrnetlab/cisco_xrv9k:7.10.2
-    kind: cisco_xrv9k
-    startup-config: xrd_initial_cfg.j2
-    env:
-      VCPU: 4
-      RAM: 20480
-      # this is required for correct assignment of mgmt address (otherwise each node gets 10.0.0.15)
-      CLAB_MGMT_PASSTHROUGH: true
   ios:
     image: vrnetlab/cisco_csr1000v:17.03.08
     kind: cisco_csr1000v
@@ -34,7 +25,6 @@ nornir_startup:
     platform: ios
     group: ios
     timeout: 60
-
   inventory:
     plugin: SimpleInventory
     options:
@@ -75,29 +65,6 @@ device_groups:
     interfaces:
       mgmt:
         name: MgmtEth0/RP0/CPU0/0
-  xrv9k:
-    # use default clab credentials, because these are baked into xrv9k docker image!
-    username: clab
-    password: clab@123
-    clab:
-      inherit_from: clab_startup.xrv9k
-    nornir:
-      inherit_from: nornir_startup.iosxr
-    # intf_naming is used for auto-allocation of interface IDs for specific interface type
-    intf_naming:
-      default:
-        name: Gi0/0/0/
-        first_id: 0
-      core_bundle: 
-        name: Bundle-Ether
-        first_id: 1
-      loopback0:
-        name: Loopback
-        first_id: 0
-    interfaces:
-      mgmt:
-        name: MgmtEth0/RP0/CPU0/0
-
   ios:
     username: clab
     password: clab@123
@@ -194,33 +161,15 @@ link_groups:
     prefix: 1.0.0.0/16
     isis: 
       instance: CORE
+      metric: 2000
   core_dwdm:
     link_group: core_dwdm
     inherit_from: link_groups.core
+    isis: 
+      instance: CORE
+      metric: 1000
     srte:
-      affinity: AVOID_DWDM
-  core_bundle:
-    # - assume one bundle between two nodes n1-n2
-    # - assign all n1-n2 links with 'link.link_group == core_bundle_member' to this Bundle
-    # - Bundle IP from the same range as other core links
-    # - Bundles will not be added to clab startup (these are only logical links in XR)
-    #   - bundle members however must be in clab startup!
-    link_group: core_bundle
-    # we do not want Bundles in containerlab topology - Bundles are only logical links in XR config
-    clab_exclude: True
-    inherit_from: link_groups.core
-    bundle:
-      type: bundle
-      # id will be inserted by lab_create script
-      # id:
-  core_bundle_member:
-    link_group: core_bundle_member
-    bundle:
-      type: member
-      # id will be inserted by lab_create script -> later used by jinja to assign member interfaces to BundleX
-      # id:
-    # prefix is missing -> do not allocate IP address
-    # link_type: l2 -> not sure if we need extra flag?
+      affinity: DWDM
   rr:
     link_group: rr
     inherit_from: link_groups.core
@@ -232,11 +181,11 @@ link_groups:
   mgmt:
     # If you're starting multiple clabs, you must use different mgmt prefix for each clab instance
     link_group: mgmt
-    prefix: 10.255.6.0/24
+    prefix: 10.255.5.0/24
   access_l3vpn:
     link_group: l3vpn
     prefix: 1.1.0.0/16
-    mtu: 1505
+    mtu: 1555
 
 # Topology definition
 # - Parallel links are allowed
@@ -245,55 +194,35 @@ link_groups:
 links:
   # TODO: parallel links - need to fix overlap in generated drawio diagram
 
-  # upper chain
-  - link: cpe1---pe1
-    inherit_from: link_groups.access_l3vpn
-  - link: cpe1---pe1
-    inherit_from: link_groups.access_l3vpn
-
-  - link: pe1---p1
-    inherit_from: link_groups.core_bundle
-  - link: pe1---p1
-    inherit_from: link_groups.core_bundle_member
-  - link: pe1---p1
+  # p-p links
+  - link: p1---p2
+    inherit_from: link_groups.core
+  - link: p1---p2
     inherit_from: link_groups.core_dwdm
 
-  - link: p1---pe3
-    inherit_from: link_groups.core_bundle
-  - link: p1---pe3
-    inherit_from: link_groups.core_bundle_member
-  - link: p1---pe3
+  # pe-p links
+  - link: pe1---p1
+    inherit_from: link_groups.core
+  - link: pe2---p2
+    inherit_from: link_groups.core
+  - link: pe3---p1
+    inherit_from: link_groups.core
+  - link: pe4---p2
+    inherit_from: link_groups.core
+  - link: pe1---p1
     inherit_from: link_groups.core_dwdm
-
-  - link: pe3---cpe2
-    inherit_from: link_groups.access_l3vpn
-  - link: pe3---cpe2
-    inherit_from: link_groups.access_l3vpn
-
-  # bottom chain
-  - link: cpe1---pe2
-    inherit_from: link_groups.access_l3vpn
-  - link: cpe1---pe2
-    inherit_from: link_groups.access_l3vpn
-
-  - link: pe2---p2
-    inherit_from: link_groups.core_bundle
-  - link: pe2---p2
-    inherit_from: link_groups.core_bundle_member
   - link: pe2---p2
     inherit_from: link_groups.core_dwdm
-
-  - link: p2---pe4
-    inherit_from: link_groups.core_bundle
-  - link: p2---pe4
-    inherit_from: link_groups.core_bundle_member
-  - link: p2---pe4
+  - link: pe3---p1
+    inherit_from: link_groups.core_dwdm
+  - link: pe4---p2
     inherit_from: link_groups.core_dwdm
 
-  - link: pe4---cpe2
-    inherit_from: link_groups.access_l3vpn
-  - link: pe4---cpe2
-    inherit_from: link_groups.access_l3vpn
+  # pe-pe links
+  - link: pe1---pe2
+    inherit_from: link_groups.core
+  - link: pe3---pe4
+    inherit_from: link_groups.core
 
   # rr-p links
   - link: rr1---p1
@@ -301,11 +230,19 @@ links:
   - link: rr2---p2
     inherit_from: link_groups.rr
 
+  # cpe-pe links
+  - link: cpe1---pe1
+    inherit_from: link_groups.access_l3vpn
+  - link: cpe1---pe2
+    inherit_from: link_groups.access_l3vpn
+  - link: cpe2---pe3
+    inherit_from: link_groups.access_l3vpn
+  - link: cpe2---pe4
+    inherit_from: link_groups.access_l3vpn
+
 # network services
 services:
-
   l3vpn:
-
     # Notes:
     # - VRF routes: for demo purposes we'll advertise Loop0 IPs of CPEs
     # - CE-PE uplink (neighbor pe, ifname, ip): derived from "interfaces->lldp->neighbor" in master_complete.yaml:
@@ -325,46 +262,17 @@ services:
 
     vrf_A:
       rd: 1001
-      affinity_exclude: AVOID_DWDM
+      affinity_exclude: DWDM
       endpoints:
         # Note: 
         # - cpe1/2 is dual-homed and PE uplinks are determined from infrastructure topology
         # but: if "uplinks" is present, only "uplinks" are used to find the neighbor PEs
         cpe1:
-          uplinks:
-            Gi2:
-            Gi4:
           pe_routing: 
             protocol: ebgp
             asn: 65001
             primary_pe: pe1
         cpe2:
-          uplinks:
-            Gi2:
-            Gi4:
           pe_routing: 
-            protocol: ebgp
-            asn: 65002
-            primary_pe: pe3
-    vrf_B:
-      rd: 1002
-      endpoints:
-        # Note: 
-        # - cpe1/2 is dual-homed and PE uplinks are determined from infrastructure topology
-        # but: if "uplinks" is present, only "uplinks" are used to find the neighbor PEs
-        cpe1:
-          uplinks:
-            Gi3:
-            Gi5:
-          pe_routing: 
-            protocol: ebgp
-            asn: 65001
-            primary_pe: pe1
-        cpe2:
-          uplinks:
-            Gi3:
-            Gi5:
-          pe_routing: 
-            protocol: ebgp
-            asn: 65002
+            protocol: static
             primary_pe: pe3

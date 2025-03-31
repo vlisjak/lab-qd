@@ -24,6 +24,7 @@ import psutil
 import json
 from subprocess import PIPE, Popen, DEVNULL
 import argparse
+import socket
 
 start_port = 12000
 clab_yaml = 'clab_startup/clab_startup.yaml'
@@ -53,12 +54,14 @@ def get_deployed_clab_nodes(clab_yaml):
         return json.loads(output)
 
 def create_socat_bindings(clab_list, start_port):
+    fqdn = socket.getfqdn()
     for index, clab_node in enumerate(clab_list, start=0):
         n = start_port + index
         command = f"socat TCP-LISTEN:{n},reuseaddr,fork TCP:{clab_node}:22 &"
         try:
             Popen(command, shell=True)
-            print(f"{clab_node} ssh-reachable remotely on port {n}")
+            # TBD: do not hardcode username
+            print(f"{clab_node}: ssh cisco@{fqdn} -p {n}")
         except Exception as e:
             print(f"Failed to create ssh port mapping for clab_node {clab_node}: {e}")
 

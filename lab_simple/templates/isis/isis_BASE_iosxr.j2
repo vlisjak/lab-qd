@@ -10,7 +10,11 @@
 {% for instance in instances %}
 no router isis {{ instance }}
 router isis {{ instance }}
+  {% if 'isis' in nodes[node] and 'ol_bit' in nodes[node].isis %}
+  set-overload-bit
+  {% else %}
   set-overload-bit on-startup 360 level 2
+  {% endif %}
   is-type level-2-only
   net {{ nodes[node].interfaces.Loopback0.ipv4_address | ipv4_to_isis_net }}
   nsf ietf

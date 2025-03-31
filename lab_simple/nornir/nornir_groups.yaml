@@ -1,0 +1,32 @@
+ios:
+  connection_options:
+    napalm:
+      extras:
+        optional_args:
+          banner_timeout: 60
+          conn_timeout: 60
+          timeout: 60
+    netmiko:
+      extras:
+        banner_timeout: 60
+        conn_timeout: 60
+        timeout: 60
+  password: clab@123
+  platform: ios
+  username: clab
+iosxr:
+  connection_options:
+    napalm:
+      extras:
+        optional_args:
+          banner_timeout: 60
+          conn_timeout: 60
+          timeout: 60
+    netmiko:
+      extras:
+        banner_timeout: 60
+        conn_timeout: 60
+        timeout: 60
+  password: clab@123
+  platform: iosxr
+  username: clab

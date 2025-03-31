@@ -111,7 +111,7 @@ def generate_config(task, section, role, t_file, inv, service, instance, trans_s
         service=service,
         instance=instance,
         trans_scope=trans_scope,
-        severity_level=logging.DEBUG,  # comment this line out, if you want to see rendered config (already shown by napalm diffs below..)
+        # severity_level=logging.DEBUG,  # comment this line out, if you want to see rendered config (already shown by napalm diffs below..)
     )
     task.host["config"] = config.result
     # print(config.result)
