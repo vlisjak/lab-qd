@@ -32,7 +32,7 @@ sudo containerlab -t clab_startup/clab_startup.yaml deploy
 
 # Show summary of all started
 sudo containerlab -t clab_startup/clab_startup.yaml inspect
-sudo containerlab -a inspect
+sudo containerlab inspect -a
 
 # Configs of Xrd nodes is preserved, but not xrv9k!
 sudo containerlab -t clab_startup/clab_startup.yaml destroy
