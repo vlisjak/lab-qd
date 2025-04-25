@@ -3,11 +3,11 @@ cpe1:
     device_roles:
     - cpe
     mgmt:
-      ipv4_address: 10.255.0.5/24
+      ipv4_address: 10.255.0.6/24
       name: GigabitEthernet1
   groups:
   - ios
-  hostname: 10.255.0.5
+  hostname: 10.255.0.6
 host:
   data:
     device_roles:
@@ -23,11 +23,11 @@ n9kv1:
     device_roles:
     - pe
     mgmt:
-      ipv4_address: 10.255.0.6/24
+      ipv4_address: 10.255.0.7/24
       name: mgmt0
   groups:
   - nxos_ssh
-  hostname: 10.255.0.6
+  hostname: 10.255.0.7
 p1:
   data:
     device_roles:
@@ -58,3 +58,13 @@ pe1:
   groups:
   - iosxr
   hostname: 10.255.0.4
+pe2:
+  data:
+    device_roles:
+    - pe
+    mgmt:
+      ipv4_address: 10.255.0.5/24
+      name: fxp0
+  groups:
+  - junos
+  hostname: 10.255.0.5

@@ -32,6 +32,15 @@ clab_startup:
       RAM: 10240
       # this is required for correct assignment of mgmt address (otherwise each node gets 10.0.0.15)
       CLAB_MGMT_PASSTHROUGH: true
+  vjunosrouter:
+    image: vrnetlab/juniper_vjunos-router:24.2R1-S2.5
+    kind: juniper_vjunosrouter
+    startup-config: juniper_vjunosrouter_initial_cfg.j2
+    env:
+      VCPU: 4
+      RAM: 5000
+      # this is required for correct assignment of mgmt address (otherwise each node gets 10.0.0.15)
+      CLAB_MGMT_PASSTHROUGH: true      
 # Nornir parameters
 nornir_startup:
   # note: xrd and xrv9k are equivalent configuration wise -> the same iosxr nornir platform 
@@ -44,6 +53,11 @@ nornir_startup:
   nxos_ssh:
     platform: nxos_ssh
     timeout: 60
+  junos:
+    platform: junos
+    timeout: 60
+    data:
+      version: 24.2R1-S2.5s
   linux:
     platform: linux
   inventory:
@@ -60,6 +74,7 @@ nornir_startup:
 
 # Parameters specific to each vendor/device type
 device_groups:
+
   iosxr:
     # use default clab credentials (clab/clab@123), because these are baked into xrv9k docker image!
     # - do not define/modify CLAB_MGMT_VRF for the same reason
@@ -86,6 +101,7 @@ device_groups:
     interfaces:
       mgmt:
         name: MgmtEth0/RP0/CPU0/0
+
   xrv9k:
     # use default clab credentials, because these are baked into xrv9k docker image!
     username: clab
@@ -151,6 +167,29 @@ device_groups:
       mgmt:
         name: mgmt0
 
+  vjunosrouter:
+    # use default clab credentials, because these are baked into xrv9k docker image!
+    username: admin
+    password: admin@123
+    clab:
+      inherit_from: clab_startup.vjunosrouter
+    nornir:
+      inherit_from: nornir_startup.junos
+    # intf_naming is used for auto-allocation of interface IDs for specific interface type
+    intf_naming:
+      default:
+        name: ge-0/0/
+        first_id: 0
+      core_bundle: 
+        name: Bundle-Ether
+        first_id: 1
+      loopback0:
+        name: Loopback
+        first_id: 0
+    interfaces:
+      mgmt:
+        name: fxp0
+
   host:
     username: vlisjak
     password: volpe123
@@ -183,6 +222,13 @@ devices:
       client_of: rr
     inherit_from: 
       - device_groups.iosxr
+  pe2:
+    device_roles: [pe]
+    ibgp:
+      asn: 100
+      client_of: rr
+    inherit_from: 
+      - device_groups.vjunosrouter
   cpe1:
     device_roles: [cpe]
     inherit_from: 
@@ -237,6 +283,10 @@ links:
   - link: p1---pe1
     inherit_from: link_groups.core
   - link: p2---pe1
+    inherit_from: link_groups.core
+  - link: p1---pe2
+    inherit_from: link_groups.core
+  - link: p2---pe2
     inherit_from: link_groups.core
   - link: pe1---cpe1
     inherit_from: link_groups.access_l3vpn

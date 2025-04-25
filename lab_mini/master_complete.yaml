@@ -18,6 +18,14 @@ clab_startup:
     image: vrnetlab/cisco_n9kv:10.4.5
     kind: cisco_n9kv
     startup-config: nxos_ssh_initial_cfg.j2
+  vjunosrouter:
+    env:
+      CLAB_MGMT_PASSTHROUGH: true
+      RAM: 5000
+      VCPU: 4
+    image: vrnetlab/juniper_vjunos-router:24.2R1-S2.5
+    kind: juniper_vjunosrouter
+    startup-config: juniper_vjunosrouter_initial_cfg.j2
   xrv9k:
     env:
       CLAB_MGMT_PASSTHROUGH: true
@@ -114,6 +122,35 @@ device_groups:
       timeout: 60
     password: admin
     username: admin
+  vjunosrouter:
+    clab:
+      env:
+        CLAB_MGMT_PASSTHROUGH: true
+        RAM: 5000
+        VCPU: 4
+      image: vrnetlab/juniper_vjunos-router:24.2R1-S2.5
+      kind: juniper_vjunosrouter
+      startup-config: juniper_vjunosrouter_initial_cfg.j2
+    interfaces:
+      mgmt:
+        name: fxp0
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: ge-0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      data:
+        version: 24.2R1-S2.5s
+      platform: junos
+      timeout: 60
+    password: clab@123
+    username: clab
   xrv9k:
     clab:
       env:
@@ -176,9 +213,9 @@ devices:
         prefix: 1.1.0.0/16
       Loopback0:
         description: cpe1 Loopback0
-        ipv4_address: 1.255.0.5/32
+        ipv4_address: 1.255.0.6/32
       mgmt:
-        ipv4_address: 10.255.0.5/24
+        ipv4_address: 10.255.0.6/24
         name: GigabitEthernet1
     intf_naming:
       core_bundle:
@@ -244,7 +281,7 @@ devices:
     interfaces:
       Ethernet1/1:
         description: n9kv1:Ethernet1/1 -> pe1:Gi0/0/0/4
-        ipv4_address: 1.0.0.14/30
+        ipv4_address: 1.0.0.22/30
         isis:
           instance: CORE
         link: pe1---n9kv1
@@ -252,13 +289,13 @@ devices:
         lldp:
           neighbor: pe1
           neighbor_intf: Gi0/0/0/4
-          neighbor_ipv4: 1.0.0.13/30
+          neighbor_ipv4: 1.0.0.21/30
         prefix: 1.0.0.0/16
       Loopback0:
         description: n9kv1 Loopback0
-        ipv4_address: 1.255.0.6/32
+        ipv4_address: 1.255.0.7/32
       mgmt:
-        ipv4_address: 10.255.0.6/24
+        ipv4_address: 10.255.0.7/24
         name: mgmt0
     intf_naming:
       default:
@@ -316,6 +353,18 @@ devices:
           neighbor: pe1
           neighbor_intf: Gi0/0/0/0
           neighbor_ipv4: 1.0.0.6/30
+        prefix: 1.0.0.0/16
+      Gi0/0/0/3:
+        description: p1:Gi0/0/0/3 -> pe2:ge-0/0/0
+        ipv4_address: 1.0.0.13/30
+        isis:
+          instance: CORE
+        link: p1---pe2
+        link_group: core
+        lldp:
+          neighbor: pe2
+          neighbor_intf: ge-0/0/0
+          neighbor_ipv4: 1.0.0.14/30
         prefix: 1.0.0.0/16
       Loopback0:
         description: p1 Loopback0
@@ -379,6 +428,18 @@ devices:
           neighbor: pe1
           neighbor_intf: Gi0/0/0/1
           neighbor_ipv4: 1.0.0.10/30
+        prefix: 1.0.0.0/16
+      Gi0/0/0/3:
+        description: p2:Gi0/0/0/3 -> pe2:ge-0/0/1
+        ipv4_address: 1.0.0.17/30
+        isis:
+          instance: CORE
+        link: p2---pe2
+        link_group: core
+        lldp:
+          neighbor: pe2
+          neighbor_intf: ge-0/0/1
+          neighbor_ipv4: 1.0.0.18/30
         prefix: 1.0.0.0/16
       Loopback0:
         description: p2 Loopback0
@@ -461,7 +522,7 @@ devices:
         prefix: 1.1.0.0/16
       Gi0/0/0/4:
         description: pe1:Gi0/0/0/4 -> n9kv1:Ethernet1/1
-        ipv4_address: 1.0.0.13/30
+        ipv4_address: 1.0.0.21/30
         isis:
           instance: CORE
         link: pe1---n9kv1
@@ -469,7 +530,7 @@ devices:
         lldp:
           neighbor: n9kv1
           neighbor_intf: Ethernet1/1
-          neighbor_ipv4: 1.0.0.14/30
+          neighbor_ipv4: 1.0.0.22/30
         prefix: 1.0.0.0/16
       Loopback0:
         description: pe1 Loopback0
@@ -489,6 +550,68 @@ devices:
         name: Loopback
     nornir:
       platform: iosxr
+      timeout: 60
+    password: clab@123
+    username: clab
+  pe2:
+    clab:
+      env:
+        CLAB_MGMT_PASSTHROUGH: true
+        RAM: 5000
+        VCPU: 4
+      image: vrnetlab/juniper_vjunos-router:24.2R1-S2.5
+      kind: juniper_vjunosrouter
+      startup-config: juniper_vjunosrouter_initial_cfg.j2
+    device_roles:
+    - pe
+    ibgp:
+      asn: 100
+      client_of: rr
+    interfaces:
+      Loopback0:
+        description: pe2 Loopback0
+        ipv4_address: 1.255.0.5/32
+      ge-0/0/0:
+        description: pe2:ge-0/0/0 -> p1:Gi0/0/0/3
+        ipv4_address: 1.0.0.14/30
+        isis:
+          instance: CORE
+        link: p1---pe2
+        link_group: core
+        lldp:
+          neighbor: p1
+          neighbor_intf: Gi0/0/0/3
+          neighbor_ipv4: 1.0.0.13/30
+        prefix: 1.0.0.0/16
+      ge-0/0/1:
+        description: pe2:ge-0/0/1 -> p2:Gi0/0/0/3
+        ipv4_address: 1.0.0.18/30
+        isis:
+          instance: CORE
+        link: p2---pe2
+        link_group: core
+        lldp:
+          neighbor: p2
+          neighbor_intf: Gi0/0/0/3
+          neighbor_ipv4: 1.0.0.17/30
+        prefix: 1.0.0.0/16
+      mgmt:
+        ipv4_address: 10.255.0.5/24
+        name: fxp0
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: ge-0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      data:
+        version: 24.2R1-S2.5s
+      platform: junos
       timeout: 60
     password: clab@123
     username: clab
@@ -537,6 +660,16 @@ links:
   link: p2---pe1
   link_group: core
   prefix: 1.0.0.0/16
+- isis:
+    instance: CORE
+  link: p1---pe2
+  link_group: core
+  prefix: 1.0.0.0/16
+- isis:
+    instance: CORE
+  link: p2---pe2
+  link_group: core
+  prefix: 1.0.0.0/16
 - link: pe1---cpe1
   link_group: l3vpn
   mtu: 1505
@@ -561,6 +694,11 @@ nornir_startup:
     timeout: 60
   iosxr:
     platform: iosxr
+    timeout: 60
+  junos:
+    data:
+      version: 24.2R1-S2.5s
+    platform: junos
     timeout: 60
   linux:
     platform: linux
