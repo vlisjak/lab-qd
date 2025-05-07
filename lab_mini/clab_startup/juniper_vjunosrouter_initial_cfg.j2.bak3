@@ -24,16 +24,6 @@ system {
         netconf {
             ssh;
         }
-	extension-service {
-	    request-response {
-	        grpc {
-		    clear-text {
-		        port 57344;
-		    }
-		    routing-instance mgmt_junos;
-		}
-	    }
-	}
     }
     management-instance;
 }
@@ -54,11 +44,9 @@ interfaces {
     }
 }
 routing-instances {
-    mgmt_junos {
-        routing-options {
-            static {
-                route 0.0.0.0/0 next-hop {MGMT_GW_IPV4};
-            }
+    routing-options {
+        static {
+            route 0.0.0.0/0 next-hop {MGMT_GW_IPV4};
         }
     }
 }

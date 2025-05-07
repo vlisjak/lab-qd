@@ -36,6 +36,7 @@ sudo containerlab inspect -a
 
 # Configs of Xrd nodes is preserved, but not xrv9k!
 sudo containerlab -t clab_startup/clab_startup.yaml destroy
+sudo containerlab -t clab_startup/clab_startup.yaml destroy --keep-mgmt-net --graceful --node-filter p1,p2,pe1,cpe1,n9kv1
 
 # Wipe the lab completely
 sudo containerlab -t clab_startup/clab_startup.yaml destroy --cleanup

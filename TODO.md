@@ -168,6 +168,16 @@
 
 - folder structure that allows multiple labs
 
+- Implement remote ssh using 'socat' port mapping, eg: 
+  ```
+  socat TCP-LISTEN:12001,reuseaddr,fork TCP:clab-mini-pe1:22 &  
+        ssh cisco@vlisjak -p 12001  
+  socat TCP-LISTEN:12002,reuseaddr,fork TCP:clab-mini-pe2:22 &  
+      ssh cisco@vlisjak -p 12002  
+  socat TCP-LISTEN:12003,reuseaddr,fork TCP:clab-mini-p1:22 &  
+      ssh cisco@vlisjak -p 12003  
+  ```
+
 # Discarded TODOs
 
 - allow xpath search in jinja templates: 
@@ -181,12 +191,3 @@
     - links and link_groups (in master.yaml) is used only to generate (inheritance) content within devices subtree (master_complete.yaml)
     - and then per-device content can be also embeded directly in nornir_hosts.yaml (data subtree)
     - this way all scripts (that use Nornir anyway) could get any per-device parameter from nornir->data subtree
-
-- Implement remote ssh using 'socat' port mapping
-  https://github.com/chadell/nornir-playground/tree/main
-    socat TCP-LISTEN:12001,reuseaddr,fork TCP:clab-mini-pe1:22 &
-          ssh cisco@vlisjak -p 12001
-    socat TCP-LISTEN:12002,reuseaddr,fork TCP:clab-mini-pe2:22 &
-        ssh cisco@vlisjak -p 12002
-    socat TCP-LISTEN:12003,reuseaddr,fork TCP:clab-mini-p1:22 &
-        ssh cisco@vlisjak -p 12003

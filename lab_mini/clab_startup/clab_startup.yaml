@@ -60,56 +60,58 @@ topology:
       image: vrnetlab/juniper_vjunos-router:24.2R1-S2.5
       kind: juniper_vjunosrouter
       startup-config: juniper_vjunosrouter_initial_cfg.j2
+      ports:
+       - 57344:5734
   links:
-  - endpoints:
-    - p1:Gi0/0/0/0
-    - macvlan:ens256.111
-  - endpoints:
-    - p2:Gi0-0-0-0
-    - macvlan:ens256.112
-  - endpoints:
-    - p1:Gi0/0/0/1
-    - p2:Gi0-0-0-1
-  - endpoints:
-    - p1:Gi0/0/0/2
-    - pe1:Gi0-0-0-0
-  - endpoints:
-    - p2:Gi0-0-0-2
-    - pe1:Gi0-0-0-1
-  - endpoints:
-    - p1:Gi0/0/0/3
-    - pe2:ge-0/0/0
-  - endpoints:
-    - p2:Gi0-0-0-3
-    - pe2:ge-0/0/1
-  - endpoints:
-    - pe1:Gi0-0-0-2
-    - cpe1:Gi2
-  - endpoints:
-    - pe1:Gi0-0-0-3
-    - cpe1:Gi3
-  - endpoints:
-    - pe1:Gi0-0-0-4
-    - n9kv1:Ethernet1/1
+  # - endpoints:
+  #   - p1:Gi0/0/0/0
+  #   - macvlan:ens256.111
+  # - endpoints:
+  #   - p2:Gi0-0-0-0
+  #   - macvlan:ens256.112
+  # - endpoints:
+  #   - p1:Gi0/0/0/1
+  #   - p2:Gi0-0-0-1
+  # - endpoints:
+  #   - p1:Gi0/0/0/2
+  #   - pe1:Gi0-0-0-0
+  # - endpoints:
+  #   - p2:Gi0-0-0-2
+  #   - pe1:Gi0-0-0-1
+  # - endpoints:
+  #   - p1:Gi0/0/0/3
+  #   - pe2:ge-0/0/0
+  # - endpoints:
+  #   - p2:Gi0-0-0-3
+  #   - pe2:ge-0/0/1
+  # - endpoints:
+  #   - pe1:Gi0-0-0-2
+  #   - cpe1:Gi2
+  # - endpoints:
+  #   - pe1:Gi0-0-0-3
+  #   - cpe1:Gi3
+  # - endpoints:
+  #   - pe1:Gi0-0-0-4
+  #   - n9kv1:Ethernet1/1
   nodes:
-    cpe1:
-      kind: cisco_csr1000v
-      mgmt-ipv4: 10.255.0.6
-    host:
-      kind: host
-      mgmt-ipv4: 10.48.188.45
-    n9kv1:
-      kind: cisco_n9kv
-      mgmt-ipv4: 10.255.0.7
-    p1:
-      kind: cisco_xrv9k
-      mgmt-ipv4: 10.255.0.2
-    p2:
-      kind: cisco_xrd
-      mgmt-ipv4: 10.255.0.3
-    pe1:
-      kind: cisco_xrd
-      mgmt-ipv4: 10.255.0.4
+    # cpe1:
+    #   kind: cisco_csr1000v
+    #   mgmt-ipv4: 10.255.0.6
+    # host:
+    #   kind: host
+    #   mgmt-ipv4: 10.48.188.45
+    # n9kv1:
+    #   kind: cisco_n9kv
+    #   mgmt-ipv4: 10.255.0.7
+    # p1:
+    #   kind: cisco_xrv9k
+    #   mgmt-ipv4: 10.255.0.2
+    # p2:
+    #   kind: cisco_xrd
+    #   mgmt-ipv4: 10.255.0.3
+    # pe1:
+    #   kind: cisco_xrd
+    #   mgmt-ipv4: 10.255.0.4
     pe2:
       kind: juniper_vjunosrouter
       mgmt-ipv4: 10.255.0.5
