@@ -61,26 +61,41 @@ device_groups:
 # - filename of j2 config templates is composed of device role: 
 #   <section><device_role><nornir_platform>.j2   (eg: ibgp_pe_iosxr.j2)
 device_roles:
-  p:
-    device_roles: [p]
-  pe:
-    device_roles: [pe]
+  core:
+    device_roles: [core]
+  edge:
+    device_roles: [edge]
     ibgp:
       asn: 100
-      client_of: rr
-  cpe:
-    device_roles: [cpe]
+      client_of: [rr]
+  access:
+    device_roles: [access]
+    ibgp:
+      asn: 100
+      # TBD: we could compute inline RR for access devices from topology, being the edge nodes that terminate the access ring .. 
+      #   -> for now we just hardcode `ibgp.client_of` in device list below
   rr:
     device_roles: [rr]
     isis:
       ol_bit: True
     ibgp:
       asn: 100
-      # TBD: currently this is not handled in iBGP .j2
       full_mesh: [rr]
+  pce:
+    device_roles: [pce]
+    isis:
+      ol_bit: True
+    ibgp:
+      asn: 100
+      client_of: [rr]
+  cpev4:
+    device_roles: [cpev4]
+  cpev6:
+    device_roles: [cpev6]
 
 # List of all devices with inherited vendor-specific (device_groups) and role-specific (device_roles) inventory
 devices:
+  # --- RR
   rr1:
     inherit_from: 
       - device_roles.rr
@@ -89,39 +104,97 @@ devices:
     inherit_from: 
       - device_roles.rr
       - device_groups.iosxr
-  p1:
+  # --- PCE
+  pce1:
     inherit_from: 
-      - device_roles.p
+      - device_roles.pce
       - device_groups.iosxr
-  p2:
+  # --- CORE
+  c1:
     inherit_from: 
-      - device_roles.p
+      - device_roles.core
       - device_groups.iosxr
-  pe1:
+  c2:
     inherit_from: 
-      - device_roles.pe
+      - device_roles.core
       - device_groups.iosxr
-  pe2:
+  c3:
     inherit_from: 
-      - device_roles.pe
+      - device_roles.core
       - device_groups.iosxr
-  pe3:
+  c4:
     inherit_from: 
-      - device_roles.pe
+      - device_roles.core
       - device_groups.iosxr
-  pe4:
+  # --- EDGE region1
+  e11:
     inherit_from: 
-      - device_roles.pe
+      - device_roles.edge
       - device_groups.iosxr
+  e12:
+    inherit_from: 
+      - device_roles.edge
+      - device_groups.iosxr
+  # --- EDGE region2
+  e21:
+    inherit_from: 
+      - device_roles.edge
+      - device_groups.iosxr
+  e22:
+    inherit_from: 
+      - device_roles.edge
+      - device_groups.iosxr
+  # --- ACCESS1 (in EDGE region1)
+  a11:
+    inherit_from: 
+      - device_roles.access
+      - device_groups.iosxr
+    ibgp:
+      client_of: [e11,e12]
+  a12:
+    inherit_from: 
+      - device_roles.access
+      - device_groups.iosxr
+    ibgp:
+      client_of: [e11,e12]
+  a13:
+    inherit_from: 
+      - device_roles.access
+      - device_groups.iosxr
+    ibgp:
+      client_of: [e11,e12]
+  # --- ACCESS2 (in EDGE region2)
+  a21:
+    inherit_from: 
+      - device_roles.access
+      - device_groups.iosxr
+    ibgp:
+      client_of: [e21,e22]
+  a22:
+    inherit_from: 
+      - device_roles.access
+      - device_groups.iosxr
+    ibgp:
+      client_of: [e21,e22]
+  # --- v4 CPEs
   cpe1:
     inherit_from: 
-      - device_roles.cpe
-      - device_groups.ios
+      - device_roles.cpev4
+      - device_groups.iosxr
   cpe2:
     inherit_from: 
-      - device_roles.cpe
-      - device_groups.ios
-      
+      - device_roles.cpev4
+      - device_groups.iosxr
+  # --- v6 CPEs
+  cpe3:
+    inherit_from: 
+      - device_roles.cpev6
+      - device_groups.iosxr
+  cpe4:
+    inherit_from: 
+      - device_roles.cpev6
+      - device_groups.iosxr
+
 # Link-group parameters
 link_groups:
   core:
@@ -129,31 +202,52 @@ link_groups:
     prefix: 1.0.0.0/16
     isis: 
       instance: CORE
-      metric: 2000
-  core_dwdm:
-    link_group: core_dwdm
+      metric: 100
+  edge1:
+    link_group: edge1
     inherit_from: link_groups.core
     isis: 
-      instance: CORE
-      metric: 1000
-    srte:
-      affinity: DWDM
-  rr:
-    link_group: rr
+      instance: EDGE1
+      metric: 500
+  edge2:
+    link_group: edge2
     inherit_from: link_groups.core
     isis: 
-      metric: 99999
+      instance: EDGE2
+      metric: 500
+  access1:
+    link_group: access1
+    inherit_from: link_groups.core
+    isis: 
+      instance: ACCESS1
+      metric: 5000
+  access2:
+    link_group: access2
+    inherit_from: link_groups.core
+    isis: 
+      instance: ACCESS2
+      metric: 5000
+  rr_pce:
+    link_group: rr_pce
+    inherit_from: link_groups.core
+    isis: 
+      metric: 9999
   loopback0:
     link_group: loopback0
     prefix: 1.255.0.0/24
   mgmt:
     # If you're starting multiple clabs, you must use different mgmt prefix for each clab instance
     link_group: mgmt
-    prefix: 10.255.4.0/24
-  access_l3vpn:
-    link_group: l3vpn
+    prefix: 10.255.6.0/24
+  cpev4_l3vpn:
+    link_group: cpev4_l3vpn
     prefix: 1.1.0.0/16
-    mtu: 1555
+    mtu: 1500
+  # TBD
+  cpev6_l3vpn:
+    link_group: cpev6_l3vpn
+    prefix: TBD
+    mtu: 1500
 
 # Topology definition
 # - Parallel links are allowed
@@ -162,53 +256,80 @@ link_groups:
 links:
   # TODO: parallel links - need to fix overlap in generated drawio diagram
 
-  # p-p links
-  - link: p1---p2
+  # core links
+  - link: c1---c2
     inherit_from: link_groups.core
-  - link: p1---p2
-    inherit_from: link_groups.core_dwdm
-
-  # pe-p links
-  - link: pe1---p1
+  - link: c1---c3
     inherit_from: link_groups.core
-  - link: pe2---p2
+  - link: c4---c2
     inherit_from: link_groups.core
-  - link: pe3---p1
-    inherit_from: link_groups.core
-  - link: pe4---p2
-    inherit_from: link_groups.core
-  - link: pe1---p1
-    inherit_from: link_groups.core_dwdm
-  - link: pe2---p2
-    inherit_from: link_groups.core_dwdm
-  - link: pe3---p1
-    inherit_from: link_groups.core_dwdm
-  - link: pe4---p2
-    inherit_from: link_groups.core_dwdm
-
-  # pe-pe links
-  - link: pe1---pe2
-    inherit_from: link_groups.core
-  - link: pe3---pe4
+  - link: c4---c3
     inherit_from: link_groups.core
 
-  # rr-p links
-  - link: rr1---p1
-    inherit_from: link_groups.rr
-  - link: rr2---p2
-    inherit_from: link_groups.rr
+  # edge1 links
+  - link: c1---e11
+    inherit_from: link_groups.edge1
+  - link: c3---e12
+    inherit_from: link_groups.edge1
+  - link: e11---e12
+    inherit_from: link_groups.edge1
 
-  # cpe-pe links
-  - link: cpe1---pe1
-    inherit_from: link_groups.access_l3vpn
-  - link: cpe1---pe2
-    inherit_from: link_groups.access_l3vpn
-  - link: cpe2---pe3
-    inherit_from: link_groups.access_l3vpn
-  - link: cpe2---pe4
-    inherit_from: link_groups.access_l3vpn
+  # edge2 links
+  - link: c2---e21
+    inherit_from: link_groups.edge2
+  - link: c4---e22
+    inherit_from: link_groups.edge2
+  - link: e21---e22
+    inherit_from: link_groups.edge2
 
-# network services
+  # access1 links
+  - link: e11---a11
+    inherit_from: link_groups.access1
+  - link: a11---a12
+    inherit_from: link_groups.access1
+  - link: a12---a13
+    inherit_from: link_groups.access1
+  - link: a13---e12
+
+  # access2 links
+  - link: e21---a41
+    inherit_from: link_groups.access2
+  - link: e22---a41
+    inherit_from: link_groups.access2
+
+  # rr-c links
+  - link: rr1---c1
+    inherit_from: link_groups.rr_pce
+  - link: rr1---c2
+    inherit_from: link_groups.rr_pce
+  - link: rr2---c3
+    inherit_from: link_groups.rr_pce
+  - link: rr2---c4
+    inherit_from: link_groups.rr_pce
+
+  # pce-c links
+  - link: pce1---c1
+    inherit_from: link_groups.rr_pce
+  - link: pce1---c2
+    inherit_from: link_groups.rr_pce
+
+  # cpev4 links
+  - link: cpe1---a11
+    inherit_from: link_groups.cpev4_l3vpn
+  - link: cpe1---a12
+    inherit_from: link_groups.cpev4_l3vpn
+  - link: cpe2---a41
+    inherit_from: link_groups.cpev4_l3vpn
+
+  # cpev6 links
+  - link: cpe3---a12
+    inherit_from: link_groups.cpev6_l3vpn
+  - link: cpe3---a13
+    inherit_from: link_groups.cpev6_l3vpn
+  - link: cpe4---a41
+    inherit_from: link_groups.cpev6_l3vpn
+
+# TBD: network services
 services:
   l3vpn:
     # Notes:
