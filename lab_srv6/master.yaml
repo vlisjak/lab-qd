@@ -93,6 +93,41 @@ device_roles:
   cpev6:
     device_roles: [cpev6]
 
+addr_plan:
+  v4_core_common:
+    v4_prefix: 1.0.0.0/16
+    v4_loop0: 1.255.0.0/24
+  core:
+    inherit_from: addr_plan.v4_core_common
+    v6_prefix: 
+      algo0: FC00:BB00:00::/40
+      algo1: FC00:BB01:00::/40
+  edge1:
+    inherit_from: addr_plan.v4_core_common
+    v6_prefix: 
+      algo0: FC00:BB00:04::/40
+      algo1: FC00:BB01:04::/40
+  edge2:
+    inherit_from: addr_plan.v4_core_common
+    v6_prefix: 
+      algo0: FC00:BB00:08::/40
+      algo1: FC00:BB01:08::/40
+  access1:
+    inherit_from: addr_plan.v4_core_common
+    v6_prefix: 
+      algo0: FC00:BB00:05::/40
+      algo1: FC00:BB01:05::/40
+  access2:
+    inherit_from: addr_plan.v4_core_common
+    v6_prefix: 
+      algo0: FC00:BB00:0A::/40
+      algo1: FC00:BB01:0A::/40
+  rr_pce:
+    inherit_from: addr_plan.v4_core_common
+    v6_prefix: 
+      algo0: FC00:BB00:00::/40
+      algo1: FC00:BB01:00::/40
+
 # List of all devices with inherited vendor-specific (device_groups) and role-specific (device_roles) inventory
 devices:
   # --- RR
@@ -199,54 +234,58 @@ devices:
 link_groups:
   core:
     link_group: core
-    prefix: 1.0.0.0/16
+    inherit_from: addr_plan.core.v4_prefix
     isis: 
-      instance: CORE
+      instance: core
       metric: 100
   edge1:
     link_group: edge1
-    inherit_from: link_groups.core
+    inherit_from: addr_plan.edge1.v4_prefix
     isis: 
-      instance: EDGE1
+      instance: edge1
       metric: 500
   edge2:
     link_group: edge2
-    inherit_from: link_groups.core
+    inherit_from: addr_plan.edge2.v4_prefix
     isis: 
-      instance: EDGE2
+      instance: edge2
       metric: 500
   access1:
     link_group: access1
-    inherit_from: link_groups.core
+    inherit_from: addr_plan.access1.v4_prefix
     isis: 
-      instance: ACCESS1
+      instance: access1
       metric: 5000
   access2:
     link_group: access2
-    inherit_from: link_groups.core
+    inherit_from: addr_plan.access2.v4_prefix
     isis: 
-      instance: ACCESS2
+      instance: access2
       metric: 5000
   rr_pce:
     link_group: rr_pce
-    inherit_from: link_groups.core
+    inherit_from: addr_plan.rr_pce.v4_prefix
     isis: 
+      instance: core
       metric: 9999
   loopback0:
     link_group: loopback0
-    prefix: 1.255.0.0/24
+    v4_prefix: 1.255.0.0/24
+    isis: 
+      instance: core
+      metric: 10
   mgmt:
     # If you're starting multiple clabs, you must use different mgmt prefix for each clab instance
     link_group: mgmt
-    prefix: 10.255.6.0/24
+    v4_prefix: 10.255.6.0/24
   cpev4_l3vpn:
     link_group: cpev4_l3vpn
-    prefix: 1.1.0.0/16
+    v4_prefix: 1.1.0.0/16
     mtu: 1500
   # TBD
   cpev6_l3vpn:
     link_group: cpev6_l3vpn
-    prefix: TBD
+    v6_prefix: FC00:BB02:::/32
     mtu: 1500
 
 # Topology definition

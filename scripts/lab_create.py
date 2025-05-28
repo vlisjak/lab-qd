@@ -239,6 +239,8 @@ def intf_ip_allocation(master_inherit_dotted):
 
         if "clab" in n1_dict and "clab" in n2_dict:
 
+            print("----------", n1_dict.intf_naming, n2_dict.intf_naming)
+
             # loopkup interface name and first_id for specific link_group (such as Bundle-Ether), else return default (such as Gi0/0/0/)
             intf_naming1 = n1_dict.intf_naming
             intf_naming2 = n2_dict.intf_naming
