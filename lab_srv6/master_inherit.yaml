@@ -1,0 +1,923 @@
+addr_plan:
+  access1:
+    v4_loop0: 1.255.0.0/24
+    v4_prefix: 1.0.0.0/16
+    v6_prefix:
+      algo0: FC00:BB00:05::/40
+      algo1: FC00:BB01:05::/40
+  access2:
+    v4_loop0: 1.255.0.0/24
+    v4_prefix: 1.0.0.0/16
+    v6_prefix:
+      algo0: FC00:BB00:0A::/40
+      algo1: FC00:BB01:0A::/40
+  core:
+    v4_loop0: 1.255.0.0/24
+    v4_prefix: 1.0.0.0/16
+    v6_prefix:
+      algo0: FC00:BB00:00::/40
+      algo1: FC00:BB01:00::/40
+  edge1:
+    v4_loop0: 1.255.0.0/24
+    v4_prefix: 1.0.0.0/16
+    v6_prefix:
+      algo0: FC00:BB00:04::/40
+      algo1: FC00:BB01:04::/40
+  edge2:
+    v4_loop0: 1.255.0.0/24
+    v4_prefix: 1.0.0.0/16
+    v6_prefix:
+      algo0: FC00:BB00:08::/40
+      algo1: FC00:BB01:08::/40
+  rr_pce:
+    v4_loop0: 1.255.0.0/24
+    v4_prefix: 1.0.0.0/16
+    v6_prefix:
+      algo0: FC00:BB00:00::/40
+      algo1: FC00:BB01:00::/40
+  v4_core_common:
+    v4_loop0: 1.255.0.0/24
+    v4_prefix: 1.0.0.0/16
+clab_name: srv6
+clab_startup:
+  iosxr:
+    image: ios-xr/xrd-control-plane:24.2.11
+    kind: cisco_xrd
+    startup-config: xrd_initial_cfg.j2
+device_groups:
+  iosxr:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+      timeout: 60
+    password: clab@123
+    username: clab
+device_roles:
+  access:
+    device_roles:
+    - access
+    ibgp:
+      asn: 100
+  core:
+    device_roles:
+    - core
+  cpev4:
+    device_roles:
+    - cpev4
+  cpev6:
+    device_roles:
+    - cpev6
+  edge:
+    device_roles:
+    - edge
+    ibgp:
+      asn: 100
+      client_of:
+      - rr
+  pce:
+    device_roles:
+    - pce
+    ibgp:
+      asn: 100
+      client_of:
+      - rr
+    isis:
+      ol_bit: true
+  rr:
+    device_roles:
+    - rr
+    ibgp:
+      asn: 100
+      full_mesh:
+      - rr
+    isis:
+      ol_bit: true
+devices:
+  a11:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - access
+    ibgp:
+      asn: 100
+      client_of:
+      - e11
+      - e12
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+      timeout: 60
+    password: clab@123
+    username: clab
+  a12:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - access
+    ibgp:
+      asn: 100
+      client_of:
+      - e11
+      - e12
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+      timeout: 60
+    password: clab@123
+    username: clab
+  a13:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - access
+    ibgp:
+      asn: 100
+      client_of:
+      - e11
+      - e12
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+      timeout: 60
+    password: clab@123
+    username: clab
+  a41:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - access
+    ibgp:
+      asn: 100
+      client_of:
+      - e21
+      - e22
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+      timeout: 60
+    password: clab@123
+    username: clab
+  c1:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - core
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+      timeout: 60
+    password: clab@123
+    username: clab
+  c2:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - core
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+      timeout: 60
+    password: clab@123
+    username: clab
+  c3:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - core
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+      timeout: 60
+    password: clab@123
+    username: clab
+  c4:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - core
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+      timeout: 60
+    password: clab@123
+    username: clab
+  cpe1:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - cpev4
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+      timeout: 60
+    password: clab@123
+    username: clab
+  cpe2:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - cpev4
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+      timeout: 60
+    password: clab@123
+    username: clab
+  cpe3:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - cpev6
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+      timeout: 60
+    password: clab@123
+    username: clab
+  cpe4:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - cpev6
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+      timeout: 60
+    password: clab@123
+    username: clab
+  e11:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - edge
+    ibgp:
+      asn: 100
+      client_of:
+      - rr
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+      timeout: 60
+    password: clab@123
+    username: clab
+  e12:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - edge
+    ibgp:
+      asn: 100
+      client_of:
+      - rr
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+      timeout: 60
+    password: clab@123
+    username: clab
+  e21:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - edge
+    ibgp:
+      asn: 100
+      client_of:
+      - rr
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+      timeout: 60
+    password: clab@123
+    username: clab
+  e22:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - edge
+    ibgp:
+      asn: 100
+      client_of:
+      - rr
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    nornir:
+      group: iosxr
+      platform: iosxr
+      timeout: 60
+    password: clab@123
+    username: clab
+  pce1:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - pce
+    ibgp:
+      asn: 100
+      client_of:
+      - rr
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    isis:
+      ol_bit: true
+    nornir:
+      group: iosxr
+      platform: iosxr
+      timeout: 60
+    password: clab@123
+    username: clab
+  rr1:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - rr
+    ibgp:
+      asn: 100
+      full_mesh:
+      - rr
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    isis:
+      ol_bit: true
+    nornir:
+      group: iosxr
+      platform: iosxr
+      timeout: 60
+    password: clab@123
+    username: clab
+  rr2:
+    clab:
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+    clab_intf_map: true
+    device_roles:
+    - rr
+    ibgp:
+      asn: 100
+      full_mesh:
+      - rr
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
+    intf_naming:
+      core_bundle:
+        first_id: 1
+        name: Bundle-Ether
+      default:
+        first_id: 0
+        name: Gi0/0/0/
+      loopback0:
+        first_id: 0
+        name: Loopback
+    isis:
+      ol_bit: true
+    nornir:
+      group: iosxr
+      platform: iosxr
+      timeout: 60
+    password: clab@123
+    username: clab
+drawio_diagram: topology.drawio
+link_groups:
+  access1:
+    isis:
+      instance: access1
+      metric: 5000
+    link_group: access1
+    v4_prefix: 1.0.0.0/16
+  access2:
+    isis:
+      instance: access2
+      metric: 5000
+    link_group: access2
+    v4_prefix: 1.0.0.0/16
+  core:
+    isis:
+      instance: core
+      metric: 100
+    link_group: core
+    v4_prefix: 1.0.0.0/16
+  cpev4_l3vpn:
+    link_group: cpev4_l3vpn
+    mtu: 1500
+    v4_prefix: 1.1.0.0/16
+  cpev6_l3vpn:
+    link_group: cpev6_l3vpn
+    mtu: 1500
+    v6_prefix: FC00:BB02:::/32
+  edge1:
+    isis:
+      instance: edge1
+      metric: 500
+    link_group: edge1
+    v4_prefix: 1.0.0.0/16
+  edge2:
+    isis:
+      instance: edge2
+      metric: 500
+    link_group: edge2
+    v4_prefix: 1.0.0.0/16
+  loopback0:
+    isis:
+      instance: core
+      metric: 10
+    link_group: loopback0
+    v4_prefix: 1.255.0.0/24
+  mgmt:
+    link_group: mgmt
+    v4_prefix: 10.255.6.0/24
+  rr_pce:
+    isis:
+      instance: core
+      metric: 9999
+    link_group: rr_pce
+    v4_prefix: 1.0.0.0/16
+links:
+- isis:
+    instance: core
+    metric: 100
+  link: c1---c2
+  link_group: core
+  v4_prefix: 1.0.0.0/16
+- isis:
+    instance: core
+    metric: 100
+  link: c1---c3
+  link_group: core
+  v4_prefix: 1.0.0.0/16
+- isis:
+    instance: core
+    metric: 100
+  link: c4---c2
+  link_group: core
+  v4_prefix: 1.0.0.0/16
+- isis:
+    instance: core
+    metric: 100
+  link: c4---c3
+  link_group: core
+  v4_prefix: 1.0.0.0/16
+- isis:
+    instance: edge1
+    metric: 500
+  link: c1---e11
+  link_group: edge1
+  v4_prefix: 1.0.0.0/16
+- isis:
+    instance: edge1
+    metric: 500
+  link: c3---e12
+  link_group: edge1
+  v4_prefix: 1.0.0.0/16
+- isis:
+    instance: edge1
+    metric: 500
+  link: e11---e12
+  link_group: edge1
+  v4_prefix: 1.0.0.0/16
+- isis:
+    instance: edge2
+    metric: 500
+  link: c2---e21
+  link_group: edge2
+  v4_prefix: 1.0.0.0/16
+- isis:
+    instance: edge2
+    metric: 500
+  link: c4---e22
+  link_group: edge2
+  v4_prefix: 1.0.0.0/16
+- isis:
+    instance: edge2
+    metric: 500
+  link: e21---e22
+  link_group: edge2
+  v4_prefix: 1.0.0.0/16
+- isis:
+    instance: access1
+    metric: 5000
+  link: e11---a11
+  link_group: access1
+  v4_prefix: 1.0.0.0/16
+- isis:
+    instance: access1
+    metric: 5000
+  link: a11---a12
+  link_group: access1
+  v4_prefix: 1.0.0.0/16
+- isis:
+    instance: access1
+    metric: 5000
+  link: a12---a13
+  link_group: access1
+  v4_prefix: 1.0.0.0/16
+- isis:
+    instance: access1
+    metric: 5000
+  link: a13---e12
+  link_group: access1
+  v4_prefix: 1.0.0.0/16
+- isis:
+    instance: access2
+    metric: 5000
+  link: e21---a41
+  link_group: access2
+  v4_prefix: 1.0.0.0/16
+- isis:
+    instance: access2
+    metric: 5000
+  link: e22---a41
+  link_group: access2
+  v4_prefix: 1.0.0.0/16
+- isis:
+    instance: core
+    metric: 9999
+  link: rr1---c1
+  link_group: rr_pce
+  v4_prefix: 1.0.0.0/16
+- isis:
+    instance: core
+    metric: 9999
+  link: rr1---c2
+  link_group: rr_pce
+  v4_prefix: 1.0.0.0/16
+- isis:
+    instance: core
+    metric: 9999
+  link: rr2---c3
+  link_group: rr_pce
+  v4_prefix: 1.0.0.0/16
+- isis:
+    instance: core
+    metric: 9999
+  link: rr2---c4
+  link_group: rr_pce
+  v4_prefix: 1.0.0.0/16
+- isis:
+    instance: core
+    metric: 9999
+  link: pce1---c1
+  link_group: rr_pce
+  v4_prefix: 1.0.0.0/16
+- isis:
+    instance: core
+    metric: 9999
+  link: pce1---c2
+  link_group: rr_pce
+  v4_prefix: 1.0.0.0/16
+- link: cpe1---a11
+  link_group: cpev4_l3vpn
+  mtu: 1500
+  v4_prefix: 1.1.0.0/16
+- link: cpe1---a12
+  link_group: cpev4_l3vpn
+  mtu: 1500
+  v4_prefix: 1.1.0.0/16
+- link: cpe2---a41
+  link_group: cpev4_l3vpn
+  mtu: 1500
+  v4_prefix: 1.1.0.0/16
+- link: cpe3---a12
+  link_group: cpev6_l3vpn
+  mtu: 1500
+  v6_prefix: FC00:BB02:::/32
+- link: cpe3---a13
+  link_group: cpev6_l3vpn
+  mtu: 1500
+  v6_prefix: FC00:BB02:::/32
+- link: cpe4---a41
+  link_group: cpev6_l3vpn
+  mtu: 1500
+  v6_prefix: FC00:BB02:::/32
+nornir_startup:
+  inventory:
+    options:
+      group_file: nornir/nornir_groups.yaml
+      host_file: nornir/nornir_hosts.yaml
+    plugin: SimpleInventory
+  iosxr:
+    group: iosxr
+    platform: iosxr
+    timeout: 60
+  logging:
+    log_file: nornir/nornir.log
+  runner:
+    options:
+      num_workers: 10
+    plugin: threaded
+services:
+  l3vpn:
+    vrf_A:
+      affinity_exclude: DWDM
+      endpoints:
+        cpe1:
+          pe_routing:
+            asn: 65001
+            primary_pe: pe1
+            protocol: ebgp
+        cpe2:
+          pe_routing:
+            primary_pe: pe3
+            protocol: static
+      rd: 1001

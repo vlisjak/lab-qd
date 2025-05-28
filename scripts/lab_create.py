@@ -500,6 +500,7 @@ if __name__ == "__main__":
 
     # Resolve "inherit_from:" blocks
     master_inherit = utils.resolve_inheritance(master)
+    utils.save_inventory(master_inherit, "master_inherit.yaml")
 
     # Allow dotted notation to access nested objects
     master_inherit_dotted = Box(master_inherit)
