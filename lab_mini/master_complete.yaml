@@ -149,8 +149,8 @@ device_groups:
         version: 24.2R1-S2.5s
       platform: junos
       timeout: 60
-    password: clab@123
-    username: clab
+    password: admin@123
+    username: admin
   xrv9k:
     clab:
       env:
@@ -613,8 +613,8 @@ devices:
         version: 24.2R1-S2.5s
       platform: junos
       timeout: 60
-    password: clab@123
-    username: clab
+    password: admin@123
+    username: admin
 drawio_diagram: topology.drawio
 link_groups:
   access_l3vpn:

@@ -198,19 +198,14 @@ devices:
       - device_groups.iosxr
     ibgp:
       client_of: [e11,e12]
-  # --- ACCESS2 (in EDGE region2)
-  a21:
+  # --- ACCESS4 (in EDGE region2)
+  a41:
     inherit_from: 
       - device_roles.access
       - device_groups.iosxr
     ibgp:
       client_of: [e21,e22]
-  a22:
-    inherit_from: 
-      - device_roles.access
-      - device_groups.iosxr
-    ibgp:
-      client_of: [e21,e22]
+      
   # --- v4 CPEs
   cpe1:
     inherit_from: 
@@ -329,6 +324,7 @@ links:
   - link: a12---a13
     inherit_from: link_groups.access1
   - link: a13---e12
+    inherit_from: link_groups.access1
 
   # access2 links
   - link: e21---a41

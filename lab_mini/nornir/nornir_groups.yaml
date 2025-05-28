@@ -43,9 +43,9 @@ junos:
         banner_timeout: 60
         conn_timeout: 60
         timeout: 60
-  password: clab@123
+  password: admin@123
   platform: junos
-  username: clab
+  username: admin
 linux:
   connection_options:
     napalm:
