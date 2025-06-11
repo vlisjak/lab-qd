@@ -344,8 +344,8 @@ def intf_ip_allocation(master_inherit_dotted):
             nodes_intf[node2].interfaces[full_ifname2].lldp.update({"neighbor_ipv4": f"{ip1}/{subnet.prefixlen}"})
 
     # add Loopabck0 and mgmt_ip to all nodes
-    prefix_loop = ipaddress.ip_network(master_inherit_dotted.link_groups.loopback0.prefix)
-    prefix_mgmt = ipaddress.ip_network(master_inherit_dotted.link_groups.mgmt.prefix)
+    prefix_loop = ipaddress.ip_network(master_inherit_dotted.link_groups.loopback0.v4_prefix)
+    prefix_mgmt = ipaddress.ip_network(master_inherit_dotted.link_groups.mgmt.v4_prefix)
 
     # exclude .1 and .254 which may be used by docker
     reserved_loop = [

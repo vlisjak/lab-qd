@@ -1,0 +1,157 @@
+mgmt:
+  ipv4-subnet: {}
+  network: srv6
+name: srv6
+topology:
+  kinds:
+    cisco_xrd:
+      env:
+        CLAB_MGMT_VRF: clab-mgmt
+        PASSWORD: clab@123
+        USERNAME: clab
+      image: ios-xr/xrd-control-plane:24.2.11
+      kind: cisco_xrd
+      startup-config: xrd_initial_cfg.j2
+  links:
+  - endpoints:
+    - c1:Gi0-0-0-0
+    - c2:Gi0-0-0-0
+  - endpoints:
+    - c1:Gi0-0-0-1
+    - c3:Gi0-0-0-0
+  - endpoints:
+    - c4:Gi0-0-0-0
+    - c2:Gi0-0-0-1
+  - endpoints:
+    - c4:Gi0-0-0-1
+    - c3:Gi0-0-0-1
+  - endpoints:
+    - c1:Gi0-0-0-2
+    - e11:Gi0-0-0-0
+  - endpoints:
+    - c3:Gi0-0-0-2
+    - e12:Gi0-0-0-0
+  - endpoints:
+    - e11:Gi0-0-0-1
+    - e12:Gi0-0-0-1
+  - endpoints:
+    - c2:Gi0-0-0-2
+    - e21:Gi0-0-0-0
+  - endpoints:
+    - c4:Gi0-0-0-2
+    - e22:Gi0-0-0-0
+  - endpoints:
+    - e21:Gi0-0-0-1
+    - e22:Gi0-0-0-1
+  - endpoints:
+    - e11:Gi0-0-0-2
+    - a11:Gi0-0-0-0
+  - endpoints:
+    - a11:Gi0-0-0-1
+    - a12:Gi0-0-0-0
+  - endpoints:
+    - a12:Gi0-0-0-1
+    - a13:Gi0-0-0-0
+  - endpoints:
+    - a13:Gi0-0-0-1
+    - e12:Gi0-0-0-2
+  - endpoints:
+    - e21:Gi0-0-0-2
+    - a41:Gi0-0-0-0
+  - endpoints:
+    - e22:Gi0-0-0-2
+    - a41:Gi0-0-0-1
+  - endpoints:
+    - rr1:Gi0-0-0-0
+    - c1:Gi0-0-0-3
+  - endpoints:
+    - rr1:Gi0-0-0-1
+    - c2:Gi0-0-0-3
+  - endpoints:
+    - rr2:Gi0-0-0-0
+    - c3:Gi0-0-0-3
+  - endpoints:
+    - rr2:Gi0-0-0-1
+    - c4:Gi0-0-0-3
+  - endpoints:
+    - pce1:Gi0-0-0-0
+    - c1:Gi0-0-0-4
+  - endpoints:
+    - pce1:Gi0-0-0-1
+    - c2:Gi0-0-0-4
+  - endpoints:
+    - cpe1:Gi0-0-0-0
+    - a11:Gi0-0-0-2
+  - endpoints:
+    - cpe1:Gi0-0-0-1
+    - a12:Gi0-0-0-2
+  - endpoints:
+    - cpe2:Gi0-0-0-0
+    - a41:Gi0-0-0-2
+  - endpoints:
+    - cpe3:Gi0-0-0-0
+    - a12:Gi0-0-0-3
+  - endpoints:
+    - cpe3:Gi0-0-0-1
+    - a13:Gi0-0-0-2
+  - endpoints:
+    - cpe4:Gi0-0-0-0
+    - a41:Gi0-0-0-3
+  nodes:
+    a11:
+      kind: cisco_xrd
+      mgmt-ipv4: 10.255.6.10
+    a12:
+      kind: cisco_xrd
+      mgmt-ipv4: 10.255.6.11
+    a13:
+      kind: cisco_xrd
+      mgmt-ipv4: 10.255.6.12
+    a41:
+      kind: cisco_xrd
+      mgmt-ipv4: 10.255.6.13
+    c1:
+      kind: cisco_xrd
+      mgmt-ipv4: 10.255.6.2
+    c2:
+      kind: cisco_xrd
+      mgmt-ipv4: 10.255.6.3
+    c3:
+      kind: cisco_xrd
+      mgmt-ipv4: 10.255.6.4
+    c4:
+      kind: cisco_xrd
+      mgmt-ipv4: 10.255.6.5
+    cpe1:
+      kind: cisco_xrd
+      mgmt-ipv4: 10.255.6.17
+    cpe2:
+      kind: cisco_xrd
+      mgmt-ipv4: 10.255.6.18
+    cpe3:
+      kind: cisco_xrd
+      mgmt-ipv4: 10.255.6.19
+    cpe4:
+      kind: cisco_xrd
+      mgmt-ipv4: 10.255.6.20
+    e11:
+      kind: cisco_xrd
+      mgmt-ipv4: 10.255.6.6
+    e12:
+      kind: cisco_xrd
+      mgmt-ipv4: 10.255.6.7
+    e21:
+      kind: cisco_xrd
+      mgmt-ipv4: 10.255.6.8
+    e22:
+      kind: cisco_xrd
+      mgmt-ipv4: 10.255.6.9
+    pce1:
+      kind: cisco_xrd
+      mgmt-ipv4: 10.255.6.16
+    rr1:
+      kind: cisco_xrd
+      mgmt-ipv4: 10.255.6.14
+    rr2:
+      kind: cisco_xrd
+      mgmt-ipv4: 10.255.6.15

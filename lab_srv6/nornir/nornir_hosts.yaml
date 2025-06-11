@@ -1,0 +1,190 @@
+a11:
+  data:
+    device_roles:
+    - access
+    mgmt:
+      ipv4_address: 10.255.6.10/24
+      name: MgmtEth0/RP0/CPU0/0
+  groups:
+  - iosxr
+  hostname: 10.255.6.10
+a12:
+  data:
+    device_roles:
+    - access
+    mgmt:
+      ipv4_address: 10.255.6.11/24
+      name: MgmtEth0/RP0/CPU0/0
+  groups:
+  - iosxr
+  hostname: 10.255.6.11
+a13:
+  data:
+    device_roles:
+    - access
+    mgmt:
+      ipv4_address: 10.255.6.12/24
+      name: MgmtEth0/RP0/CPU0/0
+  groups:
+  - iosxr
+  hostname: 10.255.6.12
+a41:
+  data:
+    device_roles:
+    - access
+    mgmt:
+      ipv4_address: 10.255.6.13/24
+      name: MgmtEth0/RP0/CPU0/0
+  groups:
+  - iosxr
+  hostname: 10.255.6.13
+c1:
+  data:
+    device_roles:
+    - core
+    mgmt:
+      ipv4_address: 10.255.6.2/24
+      name: MgmtEth0/RP0/CPU0/0
+  groups:
+  - iosxr
+  hostname: 10.255.6.2
+c2:
+  data:
+    device_roles:
+    - core
+    mgmt:
+      ipv4_address: 10.255.6.3/24
+      name: MgmtEth0/RP0/CPU0/0
+  groups:
+  - iosxr
+  hostname: 10.255.6.3
+c3:
+  data:
+    device_roles:
+    - core
+    mgmt:
+      ipv4_address: 10.255.6.4/24
+      name: MgmtEth0/RP0/CPU0/0
+  groups:
+  - iosxr
+  hostname: 10.255.6.4
+c4:
+  data:
+    device_roles:
+    - core
+    mgmt:
+      ipv4_address: 10.255.6.5/24
+      name: MgmtEth0/RP0/CPU0/0
+  groups:
+  - iosxr
+  hostname: 10.255.6.5
+cpe1:
+  data:
+    device_roles:
+    - cpev4
+    mgmt:
+      ipv4_address: 10.255.6.17/24
+      name: MgmtEth0/RP0/CPU0/0
+  groups:
+  - iosxr
+  hostname: 10.255.6.17
+cpe2:
+  data:
+    device_roles:
+    - cpev4
+    mgmt:
+      ipv4_address: 10.255.6.18/24
+      name: MgmtEth0/RP0/CPU0/0
+  groups:
+  - iosxr
+  hostname: 10.255.6.18
+cpe3:
+  data:
+    device_roles:
+    - cpev6
+    mgmt:
+      ipv4_address: 10.255.6.19/24
+      name: MgmtEth0/RP0/CPU0/0
+  groups:
+  - iosxr
+  hostname: 10.255.6.19
+cpe4:
+  data:
+    device_roles:
+    - cpev6
+    mgmt:
+      ipv4_address: 10.255.6.20/24
+      name: MgmtEth0/RP0/CPU0/0
+  groups:
+  - iosxr
+  hostname: 10.255.6.20
+e11:
+  data:
+    device_roles:
+    - edge
+    mgmt:
+      ipv4_address: 10.255.6.6/24
+      name: MgmtEth0/RP0/CPU0/0
+  groups:
+  - iosxr
+  hostname: 10.255.6.6
+e12:
+  data:
+    device_roles:
+    - edge
+    mgmt:
+      ipv4_address: 10.255.6.7/24
+      name: MgmtEth0/RP0/CPU0/0
+  groups:
+  - iosxr
+  hostname: 10.255.6.7
+e21:
+  data:
+    device_roles:
+    - edge
+    mgmt:
+      ipv4_address: 10.255.6.8/24
+      name: MgmtEth0/RP0/CPU0/0
+  groups:
+  - iosxr
+  hostname: 10.255.6.8
+e22:
+  data:
+    device_roles:
+    - edge
+    mgmt:
+      ipv4_address: 10.255.6.9/24
+      name: MgmtEth0/RP0/CPU0/0
+  groups:
+  - iosxr
+  hostname: 10.255.6.9
+pce1:
+  data:
+    device_roles:
+    - pce
+    mgmt:
+      ipv4_address: 10.255.6.16/24
+      name: MgmtEth0/RP0/CPU0/0
+  groups:
+  - iosxr
+  hostname: 10.255.6.16
+rr1:
+  data:
+    device_roles:
+    - rr
+    mgmt:
+      ipv4_address: 10.255.6.14/24
+      name: MgmtEth0/RP0/CPU0/0
+  groups:
+  - iosxr
+  hostname: 10.255.6.14
+rr2:
+  data:
+    device_roles:
+    - rr
+    mgmt:
+      ipv4_address: 10.255.6.15/24
+      name: MgmtEth0/RP0/CPU0/0
+  groups:
+  - iosxr
+  hostname: 10.255.6.15
