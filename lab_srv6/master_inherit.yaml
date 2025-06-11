@@ -737,7 +737,7 @@ links:
 - isis:
     instance: core
     metric: 100
-  link: c1---c2
+  link: c1:Gi0/0/0/3---c2:Gi0/0/0/3
   link_group: core
   v4_prefix: 1.0.0.0/16
 - isis:

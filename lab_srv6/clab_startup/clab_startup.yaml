@@ -14,19 +14,19 @@ topology:
       startup-config: xrd_initial_cfg.j2
   links:
   - endpoints:
-    - c1:Gi0-0-0-0
-    - c2:Gi0-0-0-0
+    - c1:Gi0-0-0-3
+    - c2:Gi0-0-0-3
   - endpoints:
-    - c1:Gi0-0-0-1
+    - c1:Gi0-0-0-0
     - c3:Gi0-0-0-0
   - endpoints:
     - c4:Gi0-0-0-0
-    - c2:Gi0-0-0-1
+    - c2:Gi0-0-0-0
   - endpoints:
     - c4:Gi0-0-0-1
     - c3:Gi0-0-0-1
   - endpoints:
-    - c1:Gi0-0-0-2
+    - c1:Gi0-0-0-1
     - e11:Gi0-0-0-0
   - endpoints:
     - c3:Gi0-0-0-2
@@ -35,7 +35,7 @@ topology:
     - e11:Gi0-0-0-1
     - e12:Gi0-0-0-1
   - endpoints:
-    - c2:Gi0-0-0-2
+    - c2:Gi0-0-0-1
     - e21:Gi0-0-0-0
   - endpoints:
     - c4:Gi0-0-0-2
@@ -63,10 +63,10 @@ topology:
     - a41:Gi0-0-0-1
   - endpoints:
     - rr1:Gi0-0-0-0
-    - c1:Gi0-0-0-3
+    - c1:Gi0-0-0-2
   - endpoints:
     - rr1:Gi0-0-0-1
-    - c2:Gi0-0-0-3
+    - c2:Gi0-0-0-2
   - endpoints:
     - rr2:Gi0-0-0-0
     - c3:Gi0-0-0-3

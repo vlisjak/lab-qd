@@ -291,7 +291,7 @@ links:
   # TODO: parallel links - need to fix overlap in generated drawio diagram
 
   # core links
-  - link: c1---c2
+  - link: c1:Gi0/0/0/3---c2:Gi0/0/0/3
     inherit_from: link_groups.core
   - link: c1---c3
     inherit_from: link_groups.core

@@ -119,10 +119,8 @@ class P2p_Intf_Allocator:
     """
 
     def __init__(self, excludeIDs=None):
-        if excludeIDs is None:
-            excludeIDs = {}
         self.nodes = defaultdict(lambda: defaultdict(int))
-        self.excludeIDs = excludeIDs
+        self.excludeIDs = excludeIDs or {}
 
     def __iter__(self):
         return self
@@ -130,21 +128,17 @@ class P2p_Intf_Allocator:
     def __next__(self):
         raise NotImplementedError("Use next(node, interface, first_id) to get the next value for a specific node and interface.")
 
-    def next(self, node, interface, first_id):
-        if node not in self.nodes or interface not in self.nodes[node]:
-            self.nodes[node][interface] = first_id
+    def next(self, node: str, interface: str, first_id: int) -> int:
+        current_id = self.nodes[node].get(interface, first_id)
 
-        next_id = self.nodes[node][interface]
+        # Get excluded IDs for this node/interface
+        excluded = self.excludeIDs.get(node, {}).get(interface, [])
 
-        # Get the list of excluded IDs for the specific node and interface
-        node_exclude_ids = self.excludeIDs.get(node, defaultdict(list))
-        interface_exclude_ids = node_exclude_ids.get(interface, [])
+        while current_id in excluded:
+            current_id += 1
 
-        while next_id in interface_exclude_ids:
-            next_id += 1
-
-        self.nodes[node][interface] = next_id + 1
-        return next_id
+        self.nodes[node][interface] = current_id + 1
+        return current_id
 
 
 class Subnet_Allocator:
@@ -187,206 +181,113 @@ def get_bundle_id(node, neighbor, interfaces):
 
 
 def intf_ip_allocation(master_inherit_dotted):
-    """
-    Generate interfaces inventory: auto allocate interface IDs and IP subnets
-     - p2p links (core and access)
-     - loopback0s
-     - mgmt
-
-    Returns:
-      - nodes_intf: dict of all interfaces/IPs for each node
-      - clab_links: topology entries for clab_startup.yaml
-
-    TODO: this function is way too long - need to refactor..
-    """
-
-    # interfaces and IP addresses for each node
     nodes_intf = Box(nested_dict(), default_box=True)
-
-    # only links that will be created by clab (eg. Bundles are excluded)
     clab_links = []
-
-    # We will auto-allocate /30 subnets for p2p links
     subnet_allocator = Subnet_Allocator()
-
-    # We will auto-allocate interface names, except for those manually defined in master.yaml->links
     excludeIDs = exclude_manual_intf(master_inherit_dotted.links)
-    print(f"Manually defined interface names in master.yaml:")
+
+    print("Manually defined interface names in master.yaml:")
     for exc_node, exc_node_details in excludeIDs.items():
         for exc_intf, excIDs in exc_node_details.items():
-            print(f"   {exc_node:8s} {exc_intf:15s} {excIDs}")
+            print(f" {exc_node:8s} {exc_intf:15s} {excIDs}")
 
     p2p_if_allocator = P2p_Intf_Allocator(excludeIDs=excludeIDs)
 
-    # handle p2p core and access links
-    # - parallel links are allowed
-    # - if intf name is manually defined in master.yaml
-    #      -> do not autoallocate
-    #      -> do translate router intf name to clab name, if clab_startup->[device_type]->clab_intf->re_sub exists
-    #      -> do auto-allocate IP address (if prefix for that link exists .. inherited from link_group)
-    for link in master_inherit_dotted.links:
+    _allocate_p2p_links(master_inherit_dotted, nodes_intf, clab_links, p2p_if_allocator, subnet_allocator)
+    _assign_loopback_and_mgmt(master_inherit_dotted, nodes_intf)
+    _update_master_with_interfaces(master_inherit_dotted, nodes_intf)
 
-        # link example:{ link: pe1:Gi0/0/0/9---p1, inherit_from: link_groups.core }
-        (node1, full_ifname1, node2, full_ifname2) = parse_link(link.link)
+    return master_inherit_dotted.to_dict(), {"links": clab_links}
 
-        # if both nodes are clab devices, we can (unless intf manually defined in master.yaml) auto-allocate intf names and IPs
-        # - else: we assume that user wants to provision physical lab, so interface names for both
-        #         nodes must be provided in master.yaml (and this entry will not get in clab_links)
-        # TODO: shall we create clab links in separate function?
-        #       - with an argument: list of interface names that must be excluded from clab?
-        n1_dict = master_inherit_dotted.devices[node1]
-        n2_dict = master_inherit_dotted.devices[node2]
+def _allocate_p2p_links(master, nodes_intf, clab_links, if_allocator, subnet_allocator):
+    for link in master.links:
+        node1, if1, node2, if2 = parse_link(link.link)
+        n1_dict, n2_dict = master.devices[node1], master.devices[node2]
 
-        if "clab" in n1_dict and "clab" in n2_dict:
+        if "clab" not in n1_dict or "clab" not in n2_dict:
+            continue
 
-            # loopkup interface name and first_id for specific link_group (such as Bundle-Ether), else return default (such as Gi0/0/0/)
-            intf_naming1 = n1_dict.intf_naming
-            intf_naming2 = n2_dict.intf_naming
+        intf_type1, first_id1 = _get_intf_type_and_id(n1_dict, link.link_group)
+        intf_type2, first_id2 = _get_intf_type_and_id(n2_dict, link.link_group)
 
-            if link.link_group in intf_naming1:
-                intf_type1 = intf_naming1[link.link_group].name
-                intf_first_id1 = intf_naming1[link.link_group].first_id
-            else:
-                intf_type1 = intf_naming1.default.name
-                intf_first_id1 = intf_naming1.default.first_id
+        if not if1:
+            if1 = f"{intf_type1}{if_allocator.next(node1, intf_type1, first_id1)}"
+        if not if2:
+            if2 = f"{intf_type2}{if_allocator.next(node2, intf_type2, first_id2)}"
 
-            if link.link_group in intf_naming2:
-                intf_type2 = intf_naming2[link.link_group].name
-                intf_first_id2 = intf_naming2[link.link_group].first_id
-            else:
-                intf_type2 = intf_naming2.default.name
-                intf_first_id2 = intf_naming2.default.first_id
+        clab_if1 = utils.clab_intf_map(n1_dict.clab.kind, if1) if n1_dict.get("clab_intf_map") else if1
+        clab_if2 = utils.clab_intf_map(n2_dict.clab.kind, if2) if n2_dict.get("clab_intf_map") else if2
 
-            # intf1 was not provided in master.yaml -> auto-allocate
-            if not full_ifname1:
-                intf_id1 = p2p_if_allocator.next(node1, intf_type1, intf_first_id1)  # eg. 4
-                full_ifname1 = f"{intf_type1}{intf_id1}"  # eg. Gi0/0/0/4
+        # exclude interfaces such as Bundles, which can be defined in master.yaml (to be configured in IOS-XR by 
+        # nornir), but not part of clab topology
+        if not link.get("clab_exclude", False):
+            clab_links.append({
+                "endpoints": [
+                    f"{node1 if node1 != 'host' else 'macvlan'}:{clab_if1}",
+                    f"{node2 if node2 != 'host' else 'macvlan'}:{clab_if2}"
+                ]
+            })
 
-            # intf2 was not provided in master.yaml -> auto-allocate
-            if not full_ifname2:
-                intf_id2 = p2p_if_allocator.next(node2, intf_type2, intf_first_id2)  # eg. 4
-                full_ifname2 = f"{intf_type2}{intf_id2}"  # eg. Gi0/0/0/4
+        _add_interface_metadata(nodes_intf, node1, if1, node2, if2, link)
+        _add_interface_metadata(nodes_intf, node2, if2, node1, if1, link)
 
-            clab1 = master_inherit_dotted.devices[node1].clab
-            clab2 = master_inherit_dotted.devices[node2].clab
-
-            if "clab_intf_map" in n1_dict and n1_dict.clab_intf_map == True:
-                clab_ifname1 = utils.clab_intf_map(clab1.kind, full_ifname1)
-            else:
-                clab_ifname1 = full_ifname1
-
-            if "clab_intf_map" in n2_dict and n2_dict.clab_intf_map == True:
-                clab_ifname2 = utils.clab_intf_map(clab2.kind, full_ifname2)
-            else:
-                clab_ifname2 = full_ifname2
-
-            # clab_startup.yaml expects the following topology structure:
-            # links:
-            # - endpoints:
-            #     - p1:Gi0-0-0-0
-            #     - p2:Gi0-0-0-0
-            # - endpoints:
-            #     - p2:Gi0-0-0-1
-            #     - p3:Gi0-0-0-0
-
-            # We must not include Bundle-Ether in clab startup (marked with 'clab_exclude' in master.yaml)
-            if link.get("clab_exclude", False):
-                print("Link excluded from clab:", f"{node1}:{clab_ifname1}", f"{node2}:{clab_ifname2}")
-                pass
-            else:
-                clab_n1 = "macvlan" if node1 == "host" else node1
-                clab_n2 = "macvlan" if node2 == "host" else node2
-                clab_links.append(
-                    {
-                        "endpoints": [
-                            f"{clab_n1}:{clab_ifname1}",
-                            f"{clab_n2}:{clab_ifname2}",
-                        ]
-                    }
-                )
-            # TBD: add extended link defintion for macvlan links on xrv9k, with passthru
-
-        # now add interfaces also in master_complete.yaml
-        nodes_intf[node1].interfaces[full_ifname1] = {
-            "description": f"{node1}:{full_ifname1} -> {node2}:{full_ifname2}",
-        }
-        nodes_intf[node2].interfaces[full_ifname2] = {
-            "description": f"{node2}:{full_ifname2} -> {node1}:{full_ifname1}",
-        }
-
-        # copy all parameters from master_inherit.yaml->interfaces into master_complete.yaml
-        for k, v in link.items():
-            nodes_intf[node1].interfaces[full_ifname1][k] = deepcopy(v)
-            nodes_intf[node2].interfaces[full_ifname2][k] = deepcopy(v)
-
-        # add lldp-like entry for each interface
-        # - note: we must not overwrite 'lldp' dict which might be inherited from link_group - hence .update()
-        if "lldp" not in nodes_intf[node1].interfaces[full_ifname1]:
-            nodes_intf[node1].interfaces[full_ifname1].lldp = {}
-
-        if "lldp" not in nodes_intf[node2].interfaces[full_ifname2]:
-            nodes_intf[node2].interfaces[full_ifname2].lldp = {}
-
-        nodes_intf[node1].interfaces[full_ifname1].lldp.update({"neighbor": f"{node2}", "neighbor_intf": f"{full_ifname2}"})
-        nodes_intf[node2].interfaces[full_ifname2].lldp.update({"neighbor": f"{node1}", "neighbor_intf": f"{full_ifname1}"})
-
-        # allocate new /30 for p2p links from 'prefix' (inherited from respective link_group)
-        # -> if prefix attrinute is not present, we assume it is a l2 link (or a Bundle member) so IP is not be allocated
         if "prefix" in link:
             subnet = subnet_allocator.next_subnet(link["prefix"], 30)
             ip1, ip2 = list(subnet.hosts())[:2]
+            nodes_intf[node1].interfaces[if1].update({
+                "ipv4_address": f"{ip1}/{subnet.prefixlen}",
+                "lldp": {"neighbor_ipv4": f"{ip2}/{subnet.prefixlen}"}
+            })
+            nodes_intf[node2].interfaces[if2].update({
+                "ipv4_address": f"{ip2}/{subnet.prefixlen}",
+                "lldp": {"neighbor_ipv4": f"{ip1}/{subnet.prefixlen}"}
+            })
 
-            nodes_intf[node1].interfaces[full_ifname1].update({"ipv4_address": f"{ip1}/{subnet.prefixlen}"})
-            nodes_intf[node2].interfaces[full_ifname2].update({"ipv4_address": f"{ip2}/{subnet.prefixlen}"})
+def _get_intf_type_and_id(device_dict, link_group):
+    naming = device_dict.intf_naming
+    if link_group in naming:
+        return naming[link_group].name, naming[link_group].first_id
+    return naming.default.name, naming.default.first_id
 
-            # also update our "lldp" entry (which proves handy in jinja templates)
-            nodes_intf[node1].interfaces[full_ifname1].lldp.update({"neighbor_ipv4": f"{ip2}/{subnet.prefixlen}"})
-            nodes_intf[node2].interfaces[full_ifname2].lldp.update({"neighbor_ipv4": f"{ip1}/{subnet.prefixlen}"})
+def _add_interface_metadata(nodes_intf, node, ifname, neighbor, neighbor_if, link):
+    intf = nodes_intf[node].interfaces[ifname]
+    intf["description"] = f"{node}:{ifname} -> {neighbor}:{neighbor_if}"
+    intf.setdefault("lldp", {}).update({"neighbor": neighbor, "neighbor_intf": neighbor_if})
+    for k, v in link.items():
+        intf[k] = deepcopy(v)
 
-    # add Loopabck0 and mgmt_ip to all nodes
-    prefix_loop = ipaddress.ip_network(master_inherit_dotted.link_groups.loopback0.v4_prefix)
-    prefix_mgmt = ipaddress.ip_network(master_inherit_dotted.link_groups.mgmt.v4_prefix)
-
-    # exclude .1 and .254 which may be used by docker
-    reserved_loop = [
-        prefix_loop[1],
-        prefix_loop[-2],
-    ]
-    # MgmtEth using the same last digit as Loopback0
-    reserved_mgmt = [
-        prefix_mgmt[1],
-        prefix_mgmt[-2],
-    ]
-
-    iter_loop = (host for host in prefix_loop.hosts() if host not in reserved_loop)
-    iter_mgmt = (host for host in prefix_mgmt.hosts() if host not in reserved_mgmt)
+def _assign_loopback_and_mgmt(master, nodes_intf):
+    loop_prefix = ipaddress.ip_network(master.link_groups.loopback0.v4_prefix)
+    mgmt_prefix = ipaddress.ip_network(master.link_groups.mgmt.v4_prefix)
+    reserved_loop = [loop_prefix[1], loop_prefix[-2]]
+    reserved_mgmt = [mgmt_prefix[1], mgmt_prefix[-2]]
+    iter_loop = (ip for ip in loop_prefix.hosts() if ip not in reserved_loop)
+    iter_mgmt = (ip for ip in mgmt_prefix.hosts() if ip not in reserved_mgmt)
 
     for node in nodes_intf:
-        if master_inherit_dotted.devices[node].clab.kind == "host":
-            nodes_intf[node].interfaces.mgmt.ipv4_address = master_inherit_dotted.devices[node].interfaces.mgmt.ipv4_address
+        if master.devices[node].clab.kind == "host":
+            nodes_intf[node].interfaces.mgmt.ipv4_address = master.devices[node].interfaces.mgmt.ipv4_address
             continue
-        loop0_name = f"{master_inherit_dotted.devices[node].intf_naming.loopback0.name}0"
-        nodes_intf[node].interfaces[loop0_name].ipv4_address = f"{str(next(iter_loop))}/32"
-        nodes_intf[node].interfaces[loop0_name].description = f"{node} {loop0_name}"
-        nodes_intf[node].interfaces.mgmt.ipv4_address = f"{str(next(iter_mgmt))}/{prefix_mgmt.prefixlen}"
+        loop_name = f"{master.devices[node].intf_naming.loopback0.name}0"
+        nodes_intf[node].interfaces[loop_name].update({
+            "ipv4_address": f"{next(iter_loop)}/32",
+            "description": f"{node} {loop_name}"
+        })
+        nodes_intf[node].interfaces.mgmt.ipv4_address = f"{next(iter_mgmt)}/{mgmt_prefix.prefixlen}"
 
-    for node, intf_list in nodes_intf.items():
-        # finally copy all interface parameters/IPs into master_inherit, which is returned as result
-        # - must preserve parameters previously inherited from device/link groups
-        for intf, intf_details in intf_list.interfaces.items():
-            if intf in master_inherit_dotted.devices[node].interfaces:
-                master_inherit_dotted.devices[node].interfaces[intf].update(intf_details)
+def _update_master_with_interfaces(master, nodes_intf):
+    for node, intfs in nodes_intf.items():
+        for intf, details in intfs.interfaces.items():
+            if intf in master.devices[node].interfaces:
+                master.devices[node].interfaces[intf].update(details)
             else:
-                master_inherit_dotted.devices[node].interfaces.update({intf: intf_details})
+                master.devices[node].interfaces[intf] = details
 
-        # and assign bundle_members to respective Bundle (note: a single Bundle is allowed between any pair of nodes)
-        for intf, intf_details in intf_list.interfaces.items():
-            if "bundle" in intf_details:
-                bundle_id = get_bundle_id(node, intf_details.lldp.neighbor, intf_list.interfaces)
-                master_inherit_dotted.devices[node].interfaces[intf].bundle.id = bundle_id
+        for intf, details in intfs.interfaces.items():
+            if "bundle" in details:
+                bundle_id = get_bundle_id(node, details.lldp.neighbor, intfs.interfaces)
+                master.devices[node].interfaces[intf].bundle.id = bundle_id
 
-    # return master_inherit that we received as function argument, now enriched with device ineterfaces -> becomes master_complete.yaml
-    return master_inherit_dotted.to_dict(), {"links": clab_links}
 
 
 def generate_clab_startup(master_complete_dotted, clab_links):

@@ -407,18 +407,7 @@ devices:
     - core
     interfaces:
       Gi0/0/0/0:
-        description: c1:Gi0/0/0/0 -> c2:Gi0/0/0/0
-        isis:
-          instance: core
-          metric: 100
-        link: c1---c2
-        link_group: core
-        lldp:
-          neighbor: c2
-          neighbor_intf: Gi0/0/0/0
-        v4_prefix: 1.0.0.0/16
-      Gi0/0/0/1:
-        description: c1:Gi0/0/0/1 -> c3:Gi0/0/0/0
+        description: c1:Gi0/0/0/0 -> c3:Gi0/0/0/0
         isis:
           instance: core
           metric: 100
@@ -428,8 +417,8 @@ devices:
           neighbor: c3
           neighbor_intf: Gi0/0/0/0
         v4_prefix: 1.0.0.0/16
-      Gi0/0/0/2:
-        description: c1:Gi0/0/0/2 -> e11:Gi0/0/0/0
+      Gi0/0/0/1:
+        description: c1:Gi0/0/0/1 -> e11:Gi0/0/0/0
         isis:
           instance: edge1
           metric: 500
@@ -439,8 +428,8 @@ devices:
           neighbor: e11
           neighbor_intf: Gi0/0/0/0
         v4_prefix: 1.0.0.0/16
-      Gi0/0/0/3:
-        description: c1:Gi0/0/0/3 -> rr1:Gi0/0/0/0
+      Gi0/0/0/2:
+        description: c1:Gi0/0/0/2 -> rr1:Gi0/0/0/0
         isis:
           instance: core
           metric: 9999
@@ -449,6 +438,17 @@ devices:
         lldp:
           neighbor: rr1
           neighbor_intf: Gi0/0/0/0
+        v4_prefix: 1.0.0.0/16
+      Gi0/0/0/3:
+        description: c1:Gi0/0/0/3 -> c2:Gi0/0/0/3
+        isis:
+          instance: core
+          metric: 100
+        link: c1:Gi0/0/0/3---c2:Gi0/0/0/3
+        link_group: core
+        lldp:
+          neighbor: c2
+          neighbor_intf: Gi0/0/0/3
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/4:
         description: c1:Gi0/0/0/4 -> pce1:Gi0/0/0/0
@@ -493,18 +493,7 @@ devices:
     - core
     interfaces:
       Gi0/0/0/0:
-        description: c2:Gi0/0/0/0 -> c1:Gi0/0/0/0
-        isis:
-          instance: core
-          metric: 100
-        link: c1---c2
-        link_group: core
-        lldp:
-          neighbor: c1
-          neighbor_intf: Gi0/0/0/0
-        v4_prefix: 1.0.0.0/16
-      Gi0/0/0/1:
-        description: c2:Gi0/0/0/1 -> c4:Gi0/0/0/0
+        description: c2:Gi0/0/0/0 -> c4:Gi0/0/0/0
         isis:
           instance: core
           metric: 100
@@ -514,8 +503,8 @@ devices:
           neighbor: c4
           neighbor_intf: Gi0/0/0/0
         v4_prefix: 1.0.0.0/16
-      Gi0/0/0/2:
-        description: c2:Gi0/0/0/2 -> e21:Gi0/0/0/0
+      Gi0/0/0/1:
+        description: c2:Gi0/0/0/1 -> e21:Gi0/0/0/0
         isis:
           instance: edge2
           metric: 500
@@ -525,8 +514,8 @@ devices:
           neighbor: e21
           neighbor_intf: Gi0/0/0/0
         v4_prefix: 1.0.0.0/16
-      Gi0/0/0/3:
-        description: c2:Gi0/0/0/3 -> rr1:Gi0/0/0/1
+      Gi0/0/0/2:
+        description: c2:Gi0/0/0/2 -> rr1:Gi0/0/0/1
         isis:
           instance: core
           metric: 9999
@@ -535,6 +524,17 @@ devices:
         lldp:
           neighbor: rr1
           neighbor_intf: Gi0/0/0/1
+        v4_prefix: 1.0.0.0/16
+      Gi0/0/0/3:
+        description: c2:Gi0/0/0/3 -> c1:Gi0/0/0/3
+        isis:
+          instance: core
+          metric: 100
+        link: c1:Gi0/0/0/3---c2:Gi0/0/0/3
+        link_group: core
+        lldp:
+          neighbor: c1
+          neighbor_intf: Gi0/0/0/3
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/4:
         description: c2:Gi0/0/0/4 -> pce1:Gi0/0/0/1
@@ -579,7 +579,7 @@ devices:
     - core
     interfaces:
       Gi0/0/0/0:
-        description: c3:Gi0/0/0/0 -> c1:Gi0/0/0/1
+        description: c3:Gi0/0/0/0 -> c1:Gi0/0/0/0
         isis:
           instance: core
           metric: 100
@@ -587,7 +587,7 @@ devices:
         link_group: core
         lldp:
           neighbor: c1
-          neighbor_intf: Gi0/0/0/1
+          neighbor_intf: Gi0/0/0/0
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/1:
         description: c3:Gi0/0/0/1 -> c4:Gi0/0/0/1
@@ -654,7 +654,7 @@ devices:
     - core
     interfaces:
       Gi0/0/0/0:
-        description: c4:Gi0/0/0/0 -> c2:Gi0/0/0/1
+        description: c4:Gi0/0/0/0 -> c2:Gi0/0/0/0
         isis:
           instance: core
           metric: 100
@@ -662,7 +662,7 @@ devices:
         link_group: core
         lldp:
           neighbor: c2
-          neighbor_intf: Gi0/0/0/1
+          neighbor_intf: Gi0/0/0/0
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/1:
         description: c4:Gi0/0/0/1 -> c3:Gi0/0/0/1
@@ -911,7 +911,7 @@ devices:
       - rr
     interfaces:
       Gi0/0/0/0:
-        description: e11:Gi0/0/0/0 -> c1:Gi0/0/0/2
+        description: e11:Gi0/0/0/0 -> c1:Gi0/0/0/1
         isis:
           instance: edge1
           metric: 500
@@ -919,7 +919,7 @@ devices:
         link_group: edge1
         lldp:
           neighbor: c1
-          neighbor_intf: Gi0/0/0/2
+          neighbor_intf: Gi0/0/0/1
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/1:
         description: e11:Gi0/0/0/1 -> e12:Gi0/0/0/1
@@ -1047,7 +1047,7 @@ devices:
       - rr
     interfaces:
       Gi0/0/0/0:
-        description: e21:Gi0/0/0/0 -> c2:Gi0/0/0/2
+        description: e21:Gi0/0/0/0 -> c2:Gi0/0/0/1
         isis:
           instance: edge2
           metric: 500
@@ -1055,7 +1055,7 @@ devices:
         link_group: edge2
         lldp:
           neighbor: c2
-          neighbor_intf: Gi0/0/0/2
+          neighbor_intf: Gi0/0/0/1
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/1:
         description: e21:Gi0/0/0/1 -> e22:Gi0/0/0/1
@@ -1242,7 +1242,7 @@ devices:
       - rr
     interfaces:
       Gi0/0/0/0:
-        description: rr1:Gi0/0/0/0 -> c1:Gi0/0/0/3
+        description: rr1:Gi0/0/0/0 -> c1:Gi0/0/0/2
         isis:
           instance: core
           metric: 9999
@@ -1250,10 +1250,10 @@ devices:
         link_group: rr_pce
         lldp:
           neighbor: c1
-          neighbor_intf: Gi0/0/0/3
+          neighbor_intf: Gi0/0/0/2
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/1:
-        description: rr1:Gi0/0/0/1 -> c2:Gi0/0/0/3
+        description: rr1:Gi0/0/0/1 -> c2:Gi0/0/0/2
         isis:
           instance: core
           metric: 9999
@@ -1261,7 +1261,7 @@ devices:
         link_group: rr_pce
         lldp:
           neighbor: c2
-          neighbor_intf: Gi0/0/0/3
+          neighbor_intf: Gi0/0/0/2
         v4_prefix: 1.0.0.0/16
       Loopback0:
         description: rr1 Loopback0
@@ -1405,7 +1405,7 @@ links:
 - isis:
     instance: core
     metric: 100
-  link: c1---c2
+  link: c1:Gi0/0/0/3---c2:Gi0/0/0/3
   link_group: core
   v4_prefix: 1.0.0.0/16
 - isis:
