@@ -127,6 +127,7 @@ devices:
     interfaces:
       Gi0/0/0/0:
         description: a11:Gi0/0/0/0 -> e11:Gi0/0/0/2
+        ipv4_address: 1.0.0.42/30
         isis:
           instance: access1
           metric: 5000
@@ -135,9 +136,11 @@ devices:
         lldp:
           neighbor: e11
           neighbor_intf: Gi0/0/0/2
+          neighbor_ipv4: 1.0.0.41/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/1:
         description: a11:Gi0/0/0/1 -> a12:Gi0/0/0/0
+        ipv4_address: 1.0.0.45/30
         isis:
           instance: access1
           metric: 5000
@@ -146,14 +149,17 @@ devices:
         lldp:
           neighbor: a12
           neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.0.0.46/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/2:
         description: a11:Gi0/0/0/2 -> cpe1:Gi0/0/0/0
+        ipv4_address: 1.1.0.2/30
         link: cpe1---a11
         link_group: cpev4_l3vpn
         lldp:
           neighbor: cpe1
           neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.1.0.1/30
         mtu: 1500
         v4_prefix: 1.1.0.0/16
       Loopback0:
@@ -194,6 +200,7 @@ devices:
     interfaces:
       Gi0/0/0/0:
         description: a12:Gi0/0/0/0 -> a11:Gi0/0/0/1
+        ipv4_address: 1.0.0.46/30
         isis:
           instance: access1
           metric: 5000
@@ -202,9 +209,11 @@ devices:
         lldp:
           neighbor: a11
           neighbor_intf: Gi0/0/0/1
+          neighbor_ipv4: 1.0.0.45/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/1:
         description: a12:Gi0/0/0/1 -> a13:Gi0/0/0/0
+        ipv4_address: 1.0.0.49/30
         isis:
           instance: access1
           metric: 5000
@@ -213,14 +222,17 @@ devices:
         lldp:
           neighbor: a13
           neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.0.0.50/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/2:
         description: a12:Gi0/0/0/2 -> cpe1:Gi0/0/0/1
+        ipv4_address: 1.1.0.6/30
         link: cpe1---a12
         link_group: cpev4_l3vpn
         lldp:
           neighbor: cpe1
           neighbor_intf: Gi0/0/0/1
+          neighbor_ipv4: 1.1.0.5/30
         mtu: 1500
         v4_prefix: 1.1.0.0/16
       Gi0/0/0/3:
@@ -270,6 +282,7 @@ devices:
     interfaces:
       Gi0/0/0/0:
         description: a13:Gi0/0/0/0 -> a12:Gi0/0/0/1
+        ipv4_address: 1.0.0.50/30
         isis:
           instance: access1
           metric: 5000
@@ -278,9 +291,11 @@ devices:
         lldp:
           neighbor: a12
           neighbor_intf: Gi0/0/0/1
+          neighbor_ipv4: 1.0.0.49/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/1:
         description: a13:Gi0/0/0/1 -> e12:Gi0/0/0/2
+        ipv4_address: 1.0.0.53/30
         isis:
           instance: access1
           metric: 5000
@@ -289,6 +304,7 @@ devices:
         lldp:
           neighbor: e12
           neighbor_intf: Gi0/0/0/2
+          neighbor_ipv4: 1.0.0.54/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/2:
         description: a13:Gi0/0/0/2 -> cpe3:Gi0/0/0/1
@@ -337,6 +353,7 @@ devices:
     interfaces:
       Gi0/0/0/0:
         description: a41:Gi0/0/0/0 -> e21:Gi0/0/0/2
+        ipv4_address: 1.0.0.58/30
         isis:
           instance: access2
           metric: 5000
@@ -345,9 +362,11 @@ devices:
         lldp:
           neighbor: e21
           neighbor_intf: Gi0/0/0/2
+          neighbor_ipv4: 1.0.0.57/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/1:
         description: a41:Gi0/0/0/1 -> e22:Gi0/0/0/2
+        ipv4_address: 1.0.0.62/30
         isis:
           instance: access2
           metric: 5000
@@ -356,14 +375,17 @@ devices:
         lldp:
           neighbor: e22
           neighbor_intf: Gi0/0/0/2
+          neighbor_ipv4: 1.0.0.61/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/2:
         description: a41:Gi0/0/0/2 -> cpe2:Gi0/0/0/0
+        ipv4_address: 1.1.0.10/30
         link: cpe2---a41
         link_group: cpev4_l3vpn
         lldp:
           neighbor: cpe2
           neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.1.0.9/30
         mtu: 1500
         v4_prefix: 1.1.0.0/16
       Gi0/0/0/3:
@@ -408,6 +430,7 @@ devices:
     interfaces:
       Gi0/0/0/0:
         description: c1:Gi0/0/0/0 -> c3:Gi0/0/0/0
+        ipv4_address: 1.0.0.5/30
         isis:
           instance: core
           metric: 100
@@ -416,9 +439,11 @@ devices:
         lldp:
           neighbor: c3
           neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.0.0.6/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/1:
         description: c1:Gi0/0/0/1 -> e11:Gi0/0/0/0
+        ipv4_address: 1.0.0.17/30
         isis:
           instance: edge1
           metric: 500
@@ -427,9 +452,11 @@ devices:
         lldp:
           neighbor: e11
           neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.0.0.18/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/2:
         description: c1:Gi0/0/0/2 -> rr1:Gi0/0/0/0
+        ipv4_address: 1.0.0.66/30
         isis:
           instance: core
           metric: 9999
@@ -438,9 +465,11 @@ devices:
         lldp:
           neighbor: rr1
           neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.0.0.65/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/3:
         description: c1:Gi0/0/0/3 -> c2:Gi0/0/0/3
+        ipv4_address: 1.0.0.1/30
         isis:
           instance: core
           metric: 100
@@ -449,9 +478,11 @@ devices:
         lldp:
           neighbor: c2
           neighbor_intf: Gi0/0/0/3
+          neighbor_ipv4: 1.0.0.2/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/4:
         description: c1:Gi0/0/0/4 -> pce1:Gi0/0/0/0
+        ipv4_address: 1.0.0.82/30
         isis:
           instance: core
           metric: 9999
@@ -460,6 +491,7 @@ devices:
         lldp:
           neighbor: pce1
           neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.0.0.81/30
         v4_prefix: 1.0.0.0/16
       Loopback0:
         description: c1 Loopback0
@@ -494,6 +526,7 @@ devices:
     interfaces:
       Gi0/0/0/0:
         description: c2:Gi0/0/0/0 -> c4:Gi0/0/0/0
+        ipv4_address: 1.0.0.10/30
         isis:
           instance: core
           metric: 100
@@ -502,9 +535,11 @@ devices:
         lldp:
           neighbor: c4
           neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.0.0.9/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/1:
         description: c2:Gi0/0/0/1 -> e21:Gi0/0/0/0
+        ipv4_address: 1.0.0.29/30
         isis:
           instance: edge2
           metric: 500
@@ -513,9 +548,11 @@ devices:
         lldp:
           neighbor: e21
           neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.0.0.30/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/2:
         description: c2:Gi0/0/0/2 -> rr1:Gi0/0/0/1
+        ipv4_address: 1.0.0.70/30
         isis:
           instance: core
           metric: 9999
@@ -524,9 +561,11 @@ devices:
         lldp:
           neighbor: rr1
           neighbor_intf: Gi0/0/0/1
+          neighbor_ipv4: 1.0.0.69/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/3:
         description: c2:Gi0/0/0/3 -> c1:Gi0/0/0/3
+        ipv4_address: 1.0.0.2/30
         isis:
           instance: core
           metric: 100
@@ -535,9 +574,11 @@ devices:
         lldp:
           neighbor: c1
           neighbor_intf: Gi0/0/0/3
+          neighbor_ipv4: 1.0.0.1/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/4:
         description: c2:Gi0/0/0/4 -> pce1:Gi0/0/0/1
+        ipv4_address: 1.0.0.86/30
         isis:
           instance: core
           metric: 9999
@@ -546,6 +587,7 @@ devices:
         lldp:
           neighbor: pce1
           neighbor_intf: Gi0/0/0/1
+          neighbor_ipv4: 1.0.0.85/30
         v4_prefix: 1.0.0.0/16
       Loopback0:
         description: c2 Loopback0
@@ -580,6 +622,7 @@ devices:
     interfaces:
       Gi0/0/0/0:
         description: c3:Gi0/0/0/0 -> c1:Gi0/0/0/0
+        ipv4_address: 1.0.0.6/30
         isis:
           instance: core
           metric: 100
@@ -588,9 +631,11 @@ devices:
         lldp:
           neighbor: c1
           neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.0.0.5/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/1:
         description: c3:Gi0/0/0/1 -> c4:Gi0/0/0/1
+        ipv4_address: 1.0.0.14/30
         isis:
           instance: core
           metric: 100
@@ -599,9 +644,11 @@ devices:
         lldp:
           neighbor: c4
           neighbor_intf: Gi0/0/0/1
+          neighbor_ipv4: 1.0.0.13/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/2:
         description: c3:Gi0/0/0/2 -> e12:Gi0/0/0/0
+        ipv4_address: 1.0.0.21/30
         isis:
           instance: edge1
           metric: 500
@@ -610,9 +657,11 @@ devices:
         lldp:
           neighbor: e12
           neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.0.0.22/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/3:
         description: c3:Gi0/0/0/3 -> rr2:Gi0/0/0/0
+        ipv4_address: 1.0.0.74/30
         isis:
           instance: core
           metric: 9999
@@ -621,6 +670,7 @@ devices:
         lldp:
           neighbor: rr2
           neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.0.0.73/30
         v4_prefix: 1.0.0.0/16
       Loopback0:
         description: c3 Loopback0
@@ -655,6 +705,7 @@ devices:
     interfaces:
       Gi0/0/0/0:
         description: c4:Gi0/0/0/0 -> c2:Gi0/0/0/0
+        ipv4_address: 1.0.0.9/30
         isis:
           instance: core
           metric: 100
@@ -663,9 +714,11 @@ devices:
         lldp:
           neighbor: c2
           neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.0.0.10/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/1:
         description: c4:Gi0/0/0/1 -> c3:Gi0/0/0/1
+        ipv4_address: 1.0.0.13/30
         isis:
           instance: core
           metric: 100
@@ -674,9 +727,11 @@ devices:
         lldp:
           neighbor: c3
           neighbor_intf: Gi0/0/0/1
+          neighbor_ipv4: 1.0.0.14/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/2:
         description: c4:Gi0/0/0/2 -> e22:Gi0/0/0/0
+        ipv4_address: 1.0.0.33/30
         isis:
           instance: edge2
           metric: 500
@@ -685,9 +740,11 @@ devices:
         lldp:
           neighbor: e22
           neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.0.0.34/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/3:
         description: c4:Gi0/0/0/3 -> rr2:Gi0/0/0/1
+        ipv4_address: 1.0.0.78/30
         isis:
           instance: core
           metric: 9999
@@ -696,6 +753,7 @@ devices:
         lldp:
           neighbor: rr2
           neighbor_intf: Gi0/0/0/1
+          neighbor_ipv4: 1.0.0.77/30
         v4_prefix: 1.0.0.0/16
       Loopback0:
         description: c4 Loopback0
@@ -730,20 +788,24 @@ devices:
     interfaces:
       Gi0/0/0/0:
         description: cpe1:Gi0/0/0/0 -> a11:Gi0/0/0/2
+        ipv4_address: 1.1.0.1/30
         link: cpe1---a11
         link_group: cpev4_l3vpn
         lldp:
           neighbor: a11
           neighbor_intf: Gi0/0/0/2
+          neighbor_ipv4: 1.1.0.2/30
         mtu: 1500
         v4_prefix: 1.1.0.0/16
       Gi0/0/0/1:
         description: cpe1:Gi0/0/0/1 -> a12:Gi0/0/0/2
+        ipv4_address: 1.1.0.5/30
         link: cpe1---a12
         link_group: cpev4_l3vpn
         lldp:
           neighbor: a12
           neighbor_intf: Gi0/0/0/2
+          neighbor_ipv4: 1.1.0.6/30
         mtu: 1500
         v4_prefix: 1.1.0.0/16
       Loopback0:
@@ -779,11 +841,13 @@ devices:
     interfaces:
       Gi0/0/0/0:
         description: cpe2:Gi0/0/0/0 -> a41:Gi0/0/0/2
+        ipv4_address: 1.1.0.9/30
         link: cpe2---a41
         link_group: cpev4_l3vpn
         lldp:
           neighbor: a41
           neighbor_intf: Gi0/0/0/2
+          neighbor_ipv4: 1.1.0.10/30
         mtu: 1500
         v4_prefix: 1.1.0.0/16
       Loopback0:
@@ -912,6 +976,7 @@ devices:
     interfaces:
       Gi0/0/0/0:
         description: e11:Gi0/0/0/0 -> c1:Gi0/0/0/1
+        ipv4_address: 1.0.0.18/30
         isis:
           instance: edge1
           metric: 500
@@ -920,9 +985,11 @@ devices:
         lldp:
           neighbor: c1
           neighbor_intf: Gi0/0/0/1
+          neighbor_ipv4: 1.0.0.17/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/1:
         description: e11:Gi0/0/0/1 -> e12:Gi0/0/0/1
+        ipv4_address: 1.0.0.25/30
         isis:
           instance: edge1
           metric: 500
@@ -931,9 +998,11 @@ devices:
         lldp:
           neighbor: e12
           neighbor_intf: Gi0/0/0/1
+          neighbor_ipv4: 1.0.0.26/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/2:
         description: e11:Gi0/0/0/2 -> a11:Gi0/0/0/0
+        ipv4_address: 1.0.0.41/30
         isis:
           instance: access1
           metric: 5000
@@ -942,6 +1011,7 @@ devices:
         lldp:
           neighbor: a11
           neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.0.0.42/30
         v4_prefix: 1.0.0.0/16
       Loopback0:
         description: e11 Loopback0
@@ -980,6 +1050,7 @@ devices:
     interfaces:
       Gi0/0/0/0:
         description: e12:Gi0/0/0/0 -> c3:Gi0/0/0/2
+        ipv4_address: 1.0.0.22/30
         isis:
           instance: edge1
           metric: 500
@@ -988,9 +1059,11 @@ devices:
         lldp:
           neighbor: c3
           neighbor_intf: Gi0/0/0/2
+          neighbor_ipv4: 1.0.0.21/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/1:
         description: e12:Gi0/0/0/1 -> e11:Gi0/0/0/1
+        ipv4_address: 1.0.0.26/30
         isis:
           instance: edge1
           metric: 500
@@ -999,9 +1072,11 @@ devices:
         lldp:
           neighbor: e11
           neighbor_intf: Gi0/0/0/1
+          neighbor_ipv4: 1.0.0.25/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/2:
         description: e12:Gi0/0/0/2 -> a13:Gi0/0/0/1
+        ipv4_address: 1.0.0.54/30
         isis:
           instance: access1
           metric: 5000
@@ -1010,6 +1085,7 @@ devices:
         lldp:
           neighbor: a13
           neighbor_intf: Gi0/0/0/1
+          neighbor_ipv4: 1.0.0.53/30
         v4_prefix: 1.0.0.0/16
       Loopback0:
         description: e12 Loopback0
@@ -1048,6 +1124,7 @@ devices:
     interfaces:
       Gi0/0/0/0:
         description: e21:Gi0/0/0/0 -> c2:Gi0/0/0/1
+        ipv4_address: 1.0.0.30/30
         isis:
           instance: edge2
           metric: 500
@@ -1056,9 +1133,11 @@ devices:
         lldp:
           neighbor: c2
           neighbor_intf: Gi0/0/0/1
+          neighbor_ipv4: 1.0.0.29/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/1:
         description: e21:Gi0/0/0/1 -> e22:Gi0/0/0/1
+        ipv4_address: 1.0.0.37/30
         isis:
           instance: edge2
           metric: 500
@@ -1067,9 +1146,11 @@ devices:
         lldp:
           neighbor: e22
           neighbor_intf: Gi0/0/0/1
+          neighbor_ipv4: 1.0.0.38/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/2:
         description: e21:Gi0/0/0/2 -> a41:Gi0/0/0/0
+        ipv4_address: 1.0.0.57/30
         isis:
           instance: access2
           metric: 5000
@@ -1078,6 +1159,7 @@ devices:
         lldp:
           neighbor: a41
           neighbor_intf: Gi0/0/0/0
+          neighbor_ipv4: 1.0.0.58/30
         v4_prefix: 1.0.0.0/16
       Loopback0:
         description: e21 Loopback0
@@ -1116,6 +1198,7 @@ devices:
     interfaces:
       Gi0/0/0/0:
         description: e22:Gi0/0/0/0 -> c4:Gi0/0/0/2
+        ipv4_address: 1.0.0.34/30
         isis:
           instance: edge2
           metric: 500
@@ -1124,9 +1207,11 @@ devices:
         lldp:
           neighbor: c4
           neighbor_intf: Gi0/0/0/2
+          neighbor_ipv4: 1.0.0.33/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/1:
         description: e22:Gi0/0/0/1 -> e21:Gi0/0/0/1
+        ipv4_address: 1.0.0.38/30
         isis:
           instance: edge2
           metric: 500
@@ -1135,9 +1220,11 @@ devices:
         lldp:
           neighbor: e21
           neighbor_intf: Gi0/0/0/1
+          neighbor_ipv4: 1.0.0.37/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/2:
         description: e22:Gi0/0/0/2 -> a41:Gi0/0/0/1
+        ipv4_address: 1.0.0.61/30
         isis:
           instance: access2
           metric: 5000
@@ -1146,6 +1233,7 @@ devices:
         lldp:
           neighbor: a41
           neighbor_intf: Gi0/0/0/1
+          neighbor_ipv4: 1.0.0.62/30
         v4_prefix: 1.0.0.0/16
       Loopback0:
         description: e22 Loopback0
@@ -1184,6 +1272,7 @@ devices:
     interfaces:
       Gi0/0/0/0:
         description: pce1:Gi0/0/0/0 -> c1:Gi0/0/0/4
+        ipv4_address: 1.0.0.81/30
         isis:
           instance: core
           metric: 9999
@@ -1192,9 +1281,11 @@ devices:
         lldp:
           neighbor: c1
           neighbor_intf: Gi0/0/0/4
+          neighbor_ipv4: 1.0.0.82/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/1:
         description: pce1:Gi0/0/0/1 -> c2:Gi0/0/0/4
+        ipv4_address: 1.0.0.85/30
         isis:
           instance: core
           metric: 9999
@@ -1203,6 +1294,7 @@ devices:
         lldp:
           neighbor: c2
           neighbor_intf: Gi0/0/0/4
+          neighbor_ipv4: 1.0.0.86/30
         v4_prefix: 1.0.0.0/16
       Loopback0:
         description: pce1 Loopback0
@@ -1243,6 +1335,7 @@ devices:
     interfaces:
       Gi0/0/0/0:
         description: rr1:Gi0/0/0/0 -> c1:Gi0/0/0/2
+        ipv4_address: 1.0.0.65/30
         isis:
           instance: core
           metric: 9999
@@ -1251,9 +1344,11 @@ devices:
         lldp:
           neighbor: c1
           neighbor_intf: Gi0/0/0/2
+          neighbor_ipv4: 1.0.0.66/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/1:
         description: rr1:Gi0/0/0/1 -> c2:Gi0/0/0/2
+        ipv4_address: 1.0.0.69/30
         isis:
           instance: core
           metric: 9999
@@ -1262,6 +1357,7 @@ devices:
         lldp:
           neighbor: c2
           neighbor_intf: Gi0/0/0/2
+          neighbor_ipv4: 1.0.0.70/30
         v4_prefix: 1.0.0.0/16
       Loopback0:
         description: rr1 Loopback0
@@ -1302,6 +1398,7 @@ devices:
     interfaces:
       Gi0/0/0/0:
         description: rr2:Gi0/0/0/0 -> c3:Gi0/0/0/3
+        ipv4_address: 1.0.0.73/30
         isis:
           instance: core
           metric: 9999
@@ -1310,9 +1407,11 @@ devices:
         lldp:
           neighbor: c3
           neighbor_intf: Gi0/0/0/3
+          neighbor_ipv4: 1.0.0.74/30
         v4_prefix: 1.0.0.0/16
       Gi0/0/0/1:
         description: rr2:Gi0/0/0/1 -> c4:Gi0/0/0/3
+        ipv4_address: 1.0.0.77/30
         isis:
           instance: core
           metric: 9999
@@ -1321,6 +1420,7 @@ devices:
         lldp:
           neighbor: c4
           neighbor_intf: Gi0/0/0/3
+          neighbor_ipv4: 1.0.0.78/30
         v4_prefix: 1.0.0.0/16
       Loopback0:
         description: rr2 Loopback0

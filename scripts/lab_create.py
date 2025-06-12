@@ -231,17 +231,16 @@ def _allocate_p2p_links(master, nodes_intf, clab_links, if_allocator, subnet_all
         _add_interface_metadata(nodes_intf, node1, if1, node2, if2, link)
         _add_interface_metadata(nodes_intf, node2, if2, node1, if1, link)
 
-        if "prefix" in link:
-            subnet = subnet_allocator.next_subnet(link["prefix"], 30)
+        if "v4_prefix" in link:
+            subnet = subnet_allocator.next_subnet(link["v4_prefix"], 30)
             ip1, ip2 = list(subnet.hosts())[:2]
-            nodes_intf[node1].interfaces[if1].update({
-                "ipv4_address": f"{ip1}/{subnet.prefixlen}",
-                "lldp": {"neighbor_ipv4": f"{ip2}/{subnet.prefixlen}"}
-            })
-            nodes_intf[node2].interfaces[if2].update({
-                "ipv4_address": f"{ip2}/{subnet.prefixlen}",
-                "lldp": {"neighbor_ipv4": f"{ip1}/{subnet.prefixlen}"}
-            })
+
+            nodes_intf[node1].interfaces[if1].update({"ipv4_address": f"{ip1}/{subnet.prefixlen}"})
+            nodes_intf[node2].interfaces[if2].update({"ipv4_address": f"{ip2}/{subnet.prefixlen}"})
+
+            # also update our "lldp" entry (which proves handy in jinja templates)
+            nodes_intf[node1].interfaces[if1].lldp.update({"neighbor_ipv4": f"{ip2}/{subnet.prefixlen}"})
+            nodes_intf[node2].interfaces[if2].lldp.update({"neighbor_ipv4": f"{ip1}/{subnet.prefixlen}"})
 
 def _get_intf_type_and_id(device_dict, link_group):
     naming = device_dict.intf_naming
@@ -251,10 +250,15 @@ def _get_intf_type_and_id(device_dict, link_group):
 
 def _add_interface_metadata(nodes_intf, node, ifname, neighbor, neighbor_if, link):
     intf = nodes_intf[node].interfaces[ifname]
+    # print(node, ifname, neighbor, neighbor_if, link)
     intf["description"] = f"{node}:{ifname} -> {neighbor}:{neighbor_if}"
     intf.setdefault("lldp", {}).update({"neighbor": neighbor, "neighbor_intf": neighbor_if})
+    # print('intf     ', intf)
+    # print('nodesintf',nodes_intf[node].interfaces[ifname])
     for k, v in link.items():
         intf[k] = deepcopy(v)
+    print('intf     ', intf)
+    print('nodesintf',nodes_intf[node].interfaces[ifname])
 
 def _assign_loopback_and_mgmt(master, nodes_intf):
     loop_prefix = ipaddress.ip_network(master.link_groups.loopback0.v4_prefix)
@@ -298,7 +302,7 @@ def generate_clab_startup(master_complete_dotted, clab_links):
     clab_startup = Box(nested_dict(), default_box=True)
     clab_startup.name = master_complete_dotted.clab_name
     clab_startup.mgmt.network = master_complete_dotted.clab_name
-    clab_startup.mgmt["ipv4-subnet"] = master_complete_dotted.link_groups.mgmt.prefix
+    clab_startup.mgmt["ipv4-subnet"] = master_complete_dotted.link_groups.mgmt.v4_prefix
 
     # add clab parameters for each device type
     for grp, group_details in master_complete_dotted.device_groups.items():

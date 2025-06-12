@@ -1,5 +1,5 @@
 mgmt:
-  ipv4-subnet: {}
+  ipv4-subnet: 10.255.6.0/24
   network: srv6
 name: srv6
 topology:
