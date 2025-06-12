@@ -189,33 +189,7 @@ devices:
     device_roles:
     - cpe
     interfaces:
-      Gi2:
-        description: cpe1:Gi2 -> pe1:Gi0/0/0/2
-        ipv4_address: 1.1.0.2/30
-        link: pe1---cpe1
-        link_group: l3vpn
-        lldp:
-          neighbor: pe1
-          neighbor_intf: Gi0/0/0/2
-          neighbor_ipv4: 1.1.0.1/30
-        mtu: 1505
-        v4_prefix: 1.1.0.0/16
-      Gi3:
-        description: cpe1:Gi3 -> pe1:Gi0/0/0/3
-        ipv4_address: 1.1.0.6/30
-        link: pe1---cpe1
-        link_group: l3vpn
-        lldp:
-          neighbor: pe1
-          neighbor_intf: Gi0/0/0/3
-          neighbor_ipv4: 1.1.0.5/30
-        mtu: 1505
-        v4_prefix: 1.1.0.0/16
-      Loopback0:
-        description: cpe1 Loopback0
-        ipv4_address: 1.255.0.6/32
       mgmt:
-        ipv4_address: 10.255.0.6/24
         name: GigabitEthernet1
     intf_naming:
       core_bundle:
@@ -238,24 +212,6 @@ devices:
     device_roles:
     - host
     interfaces:
-      ens256.111:
-        description: host:ens256.111 -> p1:Gi0/0/0/0
-        isis:
-          instance: CORE
-        link: p1:Gi0/0/0/0---host:ens256.111
-        link_group: core_host
-        lldp:
-          neighbor: p1
-          neighbor_intf: Gi0/0/0/0
-      ens256.112:
-        description: host:ens256.112 -> p2:Gi0/0/0/0
-        isis:
-          instance: CORE
-        link: p2:Gi0/0/0/0---host:ens256.112
-        link_group: core_host
-        lldp:
-          neighbor: p2
-          neighbor_intf: Gi0/0/0/0
       mgmt:
         ipv4_address: 10.48.188.45/26
         name: ens192
@@ -279,23 +235,7 @@ devices:
     device_roles:
     - pe
     interfaces:
-      Ethernet1/1:
-        description: n9kv1:Ethernet1/1 -> pe1:Gi0/0/0/4
-        ipv4_address: 1.0.0.22/30
-        isis:
-          instance: CORE
-        link: pe1---n9kv1
-        link_group: core
-        lldp:
-          neighbor: pe1
-          neighbor_intf: Gi0/0/0/4
-          neighbor_ipv4: 1.0.0.21/30
-        v4_prefix: 1.0.0.0/16
-      Loopback0:
-        description: n9kv1 Loopback0
-        ipv4_address: 1.255.0.7/32
       mgmt:
-        ipv4_address: 10.255.0.7/24
         name: mgmt0
     intf_naming:
       default:
@@ -321,56 +261,7 @@ devices:
     device_roles:
     - p
     interfaces:
-      Gi0/0/0/0:
-        description: p1:Gi0/0/0/0 -> host:ens256.111
-        isis:
-          instance: CORE
-        link: p1:Gi0/0/0/0---host:ens256.111
-        link_group: core_host
-        lldp:
-          neighbor: host
-          neighbor_intf: ens256.111
-      Gi0/0/0/1:
-        description: p1:Gi0/0/0/1 -> p2:Gi0/0/0/1
-        ipv4_address: 1.0.0.1/30
-        isis:
-          instance: CORE
-        link: p1---p2
-        link_group: core
-        lldp:
-          neighbor: p2
-          neighbor_intf: Gi0/0/0/1
-          neighbor_ipv4: 1.0.0.2/30
-        v4_prefix: 1.0.0.0/16
-      Gi0/0/0/2:
-        description: p1:Gi0/0/0/2 -> pe1:Gi0/0/0/0
-        ipv4_address: 1.0.0.5/30
-        isis:
-          instance: CORE
-        link: p1---pe1
-        link_group: core
-        lldp:
-          neighbor: pe1
-          neighbor_intf: Gi0/0/0/0
-          neighbor_ipv4: 1.0.0.6/30
-        v4_prefix: 1.0.0.0/16
-      Gi0/0/0/3:
-        description: p1:Gi0/0/0/3 -> pe2:ge-0/0/0
-        ipv4_address: 1.0.0.13/30
-        isis:
-          instance: CORE
-        link: p1---pe2
-        link_group: core
-        lldp:
-          neighbor: pe2
-          neighbor_intf: ge-0/0/0
-          neighbor_ipv4: 1.0.0.14/30
-        v4_prefix: 1.0.0.0/16
-      Loopback0:
-        description: p1 Loopback0
-        ipv4_address: 1.255.0.2/32
       mgmt:
-        ipv4_address: 10.255.0.2/24
         name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
@@ -396,56 +287,7 @@ devices:
     device_roles:
     - p
     interfaces:
-      Gi0/0/0/0:
-        description: p2:Gi0/0/0/0 -> host:ens256.112
-        isis:
-          instance: CORE
-        link: p2:Gi0/0/0/0---host:ens256.112
-        link_group: core_host
-        lldp:
-          neighbor: host
-          neighbor_intf: ens256.112
-      Gi0/0/0/1:
-        description: p2:Gi0/0/0/1 -> p1:Gi0/0/0/1
-        ipv4_address: 1.0.0.2/30
-        isis:
-          instance: CORE
-        link: p1---p2
-        link_group: core
-        lldp:
-          neighbor: p1
-          neighbor_intf: Gi0/0/0/1
-          neighbor_ipv4: 1.0.0.1/30
-        v4_prefix: 1.0.0.0/16
-      Gi0/0/0/2:
-        description: p2:Gi0/0/0/2 -> pe1:Gi0/0/0/1
-        ipv4_address: 1.0.0.9/30
-        isis:
-          instance: CORE
-        link: p2---pe1
-        link_group: core
-        lldp:
-          neighbor: pe1
-          neighbor_intf: Gi0/0/0/1
-          neighbor_ipv4: 1.0.0.10/30
-        v4_prefix: 1.0.0.0/16
-      Gi0/0/0/3:
-        description: p2:Gi0/0/0/3 -> pe2:ge-0/0/1
-        ipv4_address: 1.0.0.17/30
-        isis:
-          instance: CORE
-        link: p2---pe2
-        link_group: core
-        lldp:
-          neighbor: pe2
-          neighbor_intf: ge-0/0/1
-          neighbor_ipv4: 1.0.0.18/30
-        v4_prefix: 1.0.0.0/16
-      Loopback0:
-        description: p2 Loopback0
-        ipv4_address: 1.255.0.3/32
       mgmt:
-        ipv4_address: 10.255.0.3/24
         name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
@@ -474,69 +316,7 @@ devices:
       asn: 100
       client_of: rr
     interfaces:
-      Gi0/0/0/0:
-        description: pe1:Gi0/0/0/0 -> p1:Gi0/0/0/2
-        ipv4_address: 1.0.0.6/30
-        isis:
-          instance: CORE
-        link: p1---pe1
-        link_group: core
-        lldp:
-          neighbor: p1
-          neighbor_intf: Gi0/0/0/2
-          neighbor_ipv4: 1.0.0.5/30
-        v4_prefix: 1.0.0.0/16
-      Gi0/0/0/1:
-        description: pe1:Gi0/0/0/1 -> p2:Gi0/0/0/2
-        ipv4_address: 1.0.0.10/30
-        isis:
-          instance: CORE
-        link: p2---pe1
-        link_group: core
-        lldp:
-          neighbor: p2
-          neighbor_intf: Gi0/0/0/2
-          neighbor_ipv4: 1.0.0.9/30
-        v4_prefix: 1.0.0.0/16
-      Gi0/0/0/2:
-        description: pe1:Gi0/0/0/2 -> cpe1:Gi2
-        ipv4_address: 1.1.0.1/30
-        link: pe1---cpe1
-        link_group: l3vpn
-        lldp:
-          neighbor: cpe1
-          neighbor_intf: Gi2
-          neighbor_ipv4: 1.1.0.2/30
-        mtu: 1505
-        v4_prefix: 1.1.0.0/16
-      Gi0/0/0/3:
-        description: pe1:Gi0/0/0/3 -> cpe1:Gi3
-        ipv4_address: 1.1.0.5/30
-        link: pe1---cpe1
-        link_group: l3vpn
-        lldp:
-          neighbor: cpe1
-          neighbor_intf: Gi3
-          neighbor_ipv4: 1.1.0.6/30
-        mtu: 1505
-        v4_prefix: 1.1.0.0/16
-      Gi0/0/0/4:
-        description: pe1:Gi0/0/0/4 -> n9kv1:Ethernet1/1
-        ipv4_address: 1.0.0.21/30
-        isis:
-          instance: CORE
-        link: pe1---n9kv1
-        link_group: core
-        lldp:
-          neighbor: n9kv1
-          neighbor_intf: Ethernet1/1
-          neighbor_ipv4: 1.0.0.22/30
-        v4_prefix: 1.0.0.0/16
-      Loopback0:
-        description: pe1 Loopback0
-        ipv4_address: 1.255.0.4/32
       mgmt:
-        ipv4_address: 10.255.0.4/24
         name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
@@ -568,35 +348,7 @@ devices:
       asn: 100
       client_of: rr
     interfaces:
-      Loopback0:
-        description: pe2 Loopback0
-        ipv4_address: 1.255.0.5/32
-      ge-0/0/0:
-        description: pe2:ge-0/0/0 -> p1:Gi0/0/0/3
-        ipv4_address: 1.0.0.14/30
-        isis:
-          instance: CORE
-        link: p1---pe2
-        link_group: core
-        lldp:
-          neighbor: p1
-          neighbor_intf: Gi0/0/0/3
-          neighbor_ipv4: 1.0.0.13/30
-        v4_prefix: 1.0.0.0/16
-      ge-0/0/1:
-        description: pe2:ge-0/0/1 -> p2:Gi0/0/0/3
-        ipv4_address: 1.0.0.18/30
-        isis:
-          instance: CORE
-        link: p2---pe2
-        link_group: core
-        lldp:
-          neighbor: p2
-          neighbor_intf: Gi0/0/0/3
-          neighbor_ipv4: 1.0.0.17/30
-        v4_prefix: 1.0.0.0/16
       mgmt:
-        ipv4_address: 10.255.0.5/24
         name: fxp0
     intf_naming:
       core_bundle:

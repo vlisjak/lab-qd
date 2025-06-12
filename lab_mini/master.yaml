@@ -249,12 +249,12 @@ devices:
 link_groups:
   core:
     link_group: core
-    prefix: 1.0.0.0/16
+    v4_prefix: 1.0.0.0/16
     isis: 
       instance: CORE
   access_l3vpn:
     link_group: l3vpn
-    prefix: 1.1.0.0/16
+    v4_prefix: 1.1.0.0/16
     mtu: 1505
   host:
     # connect node data port to vlan uplink of host
@@ -263,11 +263,11 @@ link_groups:
       instance: CORE
   loopback0:
     link_group: loopback0
-    prefix: 1.255.0.0/24
+    v4_prefix: 1.255.0.0/24
   mgmt:
     # If you're starting multiple clabs, you must use different mgmt prefix for each clab instance
     link_group: mgmt
-    prefix: 10.255.0.0/24
+    v4_prefix: 10.255.0.0/24
 
 # Topology definition
 # - parallel links are allowed

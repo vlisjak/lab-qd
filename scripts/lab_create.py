@@ -253,12 +253,9 @@ def _add_interface_metadata(nodes_intf, node, ifname, neighbor, neighbor_if, lin
     # print(node, ifname, neighbor, neighbor_if, link)
     intf["description"] = f"{node}:{ifname} -> {neighbor}:{neighbor_if}"
     intf.setdefault("lldp", {}).update({"neighbor": neighbor, "neighbor_intf": neighbor_if})
-    # print('intf     ', intf)
-    # print('nodesintf',nodes_intf[node].interfaces[ifname])
     for k, v in link.items():
         intf[k] = deepcopy(v)
-    print('intf     ', intf)
-    print('nodesintf',nodes_intf[node].interfaces[ifname])
+
 
 def _assign_loopback_and_mgmt(master, nodes_intf):
     loop_prefix = ipaddress.ip_network(master.link_groups.loopback0.v4_prefix)
