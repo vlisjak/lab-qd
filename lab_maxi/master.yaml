@@ -249,7 +249,7 @@ devices:
 link_groups:
   core:
     link_group: core
-    prefix: 1.0.0.0/16
+    v4_prefix: 1.0.0.0/16
     isis: 
       instance: CORE
   core_bundle:
@@ -276,7 +276,7 @@ link_groups:
     # link_type: l2 -> not sure if we need extra flag?
   rr:
     link_group: rr
-    prefix: 1.0.0.0/16
+    v4_prefix: 1.0.0.0/16
     isis: 
       instance: RR
       metric: 99999
@@ -284,14 +284,14 @@ link_groups:
       disable: True
   loopback0:
     link_group: loopback0
-    prefix: 1.255.0.0/24
+    v4_prefix: 1.255.0.0/24
   mgmt:
     # If you're starting multiple clabs, you must use different mgmt prefix for each clab instance
     link_group: mgmt
-    prefix: 10.255.1.0/24
+    v4_prefix: 10.255.1.0/24
   access_l3vpn:
     link_group: l3vpn
-    prefix: 1.1.0.0/16
+    v4_prefix: 1.1.0.0/16
     mtu: 1505
   access_l2vpn:
     link_group: l2vpn
@@ -396,7 +396,7 @@ services:
     # - RT/RD: {{ ibgp_asn }}:{{rd }}
 
     vrf_1001:
-     rd: 1001
+      rd: 1001
       endpoints:
         cpe1:
           pe_routing: 
@@ -410,7 +410,7 @@ services:
             protocol: static
 
     vrf_1002_A:
-     rd: 1002
+      rd: 1002
       endpoints:
         cpe2:
           # if "uplinks" is present, only "uplinks" are used to find the neighbor PEs
@@ -427,7 +427,7 @@ services:
 
     # TODO: more complex example: manually defined uplinks, qos and primary-backup eBGP
     vrf_1002_B:
-     rd: 1002
+      rd: 1002
       endpoints:
         cpe1:
           pe_routing: 

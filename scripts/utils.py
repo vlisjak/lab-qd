@@ -13,7 +13,10 @@ import shlex, subprocess
 def load_vars(file_path):
     try:
         with open(file_path, "r") as file:
-            return yaml.safe_load(file)
+            try:
+                return yaml.safe_load(file)
+            except Exception as error:
+                print(f"Error reading yaml content from {file_path}:", error) 
     except:
         exit(f"% Could not open: {file_path}")
 

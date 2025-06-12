@@ -158,7 +158,7 @@ devices:
 link_groups:
   core:
     link_group: core
-    prefix: 1.0.0.0/16
+    v4_prefix: 1.0.0.0/16
     isis: 
       instance: CORE
       metric: 2000
@@ -177,14 +177,14 @@ link_groups:
       metric: 99999
   loopback0:
     link_group: loopback0
-    prefix: 1.255.0.0/24
+    v4_prefix: 1.255.0.0/24
   mgmt:
     # If you're starting multiple clabs, you must use different mgmt prefix for each clab instance
     link_group: mgmt
-    prefix: 10.255.5.0/24
+    v4_prefix: 10.255.5.0/24
   access_l3vpn:
     link_group: l3vpn
-    prefix: 1.1.0.0/16
+    v4_prefix: 1.1.0.0/16
     mtu: 1555
 
 # Topology definition
