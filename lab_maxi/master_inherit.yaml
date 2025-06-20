@@ -21,6 +21,9 @@ device_groups:
       image: vrnetlab/cisco_csr1000v:17.03.08
       kind: cisco_csr1000v
       startup-config: ios_initial_cfg.j2
+    interfaces:
+      mgmt:
+        name: Gi1
     intf_naming:
       core_bundle:
         first_id: 1
@@ -42,6 +45,9 @@ device_groups:
       kind: cisco_xrd
       startup-config: xrd_initial_cfg.j2
     clab_intf_map: true
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -58,6 +64,9 @@ device_groups:
     password: clab@123
     username: clab
   iosxr_phys:
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -78,6 +87,9 @@ device_groups:
       image: vrnetlab/cisco_xrv9k:7.10.2
       kind: cisco_xrv9k
       startup-config: xrd_initial_cfg.j2
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -144,6 +156,9 @@ devices:
     clab_intf_map: true
     device_roles:
     - cpe
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -167,6 +182,9 @@ devices:
     clab_intf_map: true
     device_roles:
     - cpe
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -190,6 +208,9 @@ devices:
     clab_intf_map: true
     device_roles:
     - cpe
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -213,6 +234,9 @@ devices:
     clab_intf_map: true
     device_roles:
     - cpe
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -235,6 +259,9 @@ devices:
       startup-config: ios_initial_cfg.j2
     device_roles:
     - cpe
+    interfaces:
+      mgmt:
+        name: Gi1
     intf_naming:
       core_bundle:
         first_id: 1
@@ -260,6 +287,9 @@ devices:
       startup-config: xrd_initial_cfg.j2
     device_roles:
     - p
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -292,6 +322,9 @@ devices:
     clab_intf_map: true
     device_roles:
     - p
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -324,6 +357,9 @@ devices:
     clab_intf_map: true
     device_roles:
     - p
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -356,6 +392,9 @@ devices:
     clab_intf_map: true
     device_roles:
     - p
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -391,6 +430,9 @@ devices:
     ibgp:
       asn: 100
       client_of: rr_mid
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -417,6 +459,9 @@ devices:
     ibgp:
       asn: 100
       client_of: rr_mid
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -443,6 +488,9 @@ devices:
     ibgp:
       asn: 100
       client_of: rr_mid
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -459,6 +507,10 @@ devices:
     password: clab@123
     username: clab
   router1:
+    interfaces:
+      mgmt:
+        ipv4_address: 20.255.1.1/24
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -472,6 +524,10 @@ devices:
     password: cisco
     username: cisco
   router2:
+    interfaces:
+      mgmt:
+        ipv4_address: 20.255.1.2/24
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -496,6 +552,9 @@ devices:
     ibgp:
       asn: 100
       client_of: rr_top
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -523,6 +582,9 @@ devices:
     ibgp:
       asn: 100
       client_of: rr_top
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -550,6 +612,9 @@ devices:
       asn: 100
       full_mesh:
       - rr_top
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -577,6 +642,9 @@ devices:
       asn: 100
       full_mesh:
       - rr_top
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1

@@ -8,6 +8,8 @@ import xml.etree.ElementTree as ET
 import os
 import ipaddress
 import shlex, subprocess
+from typing import Optional, List, Union
+from collections import defaultdict
 
 
 def load_vars(file_path):
@@ -240,3 +242,146 @@ def resolve_inheritance(config):
         config_copy[key] = recursive_inherit(config_copy[key], config_copy)
 
     return config_copy
+
+
+
+class P2p_Intf_Allocator:
+    """
+    Allocate (sequentially) last digit for Clab interface names, such as:
+        Gi0/0/0/X (X=0,1,2,3..)
+        Bundle-EthernetX (X=1,2,3..)
+
+    Notes:
+        - allocation is specific to interface_type and node
+        - allocator will avoid manually defined interfaces in master.yaml (exclude_IDs)
+    Usage:
+
+        p2p_if_allocator = P2p_Intf_Allocator(exclude_IDs)
+
+        intf_id1 = p2p_if_allocator.next("r1", "Gi0/0/0/", 0)
+        intf_id1 = p2p_if_allocator.next("r1", "Gi0/0/0/", 0)
+        intf_id1 = p2p_if_allocator.next("r1", "Bundle-Ethernet", 1)
+        etc.
+    """
+
+    def __init__(self, excludeIDs=None):
+        self.nodes = defaultdict(lambda: defaultdict(int))
+        self.excludeIDs = excludeIDs or {}
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        raise NotImplementedError("Use next(node, interface, first_id) to get the next value for a specific node and interface.")
+
+    def next(self, node: str, interface: str, first_id: int) -> int:
+        current_id = self.nodes[node].get(interface, first_id)
+
+        # Get excluded IDs for this node/interface
+        excluded = self.excludeIDs.get(node, {}).get(interface, [])
+
+        while current_id in excluded:
+            current_id += 1
+
+        self.nodes[node][interface] = current_id + 1
+        return current_id
+
+
+# TODO: integrate new ip_allocator class
+class Subnet_Allocator:
+    """
+    Allocate consecutive subnets from provided prefix and subnet length.
+
+    Usage:
+
+        subnet_allocator = Subnet_Allocator()
+
+        subnet = subnet_allocator.next_subnet('1.0.0.0/16', 30)
+        subnet = subnet_allocator.next_subnet('1.0.0.0/16', 30)
+        subnet = subnet_allocator.next_subnet('1.255.0.0/16', 24)
+        etc.
+    """
+
+    def __init__(self):
+        self.subnet_iterators = {}
+
+    def next_subnet(self, prefix, length):
+        if prefix not in self.subnet_iterators:
+            network = ipaddress.ip_network(prefix)
+            self.subnet_iterators[prefix] = network.subnets(new_prefix=length)
+        return next(self.subnet_iterators[prefix])
+
+
+class IPAllocator:
+    """
+    https://github.com/vlisjak/IPAllocator
+
+    Allocate IP addresses or subnets from a given network range.
+    - supports IPv4 and IPv6.
+    - exclusions can be specified to avoid allocating certain IPs or subnets.
+
+    Parameters:
+    - network (str): The network range in CIDR notation (e.g., '192.168.1.0/24' or '2001:db8::/32').
+    - mask_length (int, optional): The subnet mask length for subnet allocation (e.g., 24 for '/24' subnets).
+    - excluded (list of str, optional): A list of network ranges in CIDR notation to exclude from allocation.
+
+    Usage:
+    1. IP Allocation:
+        allocator = IPAllocator('192.168.1.0/24')
+        ip = allocator.allocate()
+        print(ip)  # Output: 192.168.1.1
+
+        allocator = IPAllocator('2001:db8::/64')
+        ip = allocator.allocate()
+        print(ip)  # Output: 2001:db8::1
+
+    2. Subnet Allocation:
+        allocator = IPAllocator('192.168.0.0/16', mask_length=24)
+        subnet = allocator.allocate()
+        print(subnet)  # Output: 192.168.0.0/24
+
+        allocator = IPAllocator('2001:db8::/32', mask_length=48)
+        subnet = allocator.allocate()
+        print(subnet)  # Output: 2001:db8:0:0::/48
+
+    3. IP Allocation with Exclusions:
+        allocator = IPAllocator('192.168.1.0/24', excluded=['192.168.1.1'])
+        ip = allocator.allocate()
+        print(ip)  # Output: 192.168.1.2
+
+        allocator = IPAllocator('2001:db8::/64', excluded=['2001:db8::1'])
+        ip = allocator.allocate()
+        print(ip)  # Output: 2001:db8::2
+
+    4. Subnet Allocation with Exclusions:
+        allocator = IPAllocator('192.168.0.0/16', mask_length=24, excluded=['192.168.0.0/24'])
+        subnet = allocator.allocate()
+        print(subnet)  # Output: 192.168.1.0/24
+
+        allocator = IPAllocator('2001:db8::/32', mask_length=48, excluded=['2001:db8:0:0::/48'])
+        subnet = allocator.allocate()
+        print(subnet)  # Output: 2001:db8:0:1::/48
+    """
+
+    def __init__(self, network: str, mask_length: Optional[int] = None, excluded: Optional[List[str]] = None):
+        self.network = ipaddress.ip_network(network, strict=False)
+        self.mask_length = mask_length
+        self.excluded = [ipaddress.ip_network(ex) for ex in excluded] if excluded else []
+
+        self.next_subnet = self.network.subnets(new_prefix=mask_length) if mask_length else None
+        self.next_ip = self.network.hosts() if not mask_length else None
+
+    def allocate(self) -> Optional[Union[ipaddress.IPv4Address, ipaddress.IPv6Address, ipaddress.IPv4Network, ipaddress.IPv6Network]]:
+        return self._allocate_subnet() if self.mask_length else self._allocate_ip()
+
+    def _allocate_subnet(self) -> Optional[Union[ipaddress.IPv4Network, ipaddress.IPv6Network]]:
+        for subnet in self.next_subnet:
+            if not any(subnet.overlaps(ex) for ex in self.excluded):
+                return subnet
+        return None
+
+    def _allocate_ip(self) -> Optional[Union[ipaddress.IPv4Address, ipaddress.IPv6Address]]:
+        for ip in self.next_ip:
+            if not any(ip in ex for ex in self.excluded):
+                return ip
+        return None

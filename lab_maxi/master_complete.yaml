@@ -21,6 +21,9 @@ device_groups:
       image: vrnetlab/cisco_csr1000v:17.03.08
       kind: cisco_csr1000v
       startup-config: ios_initial_cfg.j2
+    interfaces:
+      mgmt:
+        name: Gi1
     intf_naming:
       core_bundle:
         first_id: 1
@@ -42,6 +45,9 @@ device_groups:
       kind: cisco_xrd
       startup-config: xrd_initial_cfg.j2
     clab_intf_map: true
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -58,6 +64,9 @@ device_groups:
     password: clab@123
     username: clab
   iosxr_phys:
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -78,6 +87,9 @@ device_groups:
       image: vrnetlab/cisco_xrv9k:7.10.2
       kind: cisco_xrv9k
       startup-config: xrd_initial_cfg.j2
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -155,12 +167,13 @@ devices:
           neighbor_intf: Gi0/0/0/2
           neighbor_ipv4: 1.1.0.2/30
         mtu: 1505
-        prefix: 1.1.0.0/16
+        v4_prefix: 1.1.0.0/16
       Loopback0:
         description: cpe1 Loopback0
         ipv4_address: 1.255.0.13/32
       mgmt:
         ipv4_address: 10.255.1.13/24
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -195,7 +208,7 @@ devices:
           neighbor_intf: Gi0/0/0/2
           neighbor_ipv4: 1.1.0.6/30
         mtu: 1505
-        prefix: 1.1.0.0/16
+        v4_prefix: 1.1.0.0/16
       Gi0/0/0/1:
         description: cpe2:Gi0/0/0/1 -> pe3:Gi0/0/0/2
         ipv4_address: 1.1.0.9/30
@@ -206,12 +219,13 @@ devices:
           neighbor_intf: Gi0/0/0/2
           neighbor_ipv4: 1.1.0.10/30
         mtu: 1505
-        prefix: 1.1.0.0/16
+        v4_prefix: 1.1.0.0/16
       Loopback0:
         description: cpe2 Loopback0
         ipv4_address: 1.255.0.14/32
       mgmt:
         ipv4_address: 10.255.1.14/24
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -246,7 +260,7 @@ devices:
           neighbor_intf: Gi0/0/0/3
           neighbor_ipv4: 1.1.0.14/30
         mtu: 1505
-        prefix: 1.1.0.0/16
+        v4_prefix: 1.1.0.0/16
       Gi0/0/0/1:
         description: cpe3:Gi0/0/0/1 -> pe3:Gi0/0/0/3
         link: cpe3---pe3
@@ -260,6 +274,7 @@ devices:
         ipv4_address: 1.255.0.15/32
       mgmt:
         ipv4_address: 10.255.1.15/24
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -294,12 +309,13 @@ devices:
           neighbor_intf: Gi0/0/0/4
           neighbor_ipv4: 1.1.0.18/30
         mtu: 1505
-        prefix: 1.1.0.0/16
+        v4_prefix: 1.1.0.0/16
       Loopback0:
         description: cpe4 Loopback0
         ipv4_address: 1.255.0.16/32
       mgmt:
         ipv4_address: 10.255.1.16/24
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -333,12 +349,13 @@ devices:
           neighbor_intf: Gi0/0/0/3
           neighbor_ipv4: 1.1.0.22/30
         mtu: 1505
-        prefix: 1.1.0.0/16
+        v4_prefix: 1.1.0.0/16
       Loopback0:
         description: cpe5 Loopback0
         ipv4_address: 1.255.0.17/32
       mgmt:
         ipv4_address: 10.255.1.17/24
+        name: Gi1
     intf_naming:
       core_bundle:
         first_id: 1
@@ -380,7 +397,7 @@ devices:
           neighbor: p2
           neighbor_intf: Bundle-Ether1
           neighbor_ipv4: 1.0.0.2/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Gi0/0/0/0:
         description: p1:Gi0/0/0/0 -> rr_top1:Gi0/0/0/9
         ipv4_address: 1.0.0.54/30
@@ -391,10 +408,8 @@ devices:
         link_group: rr
         lldp:
           disable: true
-          neighbor: rr_top1
-          neighbor_intf: Gi0/0/0/9
           neighbor_ipv4: 1.0.0.53/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Gi0/0/0/1:
         bundle:
           id: 1
@@ -426,7 +441,7 @@ devices:
           neighbor: p4
           neighbor_intf: Gi0/0/0/3
           neighbor_ipv4: 1.0.0.17/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Gi0/0/0/4:
         description: p1:Gi0/0/0/4 -> pe1:Gi0/0/0/0
         ipv4_address: 1.0.0.22/30
@@ -438,12 +453,13 @@ devices:
           neighbor: pe1
           neighbor_intf: Gi0/0/0/0
           neighbor_ipv4: 1.0.0.21/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Loopback0:
         description: p1 Loopback0
         ipv4_address: 1.255.0.2/32
       mgmt:
         ipv4_address: 10.255.1.2/24
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -492,7 +508,7 @@ devices:
           neighbor: p1
           neighbor_intf: Bundle-Ether1
           neighbor_ipv4: 1.0.0.1/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Bundle-Ether2:
         bundle:
           id: 2
@@ -508,7 +524,7 @@ devices:
           neighbor: p3
           neighbor_intf: Bundle-Ether32
           neighbor_ipv4: 1.0.0.6/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Gi0/0/0/0:
         description: p2:Gi0/0/0/0 -> rr_top2:Gi0/0/0/9
         ipv4_address: 1.0.0.58/30
@@ -519,10 +535,8 @@ devices:
         link_group: rr
         lldp:
           disable: true
-          neighbor: rr_top2
-          neighbor_intf: Gi0/0/0/9
           neighbor_ipv4: 1.0.0.57/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Gi0/0/0/1:
         bundle:
           id: 1
@@ -564,12 +578,13 @@ devices:
           neighbor: pe1
           neighbor_intf: Gi0/0/0/1
           neighbor_ipv4: 1.0.0.25/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Loopback0:
         description: p2 Loopback0
         ipv4_address: 1.255.0.3/32
       mgmt:
         ipv4_address: 10.255.1.3/24
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -618,7 +633,7 @@ devices:
           neighbor: p2
           neighbor_intf: Bundle-Ether2
           neighbor_ipv4: 1.0.0.5/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Bundle-Ether34:
         bundle:
           id: 34
@@ -634,7 +649,7 @@ devices:
           neighbor: p4
           neighbor_intf: Bundle-Ether43
           neighbor_ipv4: 1.0.0.14/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Gi0/0/0/0:
         description: p3:Gi0/0/0/0 -> rr2:Gi0/0/0/9
         ipv4_address: 1.0.0.50/30
@@ -645,10 +660,8 @@ devices:
         link_group: rr
         lldp:
           disable: true
-          neighbor: rr2
-          neighbor_intf: Gi0/0/0/9
           neighbor_ipv4: 1.0.0.49/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Gi0/0/0/1:
         bundle:
           id: 32
@@ -670,7 +683,7 @@ devices:
           neighbor: p4
           neighbor_intf: Gi0/0/0/1
           neighbor_ipv4: 1.0.0.10/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Gi0/0/0/3:
         bundle:
           id: 34
@@ -692,7 +705,7 @@ devices:
           neighbor: pe2
           neighbor_intf: Gi0/0/0/0
           neighbor_ipv4: 1.0.0.29/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Gi0/0/0/5:
         description: p3:Gi0/0/0/5 -> pe3:Gi0/0/0/0
         ipv4_address: 1.0.0.38/30
@@ -704,12 +717,13 @@ devices:
           neighbor: pe3
           neighbor_intf: Gi0/0/0/0
           neighbor_ipv4: 1.0.0.37/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Loopback0:
         description: p3 Loopback0
         ipv4_address: 1.255.0.4/32
       mgmt:
         ipv4_address: 10.255.1.4/24
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -758,7 +772,7 @@ devices:
           neighbor: p3
           neighbor_intf: Bundle-Ether34
           neighbor_ipv4: 1.0.0.13/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Gi0/0/0/0:
         description: p4:Gi0/0/0/0 -> rr1:Gi0/0/0/9
         ipv4_address: 1.0.0.46/30
@@ -769,10 +783,8 @@ devices:
         link_group: rr
         lldp:
           disable: true
-          neighbor: rr1
-          neighbor_intf: Gi0/0/0/9
           neighbor_ipv4: 1.0.0.45/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Gi0/0/0/1:
         description: p4:Gi0/0/0/1 -> p3:Gi0/0/0/2
         ipv4_address: 1.0.0.10/30
@@ -784,7 +796,7 @@ devices:
           neighbor: p3
           neighbor_intf: Gi0/0/0/2
           neighbor_ipv4: 1.0.0.9/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Gi0/0/0/2:
         bundle:
           id: 43
@@ -806,7 +818,7 @@ devices:
           neighbor: p1
           neighbor_intf: Gi0/0/0/3
           neighbor_ipv4: 1.0.0.18/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Gi0/0/0/4:
         description: p4:Gi0/0/0/4 -> pe2:Gi0/0/0/1
         ipv4_address: 1.0.0.34/30
@@ -818,7 +830,7 @@ devices:
           neighbor: pe2
           neighbor_intf: Gi0/0/0/1
           neighbor_ipv4: 1.0.0.33/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Gi0/0/0/5:
         description: p4:Gi0/0/0/5 -> pe3:Gi0/0/0/1
         ipv4_address: 1.0.0.42/30
@@ -830,12 +842,13 @@ devices:
           neighbor: pe3
           neighbor_intf: Gi0/0/0/1
           neighbor_ipv4: 1.0.0.41/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Loopback0:
         description: p4 Loopback0
         ipv4_address: 1.255.0.5/32
       mgmt:
         ipv4_address: 10.255.1.5/24
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -883,7 +896,7 @@ devices:
           neighbor: p1
           neighbor_intf: Gi0/0/0/4
           neighbor_ipv4: 1.0.0.22/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Gi0/0/0/1:
         description: pe1:Gi0/0/0/1 -> p2:Gi0/0/0/4
         ipv4_address: 1.0.0.25/30
@@ -895,7 +908,7 @@ devices:
           neighbor: p2
           neighbor_intf: Gi0/0/0/4
           neighbor_ipv4: 1.0.0.26/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Gi0/0/0/2:
         description: pe1:Gi0/0/0/2 -> cpe1:Gi0/0/0/0
         ipv4_address: 1.1.0.2/30
@@ -906,7 +919,7 @@ devices:
           neighbor_intf: Gi0/0/0/0
           neighbor_ipv4: 1.1.0.1/30
         mtu: 1505
-        prefix: 1.1.0.0/16
+        v4_prefix: 1.1.0.0/16
       Gi0/0/0/3:
         description: pe1:Gi0/0/0/3 -> cpe5:Gi2
         ipv4_address: 1.1.0.22/30
@@ -917,12 +930,13 @@ devices:
           neighbor_intf: Gi2
           neighbor_ipv4: 1.1.0.21/30
         mtu: 1505
-        prefix: 1.1.0.0/16
+        v4_prefix: 1.1.0.0/16
       Loopback0:
         description: pe1 Loopback0
         ipv4_address: 1.255.0.6/32
       mgmt:
         ipv4_address: 10.255.1.6/24
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -961,7 +975,7 @@ devices:
           neighbor: p3
           neighbor_intf: Gi0/0/0/4
           neighbor_ipv4: 1.0.0.30/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Gi0/0/0/1:
         description: pe2:Gi0/0/0/1 -> p4:Gi0/0/0/4
         ipv4_address: 1.0.0.33/30
@@ -973,7 +987,7 @@ devices:
           neighbor: p4
           neighbor_intf: Gi0/0/0/4
           neighbor_ipv4: 1.0.0.34/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Gi0/0/0/2:
         description: pe2:Gi0/0/0/2 -> cpe2:Gi0/0/0/0
         ipv4_address: 1.1.0.6/30
@@ -984,7 +998,7 @@ devices:
           neighbor_intf: Gi0/0/0/0
           neighbor_ipv4: 1.1.0.5/30
         mtu: 1505
-        prefix: 1.1.0.0/16
+        v4_prefix: 1.1.0.0/16
       Gi0/0/0/3:
         description: pe2:Gi0/0/0/3 -> cpe3:Gi0/0/0/0
         ipv4_address: 1.1.0.14/30
@@ -995,12 +1009,13 @@ devices:
           neighbor_intf: Gi0/0/0/0
           neighbor_ipv4: 1.1.0.13/30
         mtu: 1505
-        prefix: 1.1.0.0/16
+        v4_prefix: 1.1.0.0/16
       Loopback0:
         description: pe2 Loopback0
         ipv4_address: 1.255.0.7/32
       mgmt:
         ipv4_address: 10.255.1.7/24
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -1039,7 +1054,7 @@ devices:
           neighbor: p3
           neighbor_intf: Gi0/0/0/5
           neighbor_ipv4: 1.0.0.38/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Gi0/0/0/1:
         description: pe3:Gi0/0/0/1 -> p4:Gi0/0/0/5
         ipv4_address: 1.0.0.41/30
@@ -1051,7 +1066,7 @@ devices:
           neighbor: p4
           neighbor_intf: Gi0/0/0/5
           neighbor_ipv4: 1.0.0.42/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Gi0/0/0/2:
         description: pe3:Gi0/0/0/2 -> cpe2:Gi0/0/0/1
         ipv4_address: 1.1.0.10/30
@@ -1062,7 +1077,7 @@ devices:
           neighbor_intf: Gi0/0/0/1
           neighbor_ipv4: 1.1.0.9/30
         mtu: 1505
-        prefix: 1.1.0.0/16
+        v4_prefix: 1.1.0.0/16
       Gi0/0/0/3:
         description: pe3:Gi0/0/0/3 -> cpe3:Gi0/0/0/1
         link: cpe3---pe3
@@ -1081,12 +1096,13 @@ devices:
           neighbor_intf: Gi0/0/0/0
           neighbor_ipv4: 1.1.0.17/30
         mtu: 1505
-        prefix: 1.1.0.0/16
+        v4_prefix: 1.1.0.0/16
       Loopback0:
         description: pe3 Loopback0
         ipv4_address: 1.255.0.8/32
       mgmt:
         ipv4_address: 10.255.1.8/24
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -1104,19 +1120,9 @@ devices:
     username: clab
   router1:
     interfaces:
-      Gi1/1:
-        clab_exclude: true
-        description: router1:Gi1/1 -> router2:Gi2/2
-        link: router1:Gi1/1---router2:Gi2/2
-        link_group: physical
-        lldp:
-          neighbor: router2
-          neighbor_intf: Gi2/2
-      Loopback0:
-        description: router1 Loopback0
-        ipv4_address: 1.255.0.18/32
       mgmt:
-        ipv4_address: 10.255.1.18/24
+        ipv4_address: 20.255.1.1/24
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -1131,19 +1137,9 @@ devices:
     username: cisco
   router2:
     interfaces:
-      Gi2/2:
-        clab_exclude: true
-        description: router2:Gi2/2 -> router1:Gi1/1
-        link: router1:Gi1/1---router2:Gi2/2
-        link_group: physical
-        lldp:
-          neighbor: router1
-          neighbor_intf: Gi1/1
-      Loopback0:
-        description: router2 Loopback0
-        ipv4_address: 1.255.0.19/32
       mgmt:
-        ipv4_address: 10.255.1.19/24
+        ipv4_address: 20.255.1.2/24
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -1179,15 +1175,14 @@ devices:
         link_group: rr
         lldp:
           disable: true
-          neighbor: p4
-          neighbor_intf: Gi0/0/0/0
           neighbor_ipv4: 1.0.0.46/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Loopback0:
         description: rr1 Loopback0
         ipv4_address: 1.255.0.9/32
       mgmt:
         ipv4_address: 10.255.1.9/24
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -1226,15 +1221,14 @@ devices:
         link_group: rr
         lldp:
           disable: true
-          neighbor: p3
-          neighbor_intf: Gi0/0/0/0
           neighbor_ipv4: 1.0.0.50/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Loopback0:
         description: rr2 Loopback0
         ipv4_address: 1.255.0.10/32
       mgmt:
         ipv4_address: 10.255.1.10/24
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -1273,15 +1267,14 @@ devices:
         link_group: rr
         lldp:
           disable: true
-          neighbor: p1
-          neighbor_intf: Gi0/0/0/0
           neighbor_ipv4: 1.0.0.54/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Loopback0:
         description: rr_top1 Loopback0
         ipv4_address: 1.255.0.11/32
       mgmt:
         ipv4_address: 10.255.1.11/24
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -1320,15 +1313,14 @@ devices:
         link_group: rr
         lldp:
           disable: true
-          neighbor: p2
-          neighbor_intf: Gi0/0/0/0
           neighbor_ipv4: 1.0.0.58/30
-        prefix: 1.0.0.0/16
+        v4_prefix: 1.0.0.0/16
       Loopback0:
         description: rr_top2 Loopback0
         ipv4_address: 1.255.0.12/32
       mgmt:
         ipv4_address: 10.255.1.12/24
+        name: MgmtEth0/RP0/CPU0/0
     intf_naming:
       core_bundle:
         first_id: 1
@@ -1352,12 +1344,12 @@ link_groups:
   access_l3vpn:
     link_group: l3vpn
     mtu: 1505
-    prefix: 1.1.0.0/16
+    v4_prefix: 1.1.0.0/16
   core:
     isis:
       instance: CORE
     link_group: core
-    prefix: 1.0.0.0/16
+    v4_prefix: 1.0.0.0/16
   core_bundle:
     bundle:
       type: bundle
@@ -1365,17 +1357,17 @@ link_groups:
     isis:
       instance: CORE
     link_group: core_bundle
-    prefix: 1.0.0.0/16
+    v4_prefix: 1.0.0.0/16
   core_bundle_member:
     bundle:
       type: member
     link_group: core_bundle_member
   loopback0:
     link_group: loopback0
-    prefix: 1.255.0.0/24
+    v4_prefix: 1.255.0.0/24
   mgmt:
     link_group: mgmt
-    prefix: 10.255.1.0/24
+    v4_prefix: 10.255.1.0/24
   physical:
     clab_exclude: true
     link_group: physical
@@ -1386,7 +1378,7 @@ link_groups:
     link_group: rr
     lldp:
       disable: true
-    prefix: 1.0.0.0/16
+    v4_prefix: 1.0.0.0/16
 links:
 - bundle:
     type: bundle
@@ -1395,7 +1387,7 @@ links:
     instance: CORE
   link: p1---p2
   link_group: core_bundle
-  prefix: 1.0.0.0/16
+  v4_prefix: 1.0.0.0/16
 - bundle:
     type: member
   link: p1---p2
@@ -1411,7 +1403,7 @@ links:
     instance: CORE
   link: p2---p3:Bundle-Ether32
   link_group: core_bundle
-  prefix: 1.0.0.0/16
+  v4_prefix: 1.0.0.0/16
 - bundle:
     type: member
   link: p2---p3
@@ -1420,7 +1412,7 @@ links:
     instance: CORE
   link: p3---p4
   link_group: core
-  prefix: 1.0.0.0/16
+  v4_prefix: 1.0.0.0/16
 - bundle:
     type: bundle
   clab_exclude: true
@@ -1428,7 +1420,7 @@ links:
     instance: CORE
   link: p3:Bundle-Ether34---p4:Bundle-Ether43
   link_group: core_bundle
-  prefix: 1.0.0.0/16
+  v4_prefix: 1.0.0.0/16
 - bundle:
     type: member
   link: p3---p4
@@ -1437,37 +1429,37 @@ links:
     instance: CORE
   link: p4---p1
   link_group: core
-  prefix: 1.0.0.0/16
+  v4_prefix: 1.0.0.0/16
 - isis:
     instance: CORE
   link: pe1---p1
   link_group: core
-  prefix: 1.0.0.0/16
+  v4_prefix: 1.0.0.0/16
 - isis:
     instance: CORE
   link: pe1---p2
   link_group: core
-  prefix: 1.0.0.0/16
+  v4_prefix: 1.0.0.0/16
 - isis:
     instance: CORE
   link: pe2---p3
   link_group: core
-  prefix: 1.0.0.0/16
+  v4_prefix: 1.0.0.0/16
 - isis:
     instance: CORE
   link: pe2---p4
   link_group: core
-  prefix: 1.0.0.0/16
+  v4_prefix: 1.0.0.0/16
 - isis:
     instance: CORE
   link: pe3---p3
   link_group: core
-  prefix: 1.0.0.0/16
+  v4_prefix: 1.0.0.0/16
 - isis:
     instance: CORE
   link: pe3---p4
   link_group: core
-  prefix: 1.0.0.0/16
+  v4_prefix: 1.0.0.0/16
 - isis:
     instance: RR
     metric: 99999
@@ -1475,7 +1467,7 @@ links:
   link_group: rr
   lldp:
     disable: true
-  prefix: 1.0.0.0/16
+  v4_prefix: 1.0.0.0/16
 - isis:
     instance: RR
     metric: 99999
@@ -1483,7 +1475,7 @@ links:
   link_group: rr
   lldp:
     disable: true
-  prefix: 1.0.0.0/16
+  v4_prefix: 1.0.0.0/16
 - isis:
     instance: RR
     metric: 99999
@@ -1491,7 +1483,7 @@ links:
   link_group: rr
   lldp:
     disable: true
-  prefix: 1.0.0.0/16
+  v4_prefix: 1.0.0.0/16
 - isis:
     instance: RR
     metric: 99999
@@ -1499,34 +1491,34 @@ links:
   link_group: rr
   lldp:
     disable: true
-  prefix: 1.0.0.0/16
+  v4_prefix: 1.0.0.0/16
 - link: cpe1---pe1
   link_group: l3vpn
   mtu: 1505
-  prefix: 1.1.0.0/16
+  v4_prefix: 1.1.0.0/16
 - link: cpe2---pe2
   link_group: l3vpn
   mtu: 1505
-  prefix: 1.1.0.0/16
+  v4_prefix: 1.1.0.0/16
 - link: cpe2---pe3
   link_group: l3vpn
   mtu: 1505
-  prefix: 1.1.0.0/16
+  v4_prefix: 1.1.0.0/16
 - link: cpe3---pe2
   link_group: l3vpn
   mtu: 1505
-  prefix: 1.1.0.0/16
+  v4_prefix: 1.1.0.0/16
 - link: cpe3---pe3
   link_group: l2vpn
   mtu: 1555
 - link: cpe4---pe3
   link_group: l3vpn
   mtu: 1505
-  prefix: 1.1.0.0/16
+  v4_prefix: 1.1.0.0/16
 - link: cpe5---pe1
   link_group: l3vpn
   mtu: 1505
-  prefix: 1.1.0.0/16
+  v4_prefix: 1.1.0.0/16
 - clab_exclude: true
   link: router1:Gi1/1---router2:Gi2/2
   link_group: physical
@@ -1554,7 +1546,6 @@ nornir_startup:
 services:
   l3vpn:
     vrf_1001:
-     rd: 1001
       endpoints:
         cpe1:
           pe_routing:
@@ -1565,8 +1556,8 @@ services:
         cpe3:
           pe_routing:
             protocol: static
+      rd: 1001
     vrf_1002_A:
-     rd: 1002
       endpoints:
         cpe2:
           pe_routing:
@@ -1579,8 +1570,8 @@ services:
         cpe4:
           pe_routing:
             protocol: ebgp
+      rd: 1002
     vrf_1002_B:
-     rd: 1002
       endpoints:
         cpe1:
           pe_routing:
@@ -1597,3 +1588,4 @@ services:
           managed: false
           pe_routing:
             protocol: ebgp
+      rd: 1002

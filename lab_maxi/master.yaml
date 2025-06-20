@@ -68,6 +68,9 @@ device_groups:
       loopback0:
         name: Loopback
         first_id: 0
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
   # Physical routers 
   # - note that 'clab' is missing, so these nodes will not appear in clab_startup.yaml
   # - but we can still provision with nornir
@@ -87,6 +90,9 @@ device_groups:
       loopback0:
         name: Loopback
         first_id: 0
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
 
   xrv9k:
     # use default clab credentials, because these are baked into xrv9k docker image!
@@ -107,6 +113,9 @@ device_groups:
       loopback0:
         name: Loopback
         first_id: 0
+    interfaces:
+      mgmt:
+        name: MgmtEth0/RP0/CPU0/0
 
   ios:
     username: clab
@@ -126,7 +135,10 @@ device_groups:
       loopback0:
         name: Loopback
         first_id: 0
-
+    interfaces:
+      mgmt:
+        name: Gi1
+        
 # Role-specific parameters
 # - there could be multiple device types (device_group=iosxr, ios) for the same device role (device_role=pe) 
 # - each device could belong to multiple roles (such as rr can also be pce, or p can also be a pe)
@@ -241,10 +253,16 @@ devices:
   router1:
     inherit_from:
       - device_groups.iosxr_phys
+    interfaces:
+      mgmt:
+        ipv4_address: 20.255.1.1/24
   router2:
     inherit_from:
       - device_groups.iosxr_phys
-      
+    interfaces:
+      mgmt:
+        ipv4_address: 20.255.1.2/24
+
 # Link-group parameters
 link_groups:
   core:

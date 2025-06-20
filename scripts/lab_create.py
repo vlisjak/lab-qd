@@ -10,7 +10,7 @@ from copy import deepcopy
 import argparse
 import re
 import pprint as pp
-from collections import defaultdict
+
 
 """
 TODO:
@@ -57,7 +57,7 @@ def parse_link(link):
     return result
 
 
-def exclude_manual_intf(links):
+def get_predefined_intf_names(links):
     """
     Users can manually define interface names in "links:" section of master.yaml, such as:
       links:
@@ -70,18 +70,15 @@ def exclude_manual_intf(links):
 
     But then, the P2p_Intf_Allocator must avoid (exclude) these manually defined interfaces.
 
-    Returns:
-        for each node and interface type, identify a list of IDs (last integer after whatever interface string), eg:
-            {'p1': defaultdict(<class 'list'>, {'Gi0/0/0/': [0]}),
-            'p2': defaultdict(<class 'list'>,
-                            {'Bundle-Ether': [10],
-                                'Gi0/0/0/': [0, 100]}),
-            'p3': defaultdict(<class 'list'>, {'Gi0/0/0/': [0]}),
-            'p4': defaultdict(<class 'list'>, {'Gi0/0/0/': [0]}),
-            'rr1': defaultdict(<class 'list'>, {'Gi0/0/0/': [9]}),
-            'rr2': defaultdict(<class 'list'>, {'Gi0/0/0/': [9]})}
+    Returns: for each node and interface type, identify a list of IDs (last digit after interface string), eg:
+            {'p1': {'Gi0/0/0/': [0]},
+            'p2':  {'Bundle-Ether': [10],
+                    'Gi0/0/0/': [0, 100]
+                   },
+            'p3': {'Gi0/0/0/': [0]},
+            'rr2': {'Gi0/0/0/': [9]}}
     """
-    exclude_ids = defaultdict(lambda: defaultdict(list))
+    exclude_ids = {}
 
     for link in links:
         (n1, if1, n2, if2) = parse_link(link["link"])
@@ -89,80 +86,18 @@ def exclude_manual_intf(links):
         if if1:
             matches = re.match(r"(.+[^\d]+)(\d+)", if1)
             intf_type, intf_id = matches.group(1), int(matches.group(2))
-            exclude_ids[n1][intf_type].append(intf_id)
+            node_dict = exclude_ids.setdefault(n1, {})
+            id_list = node_dict.setdefault(intf_type, [])
+            id_list.append(intf_id)
 
         if if2:
             matches = re.match(r"(.+[^\d]+)(\d+)", if2)
             intf_type, intf_id = matches.group(1), int(matches.group(2))
-            exclude_ids[n2][intf_type].append(intf_id)
+            node_dict = exclude_ids.setdefault(n2, {})
+            id_list = node_dict.setdefault(intf_type, [])
+            id_list.append(intf_id)
 
     return exclude_ids
-
-
-class P2p_Intf_Allocator:
-    """
-    Allocate (sequentially) last digit for XRD interface names, such as:
-        Gi0/0/0/X (X=0,1,2,3..)
-        Bundle-EthernetX (X=1,2,3..)
-
-    Notes:
-        - allocation is specific to interface_type and node
-        - allocator will avoid manually defined interfaces in master.yaml (exclude_IDs)
-    Usage:
-
-        p2p_if_allocator = P2p_Intf_Allocator(exclude_IDs)
-
-        intf_id1 = p2p_if_allocator.next("r1", "Gi0/0/0/", 0)
-        intf_id1 = p2p_if_allocator.next("r1", "Gi0/0/0/", 0)
-        intf_id1 = p2p_if_allocator.next("r1", "Bundle-Ethernet", 1)
-        etc.
-    """
-
-    def __init__(self, excludeIDs=None):
-        self.nodes = defaultdict(lambda: defaultdict(int))
-        self.excludeIDs = excludeIDs or {}
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        raise NotImplementedError("Use next(node, interface, first_id) to get the next value for a specific node and interface.")
-
-    def next(self, node: str, interface: str, first_id: int) -> int:
-        current_id = self.nodes[node].get(interface, first_id)
-
-        # Get excluded IDs for this node/interface
-        excluded = self.excludeIDs.get(node, {}).get(interface, [])
-
-        while current_id in excluded:
-            current_id += 1
-
-        self.nodes[node][interface] = current_id + 1
-        return current_id
-
-
-class Subnet_Allocator:
-    """
-    Allocate consecutive subnets from provided prefix and subnet length.
-
-    Usage:
-
-        subnet_allocator = Subnet_Allocator()
-
-        subnet = subnet_allocator.next_subnet('1.0.0.0/16', 30)
-        subnet = subnet_allocator.next_subnet('1.0.0.0/16', 30)
-        subnet = subnet_allocator.next_subnet('1.255.0.0/16', 24)
-        etc.
-    """
-
-    def __init__(self):
-        self.subnet_iterators = {}
-
-    def next_subnet(self, prefix, length):
-        if prefix not in self.subnet_iterators:
-            network = ipaddress.ip_network(prefix)
-            self.subnet_iterators[prefix] = network.subnets(new_prefix=length)
-        return next(self.subnet_iterators[prefix])
 
 
 def get_bundle_id(node, neighbor, interfaces):
@@ -183,15 +118,15 @@ def get_bundle_id(node, neighbor, interfaces):
 def intf_ip_allocation(master_inherit_dotted):
     nodes_intf = Box(nested_dict(), default_box=True)
     clab_links = []
-    subnet_allocator = Subnet_Allocator()
-    excludeIDs = exclude_manual_intf(master_inherit_dotted.links)
+    subnet_allocator = utils.Subnet_Allocator()
+    excludeIDs = get_predefined_intf_names(master_inherit_dotted.links)
 
     print("Manually defined interface names in master.yaml:")
     for exc_node, exc_node_details in excludeIDs.items():
         for exc_intf, excIDs in exc_node_details.items():
             print(f" {exc_node:8s} {exc_intf:15s} {excIDs}")
 
-    p2p_if_allocator = P2p_Intf_Allocator(excludeIDs=excludeIDs)
+    p2p_if_allocator = utils.P2p_Intf_Allocator(excludeIDs=excludeIDs)
 
     _allocate_p2p_links(master_inherit_dotted, nodes_intf, clab_links, p2p_if_allocator, subnet_allocator)
     _assign_loopback_and_mgmt(master_inherit_dotted, nodes_intf)
@@ -215,12 +150,12 @@ def _allocate_p2p_links(master, nodes_intf, clab_links, if_allocator, subnet_all
         if not if2:
             if2 = f"{intf_type2}{if_allocator.next(node2, intf_type2, first_id2)}"
 
-        clab_if1 = utils.clab_intf_map(n1_dict.clab.kind, if1) if n1_dict.get("clab_intf_map") else if1
-        clab_if2 = utils.clab_intf_map(n2_dict.clab.kind, if2) if n2_dict.get("clab_intf_map") else if2
-
-        # exclude interfaces such as Bundles, which can be defined in master.yaml (to be configured in IOS-XR by 
-        # nornir), but not part of clab topology
+        # Bundles or links of physical nodes can be defined in master.yaml, so they can be later configured by Nornir.
+        # But these links must not be part of Clab topology.
         if not link.get("clab_exclude", False):
+            clab_if1 = utils.clab_intf_map(n1_dict.clab.kind, if1) if n1_dict.get("clab_intf_map") else if1
+            clab_if2 = utils.clab_intf_map(n2_dict.clab.kind, if2) if n2_dict.get("clab_intf_map") else if2
+
             clab_links.append({
                 "endpoints": [
                     f"{node1 if node1 != 'host' else 'macvlan'}:{clab_if1}",
