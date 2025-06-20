@@ -298,8 +298,8 @@ link_groups:
     isis: 
       instance: RR
       metric: 99999
-    lldp:
-      disable: True
+    # lldp:
+    #   disable: True
   loopback0:
     link_group: loopback0
     v4_prefix: 1.255.0.0/24
