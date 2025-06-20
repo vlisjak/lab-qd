@@ -407,6 +407,7 @@ devices:
         link: rr_top1:Gi0/0/0/9---p1:Gi0/0/0/0
         link_group: rr
         lldp:
+          disable: true
           neighbor: rr_top1
           neighbor_intf: Gi0/0/0/9
           neighbor_ipv4: 1.0.0.53/30
@@ -535,6 +536,7 @@ devices:
         link: rr_top2:Gi0/0/0/9---p2:Gi0/0/0/0
         link_group: rr
         lldp:
+          disable: true
           neighbor: rr_top2
           neighbor_intf: Gi0/0/0/9
           neighbor_ipv4: 1.0.0.57/30
@@ -661,6 +663,7 @@ devices:
         link: rr2:Gi0/0/0/9---p3:Gi0/0/0/0
         link_group: rr
         lldp:
+          disable: true
           neighbor: rr2
           neighbor_intf: Gi0/0/0/9
           neighbor_ipv4: 1.0.0.49/30
@@ -785,6 +788,7 @@ devices:
         link: rr1:Gi0/0/0/9---p4:Gi0/0/0/0
         link_group: rr
         lldp:
+          disable: true
           neighbor: rr1
           neighbor_intf: Gi0/0/0/9
           neighbor_ipv4: 1.0.0.45/30
@@ -1178,6 +1182,7 @@ devices:
         link: rr1:Gi0/0/0/9---p4:Gi0/0/0/0
         link_group: rr
         lldp:
+          disable: true
           neighbor: p4
           neighbor_intf: Gi0/0/0/0
           neighbor_ipv4: 1.0.0.46/30
@@ -1225,6 +1230,7 @@ devices:
         link: rr2:Gi0/0/0/9---p3:Gi0/0/0/0
         link_group: rr
         lldp:
+          disable: true
           neighbor: p3
           neighbor_intf: Gi0/0/0/0
           neighbor_ipv4: 1.0.0.50/30
@@ -1272,6 +1278,7 @@ devices:
         link: rr_top1:Gi0/0/0/9---p1:Gi0/0/0/0
         link_group: rr
         lldp:
+          disable: true
           neighbor: p1
           neighbor_intf: Gi0/0/0/0
           neighbor_ipv4: 1.0.0.54/30
@@ -1319,6 +1326,7 @@ devices:
         link: rr_top2:Gi0/0/0/9---p2:Gi0/0/0/0
         link_group: rr
         lldp:
+          disable: true
           neighbor: p2
           neighbor_intf: Gi0/0/0/0
           neighbor_ipv4: 1.0.0.58/30
@@ -1384,6 +1392,8 @@ link_groups:
       instance: RR
       metric: 99999
     link_group: rr
+    lldp:
+      disable: true
     v4_prefix: 1.0.0.0/16
 links:
 - bundle:
@@ -1471,24 +1481,32 @@ links:
     metric: 99999
   link: rr1:Gi0/0/0/9---p4:Gi0/0/0/0
   link_group: rr
+  lldp:
+    disable: true
   v4_prefix: 1.0.0.0/16
 - isis:
     instance: RR
     metric: 99999
   link: rr2:Gi0/0/0/9---p3:Gi0/0/0/0
   link_group: rr
+  lldp:
+    disable: true
   v4_prefix: 1.0.0.0/16
 - isis:
     instance: RR
     metric: 99999
   link: rr_top1:Gi0/0/0/9---p1:Gi0/0/0/0
   link_group: rr
+  lldp:
+    disable: true
   v4_prefix: 1.0.0.0/16
 - isis:
     instance: RR
     metric: 99999
   link: rr_top2:Gi0/0/0/9---p2:Gi0/0/0/0
   link_group: rr
+  lldp:
+    disable: true
   v4_prefix: 1.0.0.0/16
 - link: cpe1---pe1
   link_group: l3vpn

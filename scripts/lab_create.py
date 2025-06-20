@@ -186,10 +186,11 @@ def _get_intf_type_and_id(device_dict, link_group):
 def _add_interface_metadata(nodes_intf, node, ifname, neighbor, neighbor_if, link):
     intf = nodes_intf[node].interfaces[ifname]
     # print(node, ifname, neighbor, neighbor_if, link)
-    intf["description"] = f"{node}:{ifname} -> {neighbor}:{neighbor_if}"
-    intf.setdefault("lldp", {}).update({"neighbor": neighbor, "neighbor_intf": neighbor_if})
     for k, v in link.items():
         intf[k] = deepcopy(v)
+    intf["description"] = f"{node}:{ifname} -> {neighbor}:{neighbor_if}"
+    intf.setdefault("lldp", {}).update({"neighbor": neighbor, "neighbor_intf": neighbor_if})
+
 
 
 def _assign_loopback_and_mgmt(master, nodes_intf):

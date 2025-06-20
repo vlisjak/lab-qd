@@ -700,6 +700,8 @@ link_groups:
       instance: RR
       metric: 99999
     link_group: rr
+    lldp:
+      disable: true
     v4_prefix: 1.0.0.0/16
 links:
 - bundle:
@@ -787,24 +789,32 @@ links:
     metric: 99999
   link: rr1:Gi0/0/0/9---p4:Gi0/0/0/0
   link_group: rr
+  lldp:
+    disable: true
   v4_prefix: 1.0.0.0/16
 - isis:
     instance: RR
     metric: 99999
   link: rr2:Gi0/0/0/9---p3:Gi0/0/0/0
   link_group: rr
+  lldp:
+    disable: true
   v4_prefix: 1.0.0.0/16
 - isis:
     instance: RR
     metric: 99999
   link: rr_top1:Gi0/0/0/9---p1:Gi0/0/0/0
   link_group: rr
+  lldp:
+    disable: true
   v4_prefix: 1.0.0.0/16
 - isis:
     instance: RR
     metric: 99999
   link: rr_top2:Gi0/0/0/9---p2:Gi0/0/0/0
   link_group: rr
+  lldp:
+    disable: true
   v4_prefix: 1.0.0.0/16
 - link: cpe1---pe1
   link_group: l3vpn
