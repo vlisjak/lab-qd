@@ -396,7 +396,7 @@ services:
     # - RT/RD: {{ ibgp_asn }}:{{rd }}
 
     vrf_1001:
-     rd: 1001
+      rd: 1001
       endpoints:
         cpe1:
           pe_routing: 
@@ -410,7 +410,7 @@ services:
             protocol: static
 
     vrf_1002_A:
-     rd: 1002
+      rd: 1002
       endpoints:
         cpe2:
           # if "uplinks" is present, only "uplinks" are used to find the neighbor PEs
@@ -427,7 +427,7 @@ services:
 
     # TODO: more complex example: manually defined uplinks, qos and primary-backup eBGP
     vrf_1002_B:
-     rd: 1002
+      rd: 1002
       endpoints:
         cpe1:
           pe_routing: 
