@@ -6,6 +6,7 @@ topology:
   kinds:
     cisco_csr1000v:
       env:
+        CLAB_MGMT_PASSTHROUGH: true
         CLAB_MGMT_VRF: clab-mgmt
         PASSWORD: clab@123
         USERNAME: clab
@@ -22,6 +23,7 @@ topology:
       startup-config: xrd_initial_cfg.j2
     cisco_xrv9k:
       env:
+        CLAB_MGMT_PASSTHROUGH: true
         CLAB_MGMT_VRF: clab-mgmt
         PASSWORD: clab@123
         RAM: 20480

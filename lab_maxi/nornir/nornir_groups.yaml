@@ -1,12 +1,32 @@
 ios:
+  connection_options:
+    napalm:
+      extras:
+        optional_args:
+          banner_timeout: 30
+          conn_timeout: 30
+          timeout: 30
+    netmiko:
+      extras:
+        banner_timeout: 30
+        conn_timeout: 30
+        timeout: 30
   password: clab@123
   platform: ios
   username: clab
 iosxr:
+  connection_options:
+    napalm:
+      extras:
+        optional_args:
+          banner_timeout: 30
+          conn_timeout: 30
+          timeout: 30
+    netmiko:
+      extras:
+        banner_timeout: 30
+        conn_timeout: 30
+        timeout: 30
   password: clab@123
   platform: iosxr
   username: clab
-iosxr_phys:
-  password: cisco
-  platform: iosxr
-  username: cisco

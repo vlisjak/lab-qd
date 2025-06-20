@@ -362,6 +362,10 @@ def intf_ip_allocation(master_inherit_dotted):
     iter_mgmt = (host for host in prefix_mgmt.hosts() if host not in reserved_mgmt)
 
     for node in nodes_intf:
+        if 'clab' not in master_inherit_dotted.devices[node]:
+            # this is physical router
+            nodes_intf[node].interfaces.mgmt.ipv4_address = master_inherit_dotted.devices[node].interfaces.mgmt.ipv4_address
+            continue            
         if master_inherit_dotted.devices[node].clab.kind == "host":
             nodes_intf[node].interfaces.mgmt.ipv4_address = master_inherit_dotted.devices[node].interfaces.mgmt.ipv4_address
             continue
@@ -373,6 +377,7 @@ def intf_ip_allocation(master_inherit_dotted):
     for node, intf_list in nodes_intf.items():
         # finally copy all interface parameters/IPs into master_inherit, which is returned as result
         # - must preserve parameters previously inherited from device/link groups
+
         for intf, intf_details in intf_list.interfaces.items():
             if intf in master_inherit_dotted.devices[node].interfaces:
                 master_inherit_dotted.devices[node].interfaces[intf].update(intf_details)
