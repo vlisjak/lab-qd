@@ -3,10 +3,10 @@
 """
 Usage examples:
 
-../scripts/lab_reset.py --dry --node p1 [p2 pe2 cpe1]
-../scripts/lab_reset.py --dry --role pe [cpe pe]
+../scripts/lab_reset.py --dry --node p1 p2 cpe1
+../scripts/lab_reset.py --dry --role pe cpe
 
-../scripts/lab_reset.py --commit --node p1 p2
+../scripts/lab_reset.py --commit --node p1 p2 cpe1
 ../scripts/lab_reset.py --commit --role pe cpe
 
 ../scripts/lab_reset.py --nornir_inv ./nornir/nornir_config.yaml --templ_dir ./templates/min_cfg --cfg_backup_dir ./backups_20250319 --dry --node p2
@@ -27,8 +27,9 @@ Expected inputs:
     └── etc.
 
 Notes:
-- jinja2 templates get the name and IP address of MgmtEth interface from master_complete.yaml (lab-qd inventory)
-- if a static (hardcoded) device configuration file (<hostname>.txt) exists, respective device_role .j2 is ignored
+- jinja2 templates get the name and IP address of MgmtEth interface from nornir_hosts.yaml
+    - if this is part of lab-qd inventory, MgmtEth is defined in master.yaml
+- if a static (hardcoded) device configuration file (<hostname>.txt) exists, respective device_role.j2 is ignored
     - this is handy for devices that are not part of lab-qd inventory, or completely standalone lab setup (without any yaml inventory)
     - just make sure that hostname and MgmtEth IP address in the config file is indeed correct!
 
