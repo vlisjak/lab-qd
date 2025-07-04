@@ -1,0 +1,33 @@
+hostname {{ node }}
+!
+username cisco
+ group root-lr
+ group cisco-support
+ secret cisco
+!
+username clab
+ group root-lr
+ group cisco-support
+ secret clab@123
+!
+line default
+  transport input ssh
+!
+netconf-yang agent
+ ssh
+!
+interface {{ node_inv.mgmt.name }}
+ ipv4 address {{ node_inv.mgmt.ipv4_address }}
+ no shutdown
+!
+grpc
+ port 57400
+ no-tls
+ address-family ipv4
+!
+ssh server v2
+ssh server netconf
+xml agent tty iteration off
+lldp
+ipv4 netmask-format bit-count
+

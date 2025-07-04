@@ -1,0 +1,22 @@
+!Command: Checkpoint cmd vdc 1
+version 10.4(5) Bios:version  
+hostname {{ node }}
+no password strength-check
+username admin password 0 admin role network-admin
+username cisco password 0 cisco role network-admin
+username lisko password 0 lisko
+feature telnet
+feature nxapi
+feature scp-server
+feature netconf
+feature grpc
+ssh key rsa 2048 
+snmp-server user admin 
+no ip domain-lookup
+no nxapi client certificate authentication
+vlan 1
+interface mgmt0
+  vrf member management
+  ip address {{ node_inv.mgmt.ipv4_address }}
+line console
+line vty
