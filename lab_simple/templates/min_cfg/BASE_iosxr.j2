@@ -17,16 +17,26 @@ netconf-yang agent
  ssh
 !
 interface {{ node_inv.mgmt.name }}
+ vrf clab-mgmt
  ipv4 address {{ node_inv.mgmt.ipv4_address }}
  no shutdown
 !
 grpc
+ vrf clab-mgmt
  port 57400
  no-tls
- address-family ipv4
+ address-family dual
+!
+vrf clab-mgmt
+ address-family ipv4 unicast
+ !
+ address-family ipv6 unicast
+ !
 !
 ssh server v2
 ssh server netconf
+ssh server vrf clab-mgmt
+ssh server netconf vrf clab-mgmt
 xml agent tty iteration off
 lldp
 ipv4 netmask-format bit-count

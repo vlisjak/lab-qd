@@ -145,14 +145,15 @@ def fetch_configs(task, cfg_backup_dir):
     os.makedirs(args.cfg_backup_dir, exist_ok=True)
     fetched = task.run(task=napalm_get, getters=['config'])
     task.host.close_connections()
+    cfg_file = f"{cfg_backup_dir}/{task.host}-backup.txt"
     task.run(
         task=write_file,
-        filename=f"{cfg_backup_dir}/{task.host}-backup.txt",
+        filename=cfg_file,
         content=fetched[0].result["config"]["running"],
     )
     return Result(
         host=task.host,
-        result=f"% Configuration for node {task.host.name} has been saved.",
+        result=f"% Configuration for node {task.host.name} has been saved in {cfg_file}.",
     )
 
 if __name__ == "__main__":

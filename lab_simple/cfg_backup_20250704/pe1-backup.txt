@@ -1,0 +1,48 @@
+!! Building configuration...
+
+!! Last configuration change at Fri Jul  4 17:55:06 2025 by clab
+!
+hostname pe1
+username clab
+ group root-lr
+ group cisco-support
+ secret 10 $6$IZlzo0NwDhzH9o0.$QVoI.0/7DUbzSSi7HvSPU6NouxnMdM04AwJBCEjveSdoiN2NdLIVgZw7mXMgHfHTDnw1qYtnkLPdR85ruCIyT0
+!
+username cisco
+ group root-lr
+ group cisco-support
+ secret 10 $6$jN2kV/4/QM.54V/.$Wdwu0L.cyBnLzugGntMDpyQg4igGjrHcIspM4Db9C5M5HzuShYZuemXtfHO6pc9rIpPlesmuFvvtM4GN3vvnD0
+!
+grpc
+ vrf clab-mgmt
+ port 57400
+ no-tls
+ address-family dual
+!
+vrf clab-mgmt
+ address-family ipv4 unicast
+ !
+ address-family ipv6 unicast
+ !
+!
+line default
+ transport input ssh
+!
+ipv4 netmask-format bit-count
+netconf-yang agent
+ ssh
+!
+interface MgmtEth0/RP0/CPU0/0
+ vrf clab-mgmt
+ ipv4 address 10.255.5.4/24
+!
+xml agent tty
+ iteration off
+!
+lldp
+!
+ssh server v2
+ssh server vrf clab-mgmt
+ssh server netconf vrf default
+ssh server netconf vrf clab-mgmt
+end

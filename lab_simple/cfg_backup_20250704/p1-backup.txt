@@ -1,0 +1,224 @@
+!! Building configuration...
+
+!! Last configuration change at Fri Jul  4 12:37:44 2025 by ZTP
+!
+hostname p1
+username clab
+ group root-lr
+ group cisco-support
+ secret 10 $6$0GUSL02crZuR7L0.$IMNc0beFiA7YlpTtTEWNR.lJVpowYyp.TJPuqWoGZ4h8hRiLAFamGjIk0S/Xf0Wy7NcJo/5MA.CU5MyE4dNXH1
+!
+username cisco
+ group root-lr
+ group cisco-support
+ secret 10 $6$Lj9C7/vWHGsY27/.$uZ6loBB6up5dFtqBbEtbRVUtyMh0jVZQFgBWyoiVL0BAgAjP82AnKuw30AE1zy99YZZH7L6ZnClObHFO3X1tE0
+!
+grpc
+ vrf clab-mgmt
+ port 57400
+ no-tls
+ address-family dual
+!
+vrf clab-mgmt
+ address-family ipv4 unicast
+ !
+ address-family ipv6 unicast
+ !
+!
+line default
+ transport input ssh
+!
+ipv4 netmask-format bit-count
+netconf-yang agent
+ ssh
+!
+interface Loopback0
+ description p1 Loopback0
+ ipv4 address 1.255.0.2/32
+!
+interface MgmtEth0/RP0/CPU0/0
+ vrf clab-mgmt
+ ipv4 address 10.255.5.2/24
+!
+interface GigabitEthernet0/0/0/0
+ description p1:Gi0/0/0/0 -> p2:Gi0/0/0/0
+ ipv4 address 1.0.0.1/30
+!
+interface GigabitEthernet0/0/0/1
+ description p1:Gi0/0/0/1 -> p2:Gi0/0/0/1
+ ipv4 address 1.0.0.5/30
+!
+interface GigabitEthernet0/0/0/2
+ description p1:Gi0/0/0/2 -> pe1:Gi0/0/0/0
+ ipv4 address 1.0.0.10/30
+!
+interface GigabitEthernet0/0/0/3
+ description p1:Gi0/0/0/3 -> pe3:Gi0/0/0/0
+ ipv4 address 1.0.0.18/30
+!
+interface GigabitEthernet0/0/0/4
+ description p1:Gi0/0/0/4 -> pe1:Gi0/0/0/1
+ ipv4 address 1.0.0.26/30
+!
+interface GigabitEthernet0/0/0/5
+ description p1:Gi0/0/0/5 -> pe3:Gi0/0/0/1
+ ipv4 address 1.0.0.34/30
+!
+interface GigabitEthernet0/0/0/6
+ description p1:Gi0/0/0/6 -> rr1:Gi0/0/0/0
+ ipv4 address 1.0.0.50/30
+!
+router static
+ vrf clab-mgmt
+  address-family ipv4 unicast
+   0.0.0.0/0 MgmtEth0/RP0/CPU0/0 10.255.5.1
+  !
+ !
+!
+router isis CORE
+ set-overload-bit on-startup 360 level 2
+ is-type level-2-only
+ net 49.0000.0012.5500.0002.00
+ distribute link-state
+ nsf ietf
+ log adjacency changes
+ lsp-gen-interval initial-wait 1 secondary-wait 50 maximum-wait 5000
+ lsp-refresh-interval 65000
+ max-lsp-lifetime 65535
+ address-family ipv4 unicast
+  metric-style wide
+  metric-style wide level 2
+  fast-reroute per-prefix priority-limit critical
+  fast-reroute per-prefix tiebreaker node-protecting index 100
+  microloop avoidance segment-routing
+  microloop avoidance rib-update-delay 3000
+  advertise passive-only
+  spf-interval initial-wait 1 secondary-wait 50 maximum-wait 5000
+  router-id Loopback0
+  segment-routing mpls sr-prefer
+  spf periodic disable
+  maximum-redistributed-prefixes 1000
+  spf prefix-priority critical tag 100
+ !
+ interface Loopback0
+  passive
+  circuit-type level-2-only
+  address-family ipv4 unicast
+   tag 100
+   prefix-sid absolute 16002
+  !
+ !
+ interface GigabitEthernet0/0/0/0
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   fast-reroute per-prefix level 2
+   fast-reroute per-prefix ti-lfa level 2
+   metric 2000
+  !
+ !
+ interface GigabitEthernet0/0/0/1
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   fast-reroute per-prefix level 2
+   fast-reroute per-prefix ti-lfa level 2
+   metric 1000
+  !
+ !
+ interface GigabitEthernet0/0/0/2
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   fast-reroute per-prefix level 2
+   fast-reroute per-prefix ti-lfa level 2
+   metric 2000
+  !
+ !
+ interface GigabitEthernet0/0/0/3
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   fast-reroute per-prefix level 2
+   fast-reroute per-prefix ti-lfa level 2
+   metric 2000
+  !
+ !
+ interface GigabitEthernet0/0/0/4
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   fast-reroute per-prefix level 2
+   fast-reroute per-prefix ti-lfa level 2
+   metric 1000
+  !
+ !
+ interface GigabitEthernet0/0/0/5
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   fast-reroute per-prefix level 2
+   fast-reroute per-prefix ti-lfa level 2
+   metric 1000
+  !
+ !
+ interface GigabitEthernet0/0/0/6
+  circuit-type level-2-only
+  point-to-point
+  hello-padding disable
+  address-family ipv4 unicast
+   fast-reroute per-prefix level 2
+   fast-reroute per-prefix ti-lfa level 2
+   metric 99999
+  !
+ !
+!
+segment-routing
+ traffic-eng
+  interface GigabitEthernet0/0/0/1
+   affinity
+    name DWDM
+   !
+  !
+  interface GigabitEthernet0/0/0/4
+   affinity
+    name DWDM
+   !
+  !
+  interface GigabitEthernet0/0/0/5
+   affinity
+    name DWDM
+   !
+  !
+  logging
+   policy status
+  !
+  on-demand color 999
+   dynamic
+    affinity
+     exclude-any
+      name DWDM
+     !
+    !
+   !
+  !
+  affinity-map
+   name DWDM bit-position 10
+  !
+ !
+!
+xml agent tty
+ iteration off
+!
+lldp
+!
+ssh server v2
+ssh server vrf clab-mgmt
+ssh server netconf vrf clab-mgmt
+end
