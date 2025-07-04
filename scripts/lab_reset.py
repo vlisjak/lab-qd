@@ -185,7 +185,7 @@ if __name__ == "__main__":
                 print("Exiting.")
                 exit()
 
-        # backup current configs
+        # do not backup current configs for dry_run operations
         if not args.dry_run:
             fetch_results = nr.run(task=fetch_configs, cfg_backup_dir=args.cfg_backup_dir)
             for hostname in nr.inventory.hosts.keys():
