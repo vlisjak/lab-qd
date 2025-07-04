@@ -177,17 +177,21 @@ if __name__ == "__main__":
         nr = nr.filter(F(name__in=args.node))
 
     if nr.inventory.hosts.keys():
+
+        # reconfirm config replace
         if not args.dry_run:
             print(f"% We will reset the nodes: {list(nr.inventory.hosts)}")
             if input("Y[es] to continue?").lower() not in ("y", "yes"):
                 print("Exiting.")
                 exit()
 
-        if args.cfg_backup_dir:
+        # backup current configs
+        if not args.dry_run:
             fetch_results = nr.run(task=fetch_configs, cfg_backup_dir=args.cfg_backup_dir)
             for hostname in nr.inventory.hosts.keys():
                 print_result(fetch_results[hostname][0])
 
+        # finally replace current configs
         apply_results = nr.run(task=apply_configs, templ_dir=args.templ_dir, roles=args.role, dry_run=args.dry_run, replace=True)
         print_result(apply_results)
 
