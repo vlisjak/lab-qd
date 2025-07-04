@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# TODO: try deploying config through console, if direct connection over MgmtEth fails
+
 """
 Usage examples:
 
